@@ -1,0 +1,65 @@
+name: Create Trello Card for GitHub Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  create-trello-card:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check jq availability
+        run: |
+          jq --version
+
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Clean Issue Body and Create Trello Card
+        env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
+          TRELLO_TODO_LIST_ID: ${{ vars.TRELLO_TODO_LIST_ID }}
+        run: |
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+
+          # Clean the issue body, remove HTML comments, escape quotes, and trim spaces
+          ISSUE_BODY="${{ github.event.issue.body }}"
+          CLEANED_BODY=$(echo "$ISSUE_BODY" | sed '/<!--/,/-->/d' | tr '\n' ' ' | tr -s ' ' | sed 's/"/\\"/g')
+
+          echo "Original Issue Body: $ISSUE_BODY"
+          echo "Cleaned Issue Body: $CLEANED_BODY"
+
+          # Send a POST request to Trello API to create the card and capture the response
+          RESPONSE=$(curl -s -X POST "https://api.trello.com/1/cards" \
+          -d "name=${ISSUE_TITLE}" \
+          -d "desc=Created from GitHub Issue: ${{ github.event.issue.html_url }} $CLEANED_BODY" \
+          -d "idList=${TRELLO_TODO_LIST_ID}" \
+          -d "key=${TRELLO_API_KEY}" \
+          -d "token=${TRELLO_TOKEN}")
+
+          # Extract the CARD_ID from the response
+          CARD_ID=$(echo "$RESPONSE" | jq -r '.id')
+
+          # Set the CARD_ID as an output variable
+          echo "CARD_ID=$CARD_ID" >> $GITHUB_ENV
+
+      - name: Add Trello card link to GitHub issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Trello Card ID: $CARD_ID"
+
+          # Construct the Trello card link and update the GitHub issue body
+          CARD_LINK="https://trello.com/c/${CARD_ID}"
+
+          echo "Trello Card Link: $CARD_LINK"
+
+          curl -X PATCH "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -d "{\"body\": \"${{ github.event.issue.body }}\\n[Trello Card](${CARD_LINK})\"}"

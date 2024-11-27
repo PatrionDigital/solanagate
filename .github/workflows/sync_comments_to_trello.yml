@@ -1,0 +1,36 @@
+name: Sync GitHub Comments to Trello
+
+on:
+  issue_comment:
+    types: [created] # Trigger when a new comment is created on an issue
+
+jobs:
+  sync-comment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Post comment to Trello
+        env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
+        run: |
+          # Get the Trello card URL from the issue body
+          ISSUE_BODY="${{ github.event.issue.body }}"
+          CARD_URL=$(echo "$ISSUE_BODY" | grep -o 'https://trello.com/c/[A-Za-z0-9]*')
+          CARD_ID=$(basename "$CARD_URL")
+
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          COMMENT_AUTHOR="${{ github.event.comment.user.login }}"
+
+          if [ -n "$CARD_ID" ]; then
+            echo "Posting comment to Trello Card with ID: $CARD_ID"
+            curl -X POST "https://api.trello.com/1/cards/${CARD_ID}/actions/comments" \
+              -d "text=GitHub comment by ${COMMENT_AUTHOR}: ${COMMENT_BODY}" \
+              -d "key=$TRELLO_API_KEY" \
+              -d "token=$TRELLO_TOKEN"
+          else
+            echo "No Trello Card ID found in the issue body."
+          fi

@@ -1,0 +1,45 @@
+name: Manage Trello Card on Issue Label Change
+
+on:
+  issues:
+    types: [labeled, unlabeled] # Listen for both label additions and removals
+
+jobs:
+  manage-trello-card:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Manage Trello Card
+        env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
+          TRELLO_DOING_LIST_ID: ${{ vars.TRELLO_DOING_LIST_ID }} # This is for the Doing list
+          TRELLO_TODO_LIST_ID: ${{ vars.TRELLO_TODO_LIST_ID }} # This is for the To Do list
+        run: |
+          # Get the card ID from the issue body
+          ISSUE_BODY="${{ github.event.issue.body }}"
+          CARD_URL=$(echo "$ISSUE_BODY" | grep -o 'https://trello.com/c/[A-Za-z0-9]*')
+          CARD_ID=$(basename "$CARD_URL")
+
+          if [ -n "$CARD_ID" ]; then
+            if [[ "${{ github.event.action }}" == "labeled" && "${{ github.event.label.name }}" == "Start Working" ]]; then
+              echo "Moving Trello card with ID: $CARD_ID to Doing"
+              curl -X PUT "https://api.trello.com/1/cards/${CARD_ID}" \
+              -d "idList=$TRELLO_DOING_LIST_ID" \
+              -d "key=$TRELLO_API_KEY" \
+              -d "token=$TRELLO_TOKEN"
+            elif [[ "${{ github.event.action }}" == "unlabeled" && "${{ github.event.label.name }}" == "Start Working" ]]; then
+              echo "Moving Trello card with ID: $CARD_ID back to To Do"
+              curl -X PUT "https://api.trello.com/1/cards/${CARD_ID}" \
+              -d "idList=$TRELLO_TODO_LIST_ID" \
+              -d "key=$TRELLO_API_KEY" \
+              -d "token=$TRELLO_TOKEN"
+            else
+              echo "No action taken for the label change."
+            fi
+          else
+            echo "No Trello Card ID found."
+          fi

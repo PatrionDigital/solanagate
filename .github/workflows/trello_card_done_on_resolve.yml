@@ -1,8 +1,6 @@
 name: Move Trello Card to Done on Issue or PR Resolve
 
 on:
-  issue_comment:
-    types: [created]
   issues:
     types: [closed]
   pull_request:
@@ -17,18 +15,19 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Move Trello Card to Done
-        id: move_trello_card # Add ID for accessing the output later
+        id: move_trello_card
         env:
           TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
           TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
           TRELLO_DONE_LIST_ID: ${{ vars.TRELLO_DONE_LIST_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Check if it's a PR with 'resolves' keyword, or issue closed
+          # Determine if it's a PR or an issue being closed
           if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.merged }}" = "true" ]; then
             echo "PR merged - checking for issue references"
             PR_BODY="${{ github.event.pull_request.body }}"
             ISSUE_NUMBER=$(echo "$PR_BODY" | grep -oP '(?<=resolves #)\d+')
-            
+
             if [ -n "$ISSUE_NUMBER" ]; then
               echo "Issue referenced by PR: $ISSUE_NUMBER"
               # Fetch the issue body to get Trello card link
@@ -38,8 +37,8 @@ jobs:
               echo "No issue referenced in the PR."
               exit 0
             fi
-            elif [ "${{ github.event_name }}" = "issues" ]; then
-            echo "Issue closed - getting body"
+          elif [ "${{ github.event_name }}" = "issues" ]; then
+            echo "Issue closed - processing directly"
             ISSUE_BODY="${{ github.event.issue.body }}"
           else
             echo "Event is not related to PR or issue closing."
@@ -56,22 +55,20 @@ jobs:
               -d "idList=$TRELLO_DONE_LIST_ID" \
               -d "key=$TRELLO_API_KEY" \
               -d "token=$TRELLO_TOKEN"
-
-            # Set the CARD_ID as an output variable
-            echo "::set-output name=CARD_ID::$CARD_ID"
           else
             echo "No Trello Card ID found."
+            exit 0
           fi
 
       - name: Attach PR link to Trello Card
-        if: ${{ github.event.issue.pull_request }}
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true }}
         env:
           TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
           TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_URL="${{ github.event.issue.pull_request.html_url }}"
-          CARD_URL=$(echo "${{ github.event.issue.body }}" | grep -o 'https://trello.com/c/[A-Za-z0-9]*')
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          CARD_URL=$(echo "${{ steps.move_trello_card.outputs.CARD_ID }}" | grep -o 'https://trello.com/c/[A-Za-z0-9]*')
           CARD_ID=$(basename "$CARD_URL")
 
           if [ -n "$CARD_ID" ]; then

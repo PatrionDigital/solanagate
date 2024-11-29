@@ -33,8 +33,8 @@ jobs:
           # Save ISSUE_TITLE safely to GITHUB_ENV
           echo "ISSUE_TITLE=$ISSUE_TITLE" >> $GITHUB_ENV
 
-          # Clean ISSUE_BODY to remove newlines and special characters before setting it to GITHUB_ENV
-          CLEANED_BODY=$(echo "$ISSUE_BODY" | sed 's/\n/\\n/g' | sed 's/"/\\"/g' | sed "s/'/\\'/g")
+          # Clean the ISSUE_BODY only if necessary (escaping special characters)
+          CLEANED_BODY=$(echo "$ISSUE_BODY" | sed 's/"/\\"/g' | sed "s/'/\\'/g")
           echo "ISSUE_BODY=$CLEANED_BODY" >> $GITHUB_ENV
 
       - name: Create Trello Card

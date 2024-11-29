@@ -30,9 +30,17 @@ jobs:
           echo "Fetched Issue Title: $ISSUE_TITLE"
           echo "Fetched Issue Body: $ISSUE_BODY"
 
-          # Save to environment variables
+          # Save ISSUE_TITLE safely to GITHUB_ENV
           echo "ISSUE_TITLE=$ISSUE_TITLE" >> $GITHUB_ENV
-          echo "ISSUE_BODY=$ISSUE_BODY" >> $GITHUB_ENV
+
+          # Handle multi-line or special characters in ISSUE_BODY
+          if [ -z "$ISSUE_BODY" ] || [ "$ISSUE_BODY" = "null" ]; then
+            echo "ISSUE_BODY=No description provided." >> $GITHUB_ENV
+          else
+            echo "ISSUE_BODY<<EOF" >> $GITHUB_ENV
+            echo "$ISSUE_BODY" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          fi
 
       - name: Create Trello Card
         env:
@@ -83,7 +91,7 @@ jobs:
           echo "Trello Card Link: $CARD_LINK"
 
           # Update the issue body with the Trello card link
-          UPDATED_BODY=$(printf "%s\n\n[Trello Card](%s)" "$ISSUE_BODY" "$CARD_LINK")
+          UPDATED_BODY=$(echo -e "${ISSUE_BODY}\n\n[Trello Card](${CARD_LINK})")
 
           curl -X PATCH "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}" \
             -H "Authorization: token $GITHUB_TOKEN" \

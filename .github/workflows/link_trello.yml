@@ -18,13 +18,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: fetch_issue
         run: |
-          # Fetch issue details from GitHub API
+          # Fetch issue details using GitHub API
           ISSUE_DETAILS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}")
 
           # Extract title and body
-          echo "ISSUE_TITLE=$(echo \"$ISSUE_DETAILS\" | jq -r .title)" >> $GITHUB_ENV
-          echo "ISSUE_BODY=$(echo \"$ISSUE_DETAILS\" | jq -r .body)" >> $GITHUB_ENV
+          ISSUE_TITLE=$(echo "$ISSUE_DETAILS" | jq -r .title)
+          ISSUE_BODY=$(echo "$ISSUE_DETAILS" | jq -r .body)
+
+          # Debug: log the fetched details
+          echo "Fetched Issue Title: $ISSUE_TITLE"
+          echo "Fetched Issue Body: $ISSUE_BODY"
+
+          # Save to environment variables
+          echo "ISSUE_TITLE=$ISSUE_TITLE" >> $GITHUB_ENV
+          echo "ISSUE_BODY=$ISSUE_BODY" >> $GITHUB_ENV
 
       - name: Create Trello Card
         env:
@@ -35,16 +43,14 @@ jobs:
           ISSUE_BODY: ${{ env.ISSUE_BODY }}
         id: create_trello_card
         run: |
-          # Ensure ISSUE_BODY has content
+          # Ensure ISSUE_BODY is non-empty and clean it
           if [ -z "$ISSUE_BODY" ] || [ "$ISSUE_BODY" = "null" ]; then
-            ISSUE_BODY="No description provided."
+            CLEANED_BODY="No description provided."
+          else
+            CLEANED_BODY=$(echo "$ISSUE_BODY" | sed '/<!--/,/-->/d' | tr '\n' ' ' | tr -s ' ' | sed 's/"/\\"/g; s/\`/\\`/g')
           fi
 
-          # Clean the issue body by removing comments and escaping problematic characters
-          CLEANED_BODY=$(echo "$ISSUE_BODY" | sed '/<!--/,/-->/d' | tr '\n' ' ' | tr -s ' ' | sed 's/"/\\"/g; s/\`/\\\`/g')
-
-          echo "Creating Trello card with title: $ISSUE_TITLE"
-          echo "Description: $CLEANED_BODY"
+          echo "Cleaned Issue Body: $CLEANED_BODY"
 
           # Create Trello card
           RESPONSE=$(curl -s -X POST "https://api.trello.com/1/cards" \
@@ -54,7 +60,6 @@ jobs:
             -d "key=$TRELLO_API_KEY" \
             -d "token=$TRELLO_TOKEN")
 
-          # Log the response
           echo "Trello API Response: $RESPONSE"
 
           # Extract card ID
@@ -78,7 +83,7 @@ jobs:
           echo "Trello Card Link: $CARD_LINK"
 
           # Update the issue body with the Trello card link
-          UPDATED_BODY="${ISSUE_BODY}\n\n[Trello Card](${CARD_LINK})"
+          UPDATED_BODY=$(printf "%s\n\n[Trello Card](%s)" "$ISSUE_BODY" "$CARD_LINK")
 
           curl -X PATCH "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}" \
             -H "Authorization: token $GITHUB_TOKEN" \

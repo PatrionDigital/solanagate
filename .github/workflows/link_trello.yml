@@ -62,10 +62,20 @@ jobs:
           # Debug: log the cleaned body
           echo "Cleaned Issue Body: $CLEANED_BODY"
 
+          # Construct the Trello cartd description with Markdown formatting
+          DESCRIPTION=$(cat <<EOF
+          Created from GitHub Issue: ${{ github.event.issue.html_url }}
+
+          $CLEANED_BODY
+
+          [Link to GitHub Issue](https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }})
+          EOF
+          )
+
           # Create Trello card
           RESPONSE=$(curl -s -X POST "https://api.trello.com/1/cards" \
             -d "name=$ISSUE_TITLE" \
-            -d "desc=Created from GitHub Issue: ${{ github.event.issue.html_url }} \n \n $CLEANED_BODY" \
+            -d "desc=$DESCRIPTION" \
             -d "idList=$TRELLO_TODO_LIST_ID" \
             -d "key=$TRELLO_API_KEY" \
             -d "token=$TRELLO_TOKEN")

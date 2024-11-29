@@ -14,52 +14,79 @@ jobs:
 
     steps:
       - name: Check jq availability
-        run: |
-          jq --version
+        run: jq --version
 
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Clean Issue Body and Create Trello Card
+      - name: Fetch Issue Details
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: fetch_issue
+        run: |
+          # Fetch the issue details to ensure the latest version
+          ISSUE_DATA=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}")
+
+          # Save details for subsequent steps
+          echo "title=$(echo \"$ISSUE_DATA\" | jq -r .title)" >> $GITHUB_ENV
+          echo "body=$(echo \"$ISSUE_DATA\" | jq -r .body)" >> $GITHUB_ENV
+
+      - name: Create Trello Card
         env:
           TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
           TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
           TRELLO_TODO_LIST_ID: ${{ vars.TRELLO_TODO_LIST_ID }}
+          ISSUE_TITLE: ${{ env.title }}
+          ISSUE_BODY: ${{ env.body }}
+        id: create_trello_card
         run: |
-          ISSUE_TITLE="${{ github.event.issue.title }}"
+          # Handle empty body
+          if [ -z "$ISSUE_BODY" ]; then
+            ISSUE_BODY="No description provided."
+          fi
 
-          # Clean the issue body, remove HTML comments, escape quotes, and trim spaces
-          ISSUE_BODY="${{ github.event.issue.body }}"
-          CLEANED_BODY=$(echo "$ISSUE_BODY" | sed '/<!--/,/-->/d' | tr '\n' ' ' | tr -s ' ' | sed 's/"/\\"/g')
+          # Escape special characters and clean the body
+          CLEANED_BODY=$(echo "$ISSUE_BODY" | sed '/<!--/,/-->/d' | tr '\n' ' ' | tr -s ' ' | sed 's/"/\\"/g; s/\`/\\\`/g')
 
           echo "Original Issue Body: $ISSUE_BODY"
           echo "Cleaned Issue Body: $CLEANED_BODY"
 
-          # Send a POST request to Trello API to create the card and capture the response
+          # Create Trello card
           RESPONSE=$(curl -s -X POST "https://api.trello.com/1/cards" \
-          -d "name=${ISSUE_TITLE}" \
+          -d "name=$ISSUE_TITLE" \
           -d "desc=Created from GitHub Issue: ${{ github.event.issue.html_url }} $CLEANED_BODY" \
-          -d "idList=${TRELLO_TODO_LIST_ID}" \
-          -d "key=${TRELLO_API_KEY}" \
-          -d "token=${TRELLO_TOKEN}")
+          -d "idList=$TRELLO_TODO_LIST_ID" \
+          -d "key=$TRELLO_API_KEY" \
+          -d "token=$TRELLO_TOKEN")
 
-          # Extract the CARD_ID from the response
+          # Log the response for debugging
+          echo "Trello API Response: $RESPONSE"
+
+          # Extract card ID and handle errors
           CARD_ID=$(echo "$RESPONSE" | jq -r '.id')
+          if [ "$CARD_ID" = "null" ] || [ -z "$CARD_ID" ]; then
+            echo "Failed to create Trello card. Response: $RESPONSE"
+            exit 1
+          fi
 
-          # Set the CARD_ID as an output variable
+          # Save the card ID for the next step
           echo "CARD_ID=$CARD_ID" >> $GITHUB_ENV
 
-      - name: Add Trello card link to GitHub issue
+      - name: Add Trello Card Link to GitHub Issue
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CARD_ID: ${{ env.CARD_ID }}
+          ISSUE_BODY: ${{ env.body }}
         run: |
-          echo "Trello Card ID: $CARD_ID"
-
-          # Construct the Trello card link and update the GitHub issue body
+          # Construct the Trello card link
           CARD_LINK="https://trello.com/c/${CARD_ID}"
 
           echo "Trello Card Link: $CARD_LINK"
 
+          # Update the issue body with the Trello card link
+          UPDATED_BODY="${ISSUE_BODY}\n\n[Trello Card](${CARD_LINK})"
+
           curl -X PATCH "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}" \
             -H "Authorization: token $GITHUB_TOKEN" \
-            -d "{\"body\": \"${{ github.event.issue.body }}\\n[Trello Card](${CARD_LINK})\"}"
+            -d "{\"body\": \"$UPDATED_BODY\"}"

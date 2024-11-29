@@ -55,7 +55,8 @@ jobs:
           if [ -z "$ISSUE_BODY" ] || [ "$ISSUE_BODY" = "null" ]; then
             CLEANED_BODY="No description provided."
           else
-            CLEANED_BODY=$(echo "$ISSUE_BODY" | sed '/<!--/,/-->/d' | sed 's/"/\\"/g; s/\`/\\`/g' | awk '{printf "%s\\n", $0}')
+            # Replace newlines with actual Markdown line breaks
+            CLEANED_BODY=$(echo "$ISSUE_BODY" | sed '/<!--/,/-->/d' | sed 's/"/\\"/g; s/\`/\\`/g' | sed ':a;N;$!ba;s/\n/  \n/g')
           fi
 
           echo "Cleaned Issue Body: $CLEANED_BODY"
@@ -90,9 +91,13 @@ jobs:
 
           echo "Trello Card Link: $CARD_LINK"
 
-          # Update the issue body with the Trello card link
-          UPDATED_BODY=$(echo -e "${ISSUE_BODY}\n\n[Trello Card](${CARD_LINK})")
+          # Ensure proper formatting of the updated body for the issue
+          UPDATED_BODY="${ISSUE_BODY}\n\n[Trello Card](${CARD_LINK})"
 
+          # Properly escape the body to avoid issues with special characters
+          UPDATED_BODY_ESCAPED=$(echo "$UPDATED_BODY" | jq -sRr @uri)
+
+          # Update the issue body with the Trello card link
           curl -X PATCH "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}" \
             -H "Authorization: token $GITHUB_TOKEN" \
-            -d "{\"body\": \"$UPDATED_BODY\"}"
+            -d "{\"body\": \"$UPDATED_BODY_ESCAPED\"}"

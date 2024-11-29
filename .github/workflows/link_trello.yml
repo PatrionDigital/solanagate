@@ -116,7 +116,8 @@ jobs:
           echo "Updated Issue Body: $UPDATED_BODY"
 
           # Escape the updated body for JSON
-          ESCAPED_UPDATED_BODY=$(echo "$UPDATED_BODY" | jq -R .)
+          ESCAPED_UPDATED_BODY=$(echo "$UPDATED_BODY" | jq -Rs .)
+          echo "Escaped Issue Body: $ESCAPED_UPDATED_BODY"
 
           # Update the issue body with the Trello card link
           curl -X PATCH "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}" \

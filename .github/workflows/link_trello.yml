@@ -101,7 +101,24 @@ jobs:
           # Debug: log the card link
           echo "Trello Card Link: $CARD_LINK"
 
+          # Escape special characters (like backticks) for GitHub API
+          ESCAPED_BODY=$(echo "$ISSUE_BODY" | sed 's/`/\\`/g')
+
+          # Prepare the updated issue body with Trello card link
+          UPDATED_BODY=$(cat <<EOF
+          $ESCAPED_BODY
+
+          [Trello Card]($CARD_LINK)
+          EOF
+          )
+
+          # Debug: Log the updated body to ensure correct formatting
+          echo "Updated Issue Body: $UPDATED_BODY"
+
+          # Escape the updated body for JSON
+          ESCAPED_UPDATED_BODY=$(echo "$UPDATED_BODY" | jq -R .)
+
           # Update the issue body with the Trello card link
           curl -X PATCH "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}" \
             -H "Authorization: token $GITHUB_TOKEN" \
-            -d "{\"body\": \"${{ github.event.issue.body }}\\n[Trello Card](${CARD_LINK})\"}"
+            -d "{\"body\": $ESCAPED_UPDATED_BODY}"

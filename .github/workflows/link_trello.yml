@@ -55,7 +55,7 @@ jobs:
           if [ -z "$ISSUE_BODY" ] || [ "$ISSUE_BODY" = "null" ]; then
             CLEANED_BODY="No description provided."
           else
-            CLEANED_BODY=$(echo "$ISSUE_BODY" | sed '/<!--/,/-->/d' | tr '\n' ' ' | tr -s ' ' | sed 's/"/\\"/g; s/\`/\\`/g')
+            CLEANED_BODY=$(echo "$ISSUE_BODY" | sed '/<!--/,/-->/d' | sed 's/"/\\"/g; s/\`/\\`/g' | awk '{printf "%s\\n", $0}')
           fi
 
           echo "Cleaned Issue Body: $CLEANED_BODY"

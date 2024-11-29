@@ -26,15 +26,16 @@ jobs:
           ISSUE_TITLE=$(echo "$ISSUE_DETAILS" | jq -r .title)
           ISSUE_BODY=$(echo "$ISSUE_DETAILS" | jq -r .body)
 
+          # Debug: log the fetched details
+          echo "Fetched Issue Title: $ISSUE_TITLE"
+          echo "Fetched Issue Body: $ISSUE_BODY"
+
           # Save ISSUE_TITLE safely to GITHUB_ENV
           echo "ISSUE_TITLE=$ISSUE_TITLE" >> $GITHUB_ENV
 
-          # Handle multi-line or special characters in ISSUE_BODY
-          if [ -z "$ISSUE_BODY" ] || [ "$ISSUE_BODY" = "null" ]; then
-            echo "ISSUE_BODY=No description provided." >> $GITHUB_ENV
-          else
-            echo "ISSUE_BODY=$ISSUE_BODY" >> $GITHUB_ENV
-          fi
+          # Clean ISSUE_BODY to remove newlines and special characters before setting it to GITHUB_ENV
+          CLEANED_BODY=$(echo "$ISSUE_BODY" | sed 's/\n/\\n/g' | sed 's/"/\\"/g' | sed "s/'/\\'/g")
+          echo "ISSUE_BODY=$CLEANED_BODY" >> $GITHUB_ENV
 
       - name: Create Trello Card
         env:

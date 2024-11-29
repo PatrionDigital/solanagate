@@ -67,8 +67,6 @@ jobs:
           Created from GitHub Issue: ${{ github.event.issue.html_url }}
 
           $CLEANED_BODY
-
-          [Link to GitHub Issue](https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }})
           EOF
           )
 

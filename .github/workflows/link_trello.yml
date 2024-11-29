@@ -55,10 +55,11 @@ jobs:
           if [ -z "$ISSUE_BODY" ] || [ "$ISSUE_BODY" = "null" ]; then
             CLEANED_BODY="No description provided."
           else
-            # Replace newlines with actual Markdown line breaks (  \n)
+            # Convert newlines into Markdown line breaks
             CLEANED_BODY=$(echo "$ISSUE_BODY" | sed '/<!--/,/-->/d' | sed 's/"/\\"/g; s/\`/\\`/g' | awk '{printf "%s  \n", $0}')
           fi
 
+          # Debug: log the cleaned body
           echo "Cleaned Issue Body: $CLEANED_BODY"
 
           # Create Trello card
@@ -89,9 +90,10 @@ jobs:
           # Construct the Trello card link
           CARD_LINK="https://trello.com/c/${CARD_ID}"
 
+          # Debug: log the card link
           echo "Trello Card Link: $CARD_LINK"
 
-          # Ensure proper formatting of the updated body for the issue (no encoding here)
+          # Make sure the Trello card link is appended correctly to the GitHub issue body
           UPDATED_BODY="${ISSUE_BODY}\n\n[Trello Card](${CARD_LINK})"
 
           # Update the issue body with the Trello card link

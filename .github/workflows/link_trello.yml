@@ -13,71 +13,64 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check jq availability
-        run: jq --version
-
-      - name: Check out repository
-        uses: actions/checkout@v3
-
       - name: Fetch Issue Details
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: fetch_issue
         run: |
-          # Fetch the issue details to ensure the latest version
-          ISSUE_DATA=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+          # Fetch issue details from GitHub API
+          ISSUE_DETAILS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}")
 
-          # Save details for subsequent steps
-          echo "title=$(echo \"$ISSUE_DATA\" | jq -r .title)" >> $GITHUB_ENV
-          echo "body=$(echo \"$ISSUE_DATA\" | jq -r .body)" >> $GITHUB_ENV
+          # Extract title and body
+          echo "ISSUE_TITLE=$(echo \"$ISSUE_DETAILS\" | jq -r .title)" >> $GITHUB_ENV
+          echo "ISSUE_BODY=$(echo \"$ISSUE_DETAILS\" | jq -r .body)" >> $GITHUB_ENV
 
       - name: Create Trello Card
         env:
           TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
           TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
           TRELLO_TODO_LIST_ID: ${{ vars.TRELLO_TODO_LIST_ID }}
-          ISSUE_TITLE: ${{ env.title }}
-          ISSUE_BODY: ${{ env.body }}
+          ISSUE_TITLE: ${{ env.ISSUE_TITLE }}
+          ISSUE_BODY: ${{ env.ISSUE_BODY }}
         id: create_trello_card
         run: |
-          # Handle empty body
-          if [ -z "$ISSUE_BODY" ]; then
+          # Ensure ISSUE_BODY has content
+          if [ -z "$ISSUE_BODY" ] || [ "$ISSUE_BODY" = "null" ]; then
             ISSUE_BODY="No description provided."
           fi
 
-          # Escape special characters and clean the body
+          # Clean the issue body by removing comments and escaping problematic characters
           CLEANED_BODY=$(echo "$ISSUE_BODY" | sed '/<!--/,/-->/d' | tr '\n' ' ' | tr -s ' ' | sed 's/"/\\"/g; s/\`/\\\`/g')
 
-          echo "Original Issue Body: $ISSUE_BODY"
-          echo "Cleaned Issue Body: $CLEANED_BODY"
+          echo "Creating Trello card with title: $ISSUE_TITLE"
+          echo "Description: $CLEANED_BODY"
 
           # Create Trello card
           RESPONSE=$(curl -s -X POST "https://api.trello.com/1/cards" \
-          -d "name=$ISSUE_TITLE" \
-          -d "desc=Created from GitHub Issue: ${{ github.event.issue.html_url }} $CLEANED_BODY" \
-          -d "idList=$TRELLO_TODO_LIST_ID" \
-          -d "key=$TRELLO_API_KEY" \
-          -d "token=$TRELLO_TOKEN")
+            -d "name=$ISSUE_TITLE" \
+            -d "desc=Created from GitHub Issue: ${{ github.event.issue.html_url }}\n\n$CLEANED_BODY" \
+            -d "idList=$TRELLO_TODO_LIST_ID" \
+            -d "key=$TRELLO_API_KEY" \
+            -d "token=$TRELLO_TOKEN")
 
-          # Log the response for debugging
+          # Log the response
           echo "Trello API Response: $RESPONSE"
 
-          # Extract card ID and handle errors
+          # Extract card ID
           CARD_ID=$(echo "$RESPONSE" | jq -r '.id')
-          if [ "$CARD_ID" = "null" ] || [ -z "$CARD_ID" ]; then
-            echo "Failed to create Trello card. Response: $RESPONSE"
+          if [ -z "$CARD_ID" ] || [ "$CARD_ID" = "null" ]; then
+            echo "Error: Trello card creation failed. Response: $RESPONSE"
             exit 1
           fi
 
-          # Save the card ID for the next step
           echo "CARD_ID=$CARD_ID" >> $GITHUB_ENV
 
       - name: Add Trello Card Link to GitHub Issue
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CARD_ID: ${{ env.CARD_ID }}
-          ISSUE_BODY: ${{ env.body }}
+          ISSUE_BODY: ${{ env.ISSUE_BODY }}
         run: |
           # Construct the Trello card link
           CARD_LINK="https://trello.com/c/${CARD_ID}"

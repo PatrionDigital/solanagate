@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,6 +9,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useWalletContext } from "./contexts/useWalletContext";
 import { useNavigate } from "react-router-dom";
+import { getUserProfile } from "./utils/localStorageUtils";
 import TokenAccountsFetcher from "./TokenAccountsFetcher";
 
 import "./App.css";
@@ -23,15 +25,47 @@ const LandingPage = () => (
 const TokenHolderPage = () => {
   const { disconnect } = useWallet();
   const navigate = useNavigate();
+  const [userProfile, setUserProfile] = useState(null);
+
+  // Fetch user profile from localStorage when the component mounts
+  useEffect(() => {
+    const profile = getUserProfile();
+    if (profile) {
+      setUserProfile(profile);
+    }
+  }, []);
 
   const handleDisconnect = () => {
     disconnect();
     navigate("/");
   };
+
+  const formatBalance = (balance) => {
+    if (balance) {
+      const formattedBalance = (balance / 10 ** 6).toFixed(6);
+      return parseFloat(formattedBalance).toString();
+    }
+    return "0";
+  };
+
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>Exclusive Content</h1>
       <p>Welcome, token holder! You can access the gated content.</p>
+      {userProfile ? (
+        <div>
+          <h3>Your Profile Info</h3>
+          <p>
+            <strong>Wallet Address:</strong> {userProfile.walletAddress}
+          </p>
+          <p>
+            <strong>Vermin Balance:</strong>
+            {formatBalance(userProfile.tokenBalance)}
+          </p>
+        </div>
+      ) : (
+        <p>Loading user profile...</p>
+      )}
       <button onClick={handleDisconnect}>Disconnect Wallet</button>
     </div>
   );

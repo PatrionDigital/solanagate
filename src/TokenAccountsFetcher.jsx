@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { useWalletContext } from "./contexts/useWalletContext";
+import { saveUserProfile, removeUserProfile } from "./utils/localStorageUtils";
 //import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 const TOKEN_MINT_ADDRESS = new PublicKey(
@@ -60,17 +61,28 @@ const TokenAccountsFetcher = () => {
           if (balance > 0) {
             console.log("Tokens Found");
             setIsTokenHolder(true);
+            // Save user profile to localStorage if they are a holder
+            saveUserProfile({
+              walletAddress: publicKey.toBase58(),
+              tokenBalance: balance,
+            });
           } else {
             console.log("Tokens not found.");
             setIsTokenHolder(false);
+            // Remove user profile from localStoage if they are not a holder
+            removeUserProfile();
           }
         } else {
           // If the account does not exist or is empty, set false
           console.log("Account does not exist, or is empty.");
           setIsTokenHolder(false);
+          // Remove user profile from localStorage if no account is found
+          removeUserProfile();
         }
       } catch (error) {
         console.error("Error feching token accounts:", error);
+        // If an error occurs, clear the user profile
+        removeUserProfile();
       } finally {
         isFetching.current = false; // Reset fetch flag.
       }

@@ -20,7 +20,11 @@ const TokenAccountsFetcher = () => {
   const isFetching = useRef(false);
 
   useEffect(() => {
-    console.log("TokenAccountsFetcher triggered");
+    console.log("TokenAccountsFetcher triggered", {
+      publicKey: publicKey?.toBase58(),
+      connection,
+      isFetching: isFetching.current,
+    });
     if (!publicKey || !connection || isFetching.current) {
       console.log("Skipping fetch. Conditions not met:", {
         publicKey,
@@ -33,7 +37,7 @@ const TokenAccountsFetcher = () => {
       isFetching.current = true;
       try {
         console.log(
-          "Querying RPC: getProgramAccounts for TOKEN_MINT_ADDRESS: ",
+          "Querying RPC: findProgramAddress for TOKEN_MINT_ADDRESS: ",
           TOKEN_MINT_ADDRESS.toBase58()
         );
         const [ata] = PublicKey.findProgramAddressSync(
@@ -52,13 +56,17 @@ const TokenAccountsFetcher = () => {
         // If ATA exists and has a balance, set isTokenHolder to true
         if (accountInfo && accountInfo.data) {
           const balance = accountInfo.data.readUIntLE(64, 8);
+          console.log("Balance:", balance);
           if (balance > 0) {
+            console.log("Tokens Found");
             setIsTokenHolder(true);
           } else {
+            console.log("Tokens not found.");
             setIsTokenHolder(false);
           }
         } else {
           // If the account does not exist or is empty, set false
+          console.log("Account does not exist, or is empty.");
           setIsTokenHolder(false);
         }
       } catch (error) {
@@ -69,6 +77,8 @@ const TokenAccountsFetcher = () => {
     };
 
     fetchTokenAccount();
+    // Testing routing
+    setIsTokenHolder(true);
   }, [publicKey, connection, setIsTokenHolder]);
 
   return null;

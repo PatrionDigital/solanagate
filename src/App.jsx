@@ -4,8 +4,10 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useWalletContext } from "./contexts/useWalletContext";
+import { useNavigate } from "react-router-dom";
 import TokenAccountsFetcher from "./TokenAccountsFetcher";
 
 import "./App.css";
@@ -18,19 +20,39 @@ const LandingPage = () => (
   </div>
 );
 
-const TokenHolderPage = () => (
-  <div style={{ textAlign: "center", marginTop: "50px" }}>
-    <h1>Exclusive Content</h1>
-    <p>Welcome, token holder! You can access the gated content.</p>
-  </div>
-);
+const TokenHolderPage = () => {
+  const { disconnect } = useWallet();
+  const navigate = useNavigate();
 
-const NonHolderPage = () => (
-  <div style={{ textAlign: "center", marginTop: "50px" }}>
-    <h1>Access Denied</h1>
-    <p>You do not hold the required tokens to access this content.</p>
-  </div>
-);
+  const handleDisconnect = () => {
+    disconnect();
+    navigate("/");
+  };
+  return (
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h1>Exclusive Content</h1>
+      <p>Welcome, token holder! You can access the gated content.</p>
+      <button onClick={handleDisconnect}>Disconnect Wallet</button>
+    </div>
+  );
+};
+
+const NonHolderPage = () => {
+  const { disconnect } = useWallet();
+  const navigate = useNavigate();
+
+  const handleDisconnect = () => {
+    disconnect();
+    navigate("/");
+  };
+  return (
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h1>Access Denied</h1>
+      <p>You do not hold the required tokens to access this content.</p>
+      <button onClick={handleDisconnect}>Disconnect Wallet</button>
+    </div>
+  );
+};
 
 function App() {
   const { connection, publicKey, connected, isTokenHolder } =

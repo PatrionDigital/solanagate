@@ -1,0 +1,6 @@
+/* MainLayout.css */
+.main-layout-content {
+  min-height: 80vh; /* Ensures content fills the space between header and footer */
+  padding-top: 60px; /* Adjust based on the height of your fixed header */
+  padding-bottom: 60px; /* Adjust based on the height of your fixed footer */
+}

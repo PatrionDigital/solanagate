@@ -1,15 +1,47 @@
 import { Link } from "react-router-dom";
 
+// Header.jsx
+import "./styles/Header.css"; // Import the CSS file
+
 const Header = () => {
   return (
-    <header style={styles.header}>
-      <div style={styles.container}>
-        <h1 style={styles.title}>My dApp</h1>
+    <header className="header">
+      <div className="header-container">
+        <div className="header-title">My App</div>
         <nav>
-          <ul style={styles.navList}>
-            <li>
-              <Link to="/" style={styles.navItem}>
+          <ul className="nav-list">
+            <li className="nav-item">
+              <Link
+                to="/"
+                className={
+                  location.pathname === "/" ? "nav-item active" : "nav-item"
+                }
+              >
                 Home
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                to="/about"
+                className={
+                  location.pathname === "/about"
+                    ? "nav-item active"
+                    : "nav-item"
+                }
+              >
+                About
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                to="/contact"
+                className={
+                  location.pathname === "/contact"
+                    ? "nav-item active"
+                    : "nav-item"
+                }
+              >
+                Contact
               </Link>
             </li>
           </ul>
@@ -17,37 +49,6 @@ const Header = () => {
       </div>
     </header>
   );
-};
-
-const styles = {
-  header: {
-    backgroundColor: "#282c34",
-    color: "white",
-    padding: "10px 0",
-    marginBottom: "20px",
-  },
-  container: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "0 20px",
-  },
-  title: {
-    fontSize: "24px",
-    fontWeight: "bold",
-  },
-  navList: {
-    listStyle: "none",
-    margin: 0,
-    padding: 0,
-    display: "flex",
-  },
-  navItem: {
-    color: "white",
-    marginLeft: "20px",
-    textDecoration: "none",
-    fontSize: "18px",
-  },
 };
 
 export default Header;

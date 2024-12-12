@@ -1,4 +1,8 @@
-import { useWalletContext } from "@/contexts/useWalletContext";
+// Contexts
+import { useWalletContext } from "@/contexts/WalletContext";
+import { UserProfileContextProvider } from "@/contexts/UserProfileContextProvider";
+
+// Layouts
 import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
 import LandingPage from "@/components/LandingPage";
@@ -19,11 +23,11 @@ const MainLayout = () => {
     }
   };
   return (
-    <>
+    <UserProfileContextProvider>
       <Header />
       <div style={{ minHeight: "80vh" }}>{renderContent()}</div>
       <Footer />
-    </>
+    </UserProfileContextProvider>
   );
 };
 

@@ -1,6 +1,6 @@
 // UserInfoDisplay.jsx
 import { useEffect, useState } from "react";
-import { getUserProfile } from "../utils/localStorageUtils";
+import { getUserProfile } from "@/utils/localStorageUtils";
 
 const UserInfoDisplay = () => {
   const [userProfile, setUserProfile] = useState(null);

@@ -8,9 +8,10 @@ import {
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
-import { WalletContext } from "./useWalletContext";
-
 import "@solana/wallet-adapter-react-ui/styles.css";
+
+// Contexts
+import { WalletContext } from "@/contexts/WalletContext";
 
 const SOLANA_RPC_URL = import.meta.env.VITE_SOLANA_RPC_URL;
 

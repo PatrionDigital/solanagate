@@ -1,6 +1,5 @@
 // Contexts
 import { useWalletContext } from "@/contexts/WalletContext";
-import { UserProfileContextProvider } from "@/contexts/UserProfileContextProvider";
 
 // Layouts
 import Header from "@/components/layouts/Header";
@@ -22,15 +21,15 @@ const MainLayout = () => {
     } else if (isTokenHolder) {
       return <TokenHolderPage />;
     } else {
-      <NonHolderPage />;
+      return <NonHolderPage />;
     }
   };
   return (
-    <UserProfileContextProvider>
+    <>
       <Header />
       <div className="main-layout-content">{renderContent()}</div>
       <Footer />
-    </UserProfileContextProvider>
+    </>
   );
 };
 

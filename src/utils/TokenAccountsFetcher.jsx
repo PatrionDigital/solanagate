@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { PublicKey } from "@solana/web3.js";
-import { useWalletContext } from "./contexts/useWalletContext";
-import { saveUserProfile, removeUserProfile } from "./utils/localStorageUtils";
+import { useWalletContext } from "@/contexts/WalletContext";
+import { saveUserProfile, removeUserProfile } from "@/utils/localStorageUtils";
 //import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 const TOKEN_MINT_ADDRESS = new PublicKey(

@@ -1,4 +1,4 @@
-import DisconnectButton from "./DisconnectButton";
+import DisconnectButton from "@/components/DisconnectButton";
 
 const NonHolderPage = () => {
   return (

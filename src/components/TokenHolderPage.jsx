@@ -1,5 +1,5 @@
 import UserInfoDisplay from "./UserInfoDisplay";
-import DisconnectButton from "./DisconnectButton";
+import DisconnectButton from "@/components/DisconnectButton";
 
 const TokenHolderPage = () => {
   return (

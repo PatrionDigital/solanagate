@@ -5,7 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 // Contexts
-import TokenAccountsFetcher from "./TokenAccountsFetcher";
+import TokenAccountsFetcher from "./utils/TokenAccountsFetcher";
 import MainLayout from "@/components/layouts/MainLayout";
 
 import "./App.css";

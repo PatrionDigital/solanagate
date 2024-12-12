@@ -1,0 +1,43 @@
+/* src/components/layouts/styles/Header.css */
+
+.header {
+  background-color: #282c34;
+  color: white;
+  padding: 10px 0;
+  margin-bottom: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.header-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.nav-item {
+  color: white;
+  margin-left: 20px;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.nav-item.active {
+  color: yellow;
+}

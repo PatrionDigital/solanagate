@@ -9,6 +9,9 @@ import LandingPage from "@/components/LandingPage";
 import TokenHolderPage from "@/components/TokenHolderPage";
 import NonHolderPage from "@/components/NonHolderPage";
 
+// Style
+import "@/components/layouts/styles/MainLayout.css";
+
 const MainLayout = () => {
   const { connected, isTokenHolder } = useWalletContext();
 
@@ -25,7 +28,7 @@ const MainLayout = () => {
   return (
     <UserProfileContextProvider>
       <Header />
-      <div style={{ minHeight: "80vh" }}>{renderContent()}</div>
+      <div className="main-layout-content">{renderContent()}</div>
       <Footer />
     </UserProfileContextProvider>
   );

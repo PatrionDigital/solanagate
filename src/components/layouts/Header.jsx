@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 // Header.jsx
-import "./styles/Header.css"; // Import the CSS file
+import "@/styles/Header.css"; // Import the CSS file
 
 const Header = () => {
   return (

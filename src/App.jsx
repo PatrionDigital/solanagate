@@ -4,16 +4,20 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-// Contexts
-import TokenAccountsFetcher from "./utils/TokenAccountsFetcher";
+//Hooks
+import useTokenAccountsFetcher from "@/hooks/useTokenAccountsFetcher";
+
+//Layouts
 import MainLayout from "@/components/layouts/MainLayout";
 
-import "./App.css";
+//Styles
+import "@/styles/App.css";
 
 function App() {
+  // Call Fetch Token Accounts Hook
+  useTokenAccountsFetcher();
   return (
     <Router>
-      <TokenAccountsFetcher />
       <main style={{ padding: "0 20px" }}>
         <Routes>
           <Route path="/*" element={<MainLayout />} />

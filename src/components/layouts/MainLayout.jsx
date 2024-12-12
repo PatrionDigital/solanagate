@@ -10,7 +10,7 @@ import TokenHolderPage from "@/components/TokenHolderPage";
 import NonHolderPage from "@/components/NonHolderPage";
 
 // Style
-import "@/components/layouts/styles/MainLayout.css";
+import "@/styles/MainLayout.css";
 
 const MainLayout = () => {
   const { connected, isTokenHolder } = useWalletContext();

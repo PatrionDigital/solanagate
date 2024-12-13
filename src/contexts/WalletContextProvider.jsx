@@ -18,8 +18,13 @@ const SOLANA_RPC_URL = import.meta.env.VITE_SOLANA_RPC_URL;
 export const WalletContextProvider = ({ children }) => {
   const [connection, setConnection] = useState(null);
   const { publicKey, connected } = useWallet();
-  const [isTokenHolder, setIsTokenHolder] = useState(false);
+  const [isTokenHolder, setIsTokenHolder] = useState(null);
   const [isConnecting, setIsConnecting] = useState(false);
+
+  // Status Checks
+  useEffect(() => {
+    console.log("Updated isTokenHolder:", isTokenHolder);
+  }, [isTokenHolder]);
 
   useEffect(() => {
     if (isConnecting) return;

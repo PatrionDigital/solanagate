@@ -19,12 +19,11 @@ const MainLayout = () => {
 
   // Determine what to render based on wallet state
   const renderContent = () => {
-    if (tokenLoading) {
-      return <LoadingSpinner message="Loading..." />;
-    }
-
     if (!connected) {
       return <LandingPage />;
+    }
+    if (tokenLoading) {
+      return <LoadingSpinner message="Loading..." />;
     }
 
     return isTokenHolder ? <TokenHolderPage /> : <NonHolderPage />;

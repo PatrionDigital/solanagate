@@ -1,3 +1,4 @@
+import { IoLogoTwitter } from "react-icons/io";
 import "@/styles/Footer.css";
 
 const Footer = () => {
@@ -6,12 +7,13 @@ const Footer = () => {
       <div className="footer-container">
         <p className="footer-text">© 2024 My dApp. All rights reserved.</p>
         <div>
-          <a href="https://twitter.com" className="footer-link">
-            Twitter
-          </a>
-          |
-          <a href="https://github.com" className="footer-link">
-            GitHub
+          <a
+            href="https://twitter.com"
+            className="footer-link"
+            target="_blank"
+            rel="noopener noref"
+          >
+            <IoLogoTwitter size={20} />
           </a>
         </div>
       </div>

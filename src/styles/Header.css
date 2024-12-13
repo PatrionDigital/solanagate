@@ -41,3 +41,49 @@
 .nav-item.active {
   color: yellow;
 }
+
+.hamburger-menu {
+  display: none; /* Hidden by default */
+  cursor: pointer;
+  font-size: 2rem;
+  margin-left: auto;
+}
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .hamburger-menu {
+    display: block; /* Show hamburger menu on small screens */
+  }
+
+  .nav-list {
+    display: flex;
+    flex-direction: column;
+    align-items: right;
+    background-color: #282c34; /* Same background color as the header */
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    padding: 20px 0;
+    margin: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: none; /* Hidden by default */
+  }
+
+  .nav-list.open {
+    display: flex; /* Show menu when open */
+  }
+
+  .nav-item {
+    margin: 10px 0;
+    font-size: 1.2rem;
+  }
+
+  .nav-item a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .nav-item.active a {
+    color: yellow;
+  }
+}

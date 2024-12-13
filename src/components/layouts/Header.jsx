@@ -1,15 +1,25 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 // Header.jsx
 import "@/styles/Header.css"; // Import the CSS file
 
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
   return (
     <header className="header">
       <div className="header-container">
         <div className="header-title">My App</div>
+
+        <div className="hamburger-menu" onClick={toggleMenu}>
+          &#9776;
+        </div>
         <nav>
-          <ul className="nav-list">
+          <ul className={`nav-list ${isMenuOpen ? "open" : ""}`}>
             <li className="nav-item">
               <Link
                 to="/"
@@ -30,18 +40,6 @@ const Header = () => {
                 }
               >
                 About
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link
-                to="/contact"
-                className={
-                  location.pathname === "/contact"
-                    ? "nav-item active"
-                    : "nav-item"
-                }
-              >
-                Contact
               </Link>
             </li>
           </ul>

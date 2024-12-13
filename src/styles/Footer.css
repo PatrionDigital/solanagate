@@ -20,7 +20,7 @@
 }
 
 .footer-text {
-  font-size: 14px;
+  font-size: 9px;
 }
 
 .footer-link {
@@ -30,5 +30,5 @@
 }
 
 .footer-link:hover {
-  text-decoration: underline;
+  color: #1da1f2;
 }

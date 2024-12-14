@@ -1,8 +1,8 @@
 /* src/components/layouts/styles/Header.css */
 
 .header {
-  background-color: #282c34;
-  color: white;
+  background-color: var(--menu-background-color);
+  color: var(--text-color);
   padding: 10px 0;
   margin-bottom: 20px;
   position: fixed;
@@ -19,8 +19,19 @@
   padding: 0 20px;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo {
+  height: 40px; /* Keep the logo size small to fit within the header */
+  width: 40px;
+  margin-right: 10px; /* Add some space between the logo and the title */
+}
+
 .header-title {
-  font-size: 24px;
+  font-size: var(--text-size-huge);
   font-weight: bold;
 }
 
@@ -32,20 +43,20 @@
 }
 
 .nav-item {
-  color: white;
+  color: var(--text-color);
   margin-left: 20px;
   text-decoration: none;
-  font-size: 18px;
+  font-size: var(--text-size-medium);
 }
 
 .nav-item.active {
-  color: yellow;
+  color: var(--link-active-color);
 }
 
 .hamburger-menu {
   display: none; /* Hidden by default */
   cursor: pointer;
-  font-size: 2rem;
+  font-size: var(--font-size-large);
   margin-left: auto;
 }
 /* Mobile Styles */
@@ -58,7 +69,9 @@
     display: flex;
     flex-direction: column;
     align-items: right;
-    background-color: #282c34; /* Same background color as the header */
+    background-color: var(
+      --menu-background-color
+    ); /* Same background color as the header */
     position: absolute;
     top: 50px;
     left: 0;
@@ -75,15 +88,15 @@
 
   .nav-item {
     margin: 10px 0;
-    font-size: 1.2rem;
+    font-size: var(--fond-size-medium);
   }
 
   .nav-item a {
-    color: white;
+    color: var(--text-color);
     text-decoration: none;
   }
 
   .nav-item.active a {
-    color: yellow;
+    color: var(--link-active-color));
   }
 }

@@ -1,7 +1,7 @@
 /* src/components/layouts/styles/Footer.css */
 
 .footer {
-  background-color: #282c34;
+  background-color: var(--menu-background-color);
   color: white;
   padding: 10px 0;
   text-align: center;
@@ -22,13 +22,13 @@
 .footer-left {
   flex: 1;
   text-align: left;
-  font-size: 12px;
+  font-size: var(--font-size-small);
 }
 
 .footer-center {
   flex: 1;
   text-align: center;
-  font-size: 12px;
+  font-size: var(--font-size-medium);
 }
 
 .footer-solanagate {
@@ -40,7 +40,7 @@
 }
 
 .footer-solanagate:hover {
-  color: #8e44ad;
+  color: var(--link-hover-color);
 }
 
 .footer-right {
@@ -49,11 +49,9 @@
 }
 
 .footer-right a {
-  color: white;
-  font-size: 1.2rem;
-  text-decoration: none;
+  color: var(--text-color);
   margin-left: 10px;
 }
 .footer-right a:hover {
-  color: #1da1f2;
+  color: var(--link-hover-color);
 }

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import logo from "@/assets/react.svg";
 
 // Header.jsx
 import "@/styles/Header.css"; // Import the CSS file
@@ -13,8 +14,12 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-container">
-        <div className="header-title">My App</div>
-
+        <div className="header-left">
+          <Link to="/">
+            <img src={logo} alt="App Logo" className="header-logo" />
+          </Link>
+          <div className="header-title">My App</div>
+        </div>
         <div className="hamburger-menu" onClick={toggleMenu}>
           &#9776;
         </div>

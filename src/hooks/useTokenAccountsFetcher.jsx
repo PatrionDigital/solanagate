@@ -20,6 +20,7 @@ const useTokenAccountsFetcher = () => {
 
   useEffect(() => {
     if (!publicKey || !connection || isFetching.current) {
+      setIsTokenHolder(null);
       return;
     }
 
@@ -36,6 +37,7 @@ const useTokenAccountsFetcher = () => {
         );
 
         const accountInfo = await connection.getAccountInfo(ata);
+        setIsTokenHolder(null);
         if (accountInfo && accountInfo.data) {
           const balance = accountInfo.data.readUIntLE(64, 8);
           if (balance > 0) {
@@ -49,11 +51,12 @@ const useTokenAccountsFetcher = () => {
             removeUserProfile();
           }
         } else {
-          setIsTokenHolder(false);
+          setIsTokenHolder(null);
           removeUserProfile();
         }
       } catch (error) {
         console.error("Error fetching token accounts:", error);
+        setIsTokenHolder(false);
         removeUserProfile();
       } finally {
         isFetching.current = false;

@@ -19,27 +19,13 @@ export const WalletContextProvider = ({ children }) => {
   const [connection, setConnection] = useState(null);
   const { publicKey, connected } = useWallet();
   const [isTokenHolder, setIsTokenHolder] = useState(null);
-  const [isConnecting, setIsConnecting] = useState(false);
-
-  // Status Checks
-  useEffect(() => {
-    console.log("Updated isTokenHolder:", isTokenHolder);
-  }, [isTokenHolder]);
 
   useEffect(() => {
-    if (isConnecting) return;
-    console.log("Solana RPC:", SOLANA_RPC_URL);
-    setIsConnecting(true);
-    console.log("Initializing connection...");
     setConnection(new Connection(SOLANA_RPC_URL));
-  }, [isConnecting]);
-
-  useEffect(() => {
-    const walletStatus = connected ? "connected" : "not connected";
-    console.log(
-      `Wallet ${walletStatus}:`,
-      publicKey ? publicKey.toBase58() : ""
-    );
+    if (!connected) {
+      setIsTokenHolder(null);
+      return;
+    }
   }, [connected, publicKey]);
 
   return (

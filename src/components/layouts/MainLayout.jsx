@@ -1,5 +1,6 @@
 // Context Hooks
 import { useWalletContext } from "@/contexts/WalletContext";
+import useTokenAccountsFetcher from "@/hooks/useTokenAccountsFetcher";
 
 // Layouts
 import Header from "@/components/layouts/Header";
@@ -16,6 +17,8 @@ const MainLayout = () => {
   const { connected, isTokenHolder } = useWalletContext();
 
   const tokenLoading = isTokenHolder === null;
+
+  useTokenAccountsFetcher();
 
   // Determine what to render based on wallet state
   const renderContent = () => {

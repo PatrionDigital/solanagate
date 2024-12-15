@@ -5,7 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 //Hooks
-import useTokenAccountsFetcher from "@/hooks/useTokenAccountsFetcher";
+//import useTokenAccountsFetcher from "@/hooks/useTokenAccountsFetcher";
 
 //Layouts
 import MainLayout from "@/components/layouts/MainLayout";
@@ -15,8 +15,6 @@ import AboutLayout from "@/components/layouts/AboutLayout";
 import "@/styles/App.css";
 
 function App() {
-  // Call Fetch Token Accounts Hook
-  useTokenAccountsFetcher();
   return (
     <Router>
       <main style={{ padding: "0 20px" }}>

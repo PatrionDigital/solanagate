@@ -1,7 +1,7 @@
 /* src/components/layouts/styles/Header.css */
 
 .header {
-  background-color: var(--menu-background-color);
+  background-color: var(--header-background-color);
   color: var(--text-color);
   padding: 10px 0;
   margin-bottom: 20px;
@@ -13,10 +13,11 @@
 }
 
 .header-container {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 0 20px;
+  position: relative;
 }
 
 .header-left {
@@ -24,10 +25,16 @@
   align-items: center;
 }
 
+.header-right{
+  display: flex;
+  align-items:center;
+  justify-content:flex-end;
+}
+
 .header-logo {
-  height: 40px; /* Keep the logo size small to fit within the header */
+  height: 40px;
   width: 40px;
-  margin-right: 10px; /* Add some space between the logo and the title */
+  margin-right: 10px;
 }
 
 .header-title {
@@ -37,20 +44,31 @@
 
 .nav-list {
   list-style: none;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   display: flex;
+  justify-content: center;
 }
 
 .nav-item {
   color: var(--text-color);
-  margin-left: 20px;
+  margin: 0 10px;
   text-decoration: none;
   font-size: var(--text-size-medium);
 }
 
 .nav-item.active {
   color: var(--link-active-color);
+}
+
+.nav-link-content{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-link-content span{
+  margin-left: 5px;
 }
 
 .hamburger-menu {
@@ -99,4 +117,54 @@
   .nav-item.active a {
     color: var(--link-active-color));
   }
+}
+/* User Menu Container */
+.user-menu {
+  position: relative; /* Relative positioning for dropdown */
+  display: flex;
+  justify-content: flex-end;
+  margin-left: 20px; /* Space from other items */
+  cursor: pointer;
+}
+
+.user-icon {
+  color: var(--text-color);
+}
+
+.user-icon:hover {
+  color: var(--link-hover-color);
+}
+
+.account-dropdown {
+  position: absolute;
+  top: 35px; /* Position below the icon */
+  right: 0;
+  background-color: var(--menu-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1500;
+  min-width: 200px;
+  padding: 10px;
+  color: var(--text-color);
+}
+
+.account-dropdown button {
+  background-color: var(--button-background-color);
+  color: var(--text-color);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: var(--font-size-medium);
+}
+
+.account-dropdown button:hover {
+  background-color: var(--button-hover-color);
+}
+
+.compressed-user-info {
+  font-size: var(--font-size-small);
+  line-height: 1.4;
+  text-align: left;
 }

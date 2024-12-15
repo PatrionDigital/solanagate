@@ -1,4 +1,5 @@
 import { useUserProfile } from "@/contexts/UserProfileContext";
+import DisconnectButton from "@/components/DisconnectButton";
 
 const UserInfoDisplay = () => {
   const { userProfile } = useUserProfile(); // Get the profile from context
@@ -47,6 +48,8 @@ const UserInfoDisplay = () => {
             </span>
           </p>
           <p>Token Balance: {formatBalance(userProfile.tokenBalance)}</p>
+          <hr />
+          <DisconnectButton />
         </>
       ) : (
         <p>Loading user profile...</p>

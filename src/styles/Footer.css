@@ -1,7 +1,7 @@
 /* src/components/layouts/styles/Footer.css */
 
 .footer {
-  background-color: var(--menu-background-color);
+  background-color: var(--footer-background-color);
   color: white;
   padding: 10px 0;
   text-align: center;

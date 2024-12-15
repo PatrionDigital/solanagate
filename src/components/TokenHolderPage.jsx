@@ -1,5 +1,4 @@
 import UserInfoDisplay from "./UserInfoDisplay";
-import DisconnectButton from "@/components/DisconnectButton";
 
 const TokenHolderPage = () => {
   return (
@@ -7,7 +6,6 @@ const TokenHolderPage = () => {
       <h1>Exclusive Content</h1>
       <p>Welcome, token holder! You can access the gated content.</p>
       <UserInfoDisplay />
-      <DisconnectButton />
     </div>
   );
 };

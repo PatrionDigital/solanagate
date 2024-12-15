@@ -1,15 +1,31 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { FaInfoCircle } from "react-icons/fa";
+import { IoPersonCircleOutline, IoHome } from "react-icons/io5";
 import logo from "@/assets/react.svg";
+import UserInfoDisplay from "@/components/UserInfoDisplay";
+import { useWalletContext } from "@/contexts/WalletContext";
 
 // Header.jsx
 import "@/styles/Header.css"; // Import the CSS file
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { connected, isTokenHolder, setIsTokenHolder } = useWalletContext();
+  const [navMenuOpen, setNavMenuOpen] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
 
+  useEffect(() => {
+    if (!connected) {
+      setIsTokenHolder(false);
+    }
+  });
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setNavMenuOpen(!navMenuOpen);
+  };
+
+  const toggleAccountMenu = () => {
+    setAccountMenuOpen((prev) => !prev);
   };
   return (
     <header className="header">
@@ -20,11 +36,8 @@ const Header = () => {
           </Link>
           <div className="header-title">My App</div>
         </div>
-        <div className="hamburger-menu" onClick={toggleMenu}>
-          &#9776;
-        </div>
         <nav>
-          <ul className={`nav-list ${isMenuOpen ? "open" : ""}`}>
+          <ul className={`nav-list ${navMenuOpen ? "open" : ""}`}>
             <li className="nav-item">
               <Link
                 to="/"
@@ -32,7 +45,10 @@ const Header = () => {
                   location.pathname === "/" ? "nav-item active" : "nav-item"
                 }
               >
-                Home
+                <div className="nav-link-content">
+                  <IoHome size={20} style={{ marginRight: "5px" }} />
+                  <span>Home</span>
+                </div>
               </Link>
             </li>
             <li className="nav-item">
@@ -44,11 +60,38 @@ const Header = () => {
                     : "nav-item"
                 }
               >
-                About
+                <div className="nav-link-content">
+                  <FaInfoCircle size={20} style={{ marginRight: "5px" }} />
+                  <span>About</span>
+                </div>
               </Link>
             </li>
           </ul>
         </nav>
+        <div className="header-right">
+          <div className="hamburger-menu" onClick={toggleMenu}>
+            &#9776;
+          </div>
+          <div className="user-menu">
+            <IoPersonCircleOutline
+              size={32}
+              className="user-icon"
+              onClick={toggleAccountMenu}
+            />
+            {accountMenuOpen && (
+              <div className="account-dropdown">
+                {isTokenHolder ? (
+                  <UserInfoDisplay className="compressed-user-info" />
+                ) : (
+                  <>
+                    <p>Connect wallet to login</p>
+                    <WalletMultiButton />
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </header>
   );

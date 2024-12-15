@@ -1,7 +1,11 @@
 import { useEffect, useRef } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { useWalletContext } from "@/contexts/WalletContext";
-import { saveUserProfile, removeUserProfile } from "@/utils/localStorageUtils";
+import {
+  saveUserProfile,
+  removeUserProfile,
+  getUserProfile,
+} from "@/utils/localStorageUtils";
 
 const TOKEN_MINT_ADDRESS = new PublicKey(
   import.meta.env.VITE_TOKEN_MINT_ADDRESS
@@ -19,6 +23,12 @@ const useTokenAccountsFetcher = () => {
   const isFetching = useRef(false);
 
   useEffect(() => {
+    const userProfile = getUserProfile();
+    if (userProfile) {
+      setIsTokenHolder(userProfile.tokenBalance > 0);
+      return;
+    }
+
     if (!publicKey || !connection || isFetching.current) {
       setIsTokenHolder(null);
       return;

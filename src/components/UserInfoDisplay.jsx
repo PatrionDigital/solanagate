@@ -48,6 +48,7 @@ const UserInfoDisplay = () => {
             </span>
           </p>
           <p>Token Balance: {formatBalance(userProfile.tokenBalance)}</p>
+          <p>Hodl Time: {userProfile.hodlTime}</p>
           <hr />
           <DisconnectButton />
         </>

@@ -13,33 +13,33 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 // Contexts
 import { WalletContext } from "@/contexts/WalletContext";
 
-import LoadingSpinner from "@/components/LoadingSpinner";
-
 const SOLANA_RPC_URL = import.meta.env.VITE_SOLANA_RPC_URL;
 
 export const WalletContextProvider = ({ children }) => {
   const [connection, setConnection] = useState(null);
   const { publicKey, connected } = useWallet();
   const [isTokenHolder, setIsTokenHolder] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isConnecting, setIsConnecting] = useState(false);
 
-  // Initialize connection and handle wallet connection changes
+  // Status Checks
   useEffect(() => {
+    console.log("Updated isTokenHolder:", isTokenHolder);
+  }, [isTokenHolder]);
+
+  useEffect(() => {
+    if (isConnecting) return;
+    console.log("Solana RPC:", SOLANA_RPC_URL);
+    setIsConnecting(true);
+    console.log("Initializing connection...");
     setConnection(new Connection(SOLANA_RPC_URL));
+  }, [isConnecting]);
 
-    if (!connected) {
-      setIsTokenHolder(null);
-      return;
-    }
-
-    const checkTokenHolder = async () => {
-      // Replace this with actual logic for token holder check
-      const isHolder = true; // Example check
-      setIsTokenHolder(isHolder);
-      setLoading(false);
-    };
-
-    checkTokenHolder();
+  useEffect(() => {
+    const walletStatus = connected ? "connected" : "not connected";
+    console.log(
+      `Wallet ${walletStatus}:`,
+      publicKey ? publicKey.toBase58() : ""
+    );
   }, [connected, publicKey]);
 
   return (
@@ -52,8 +52,7 @@ export const WalletContextProvider = ({ children }) => {
         setIsTokenHolder,
       }}
     >
-      {loading ? <LoadingSpinner message="Loading..." /> : children}{" "}
-      {/* Show spinner while loading */}
+      {children}
     </WalletContext.Provider>
   );
 };

@@ -1,0 +1,3 @@
+[submodule "ve-nft"]
+	path = ve-nft
+	url = https://github.com/patriondigital/ve-nft.git

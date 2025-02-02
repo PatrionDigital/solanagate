@@ -3,6 +3,7 @@ import DisconnectButton from "@/components/DisconnectButton";
 
 const UserInfoDisplay = () => {
   const { userProfile } = useUserProfile(); // Get the profile from context
+  console.log("User profile in UserInfoDisplay:", userProfile);
 
   const formatBalance = (balance) => {
     const numericBalance = parseFloat(balance); // Ensure balance is a number
@@ -32,29 +33,27 @@ const UserInfoDisplay = () => {
     }
   };
 
+  if (!userProfile) {
+    return <p>Loading user profile...</p>;
+  }
+
   return (
     <div style={{ textAlign: "center", marginTop: "20px" }}>
-      {userProfile ? (
-        <>
-          <h3>User Profile</h3>
-          <p>
-            Wallet Address:{" "}
-            <span
-              style={{ textDecoraction: "underline", cursor: "pointer" }}
-              title={userProfile.walletAddress} // Hover text showing full address
-              onClick={() => copyToClipboard(userProfile.walletAddress)} // Click to copy address to clipboard
-            >
-              {truncateAddress(userProfile.walletAddress)}
-            </span>
-          </p>
-          <p>Token Balance: {formatBalance(userProfile.tokenBalance)}</p>
-          <p>Hodl Time: {userProfile.hodlTime}</p>
-          <hr />
-          <DisconnectButton />
-        </>
-      ) : (
-        <p>Loading user profile...</p>
-      )}
+      <h3>User Profile</h3>
+      <p>
+        Wallet Address:{" "}
+        <span
+          style={{ textDecoration: "underline", cursor: "pointer" }}
+          title={userProfile.walletAddress} // Hover text showing full address
+          onClick={() => copyToClipboard(userProfile.walletAddress)} // Click to copy address to clipboard
+        >
+          {truncateAddress(userProfile.walletAddress)}
+        </span>
+      </p>
+      <p>Token Balance: {formatBalance(userProfile.tokenBalance)}</p>
+      <p>Hodl Time: {userProfile.hodlTime}</p>
+      <hr />
+      <DisconnectButton />
     </div>
   );
 };

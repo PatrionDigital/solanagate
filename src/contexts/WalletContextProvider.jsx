@@ -20,6 +20,8 @@ export const WalletContextProvider = ({ children }) => {
   const { publicKey, connected } = useWallet();
   const [isTokenHolder, setIsTokenHolder] = useState(null);
 
+  
+
   useEffect(() => {
     setConnection(new Connection(SOLANA_RPC_URL));
     if (!connected) {

@@ -48,9 +48,12 @@ const useTokenAccountsFetcher = () => {
 
         const accountInfo = await connection.getAccountInfo(ata);
         setIsTokenHolder(null);
+        console.log("Account Info:", accountInfo);
         if (accountInfo && accountInfo.data) {
+          console.log("Checking for Tokens");
           const balance = accountInfo.data.readUIntLE(64, 8);
           if (balance > 0) {
+            console.log("Target Tokens Found");
             setIsTokenHolder(true);
             saveUserProfile({
               walletAddress: publicKey.toBase58(),
@@ -61,7 +64,7 @@ const useTokenAccountsFetcher = () => {
             removeUserProfile();
           }
         } else {
-          setIsTokenHolder(null);
+          setIsTokenHolder(false);
           removeUserProfile();
         }
       } catch (error) {

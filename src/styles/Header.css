@@ -33,7 +33,7 @@
 
 .header-logo {
   height: 40px;
-  width: 40px;
+  //width: 40px;
   margin-right: 10px;
 }
 
@@ -51,7 +51,7 @@
 }
 
 .nav-item {
-  color: var(--text-color);
+  color: var(--link-color);
   margin: 0 10px;
   text-decoration: none;
   font-size: var(--text-size-medium);

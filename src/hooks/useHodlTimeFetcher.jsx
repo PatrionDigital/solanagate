@@ -95,10 +95,12 @@ const useHodlTimeFetcher = () => {
 
               const formattedDuration = formatTime(duration);
               setHodlTime(formattedDuration);
-              saveUserProfile((prev) => ({
-                ...prev,
+              const currentProfile = getUserProfile();
+              const updatedProfile = {
+                ...currentProfile,
                 hodlTime: formattedDuration,
-              }));
+              };
+              saveUserProfile(updatedProfile);
             } else {
               console.log("No matching token transfer found");
               setHodlTime(null);

@@ -1,5 +1,6 @@
 // Save user profile to localStorage
 export const saveUserProfile = (userProfile) => {
+  console.log("Saving profile:", userProfile);
   try {
     localStorage.setItem("userProfile", JSON.stringify(userProfile));
     console.log("User profile saved");
@@ -12,13 +13,13 @@ export const saveUserProfile = (userProfile) => {
 export const getUserProfile = () => {
   try {
     const userProfile = localStorage.getItem("userProfile");
-    if (userProfile) {
-      return JSON.parse(userProfile);
+    if (!userProfile || userProfile === "undefined") {
+      return null; // Return null if the profile is missing or invalid
     }
-    return null;
+    return JSON.parse(userProfile); // Parse and return the profile
   } catch (error) {
     console.error("Error reading user profile:", error);
-    return null;
+    return null; // Return null if parsing fails
   }
 };
 

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { FaInfoCircle } from "react-icons/fa";
 import { IoPersonCircleOutline, IoHome } from "react-icons/io5";
-import logo from "@/assets/react.svg";
+import logo from "@/assets/logo.avif";
 import UserInfoDisplay from "@/components/UserInfoDisplay";
 import { useWalletContext } from "@/contexts/WalletContext";
 
@@ -34,7 +34,7 @@ const Header = () => {
           <Link to="/">
             <img src={logo} alt="App Logo" className="header-logo" />
           </Link>
-          <div className="header-title">My App</div>
+          <div className="header-title"></div>
         </div>
         <nav>
           <ul className={`nav-list ${navMenuOpen ? "open" : ""}`}>

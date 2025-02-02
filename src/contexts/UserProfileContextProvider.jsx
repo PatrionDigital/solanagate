@@ -13,14 +13,24 @@ export const UserProfileContextProvider = ({ children }) => {
 
   useEffect(() => {
     const profile = getUserProfile();
+    console.log("Profile loaded from storage:", profile);
     if (profile) {
       setUserProfile(profile);
     }
   }, []);
 
   const updateUserProfile = (profile) => {
-    saveUserProfile(profile);
-    setUserProfile(profile);
+    console.log("Updating User Profile:", profile);
+    if (!profile) {
+      console.error("Cannot save undefined or null profile.");
+      return;
+    }
+
+    const updatedProfile =
+      typeof profile === "function" ? profile(userProfile) : profile;
+    console.log("Updated profile:", updatedProfile);
+    saveUserProfile(updatedProfile);
+    setUserProfile(updatedProfile);
   };
 
   const clearUserProfile = () => {

@@ -1,13 +1,17 @@
 import { IoLogoTwitter } from "react-icons/io";
 import { AiFillGithub } from "react-icons/ai";
+import { SiSolana } from "react-icons/si";
 import "@/styles/Footer.css";
 
+const currentYear = new Date().getFullYear();
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-left">
-          <p>© 2024 My dApp. All rights reserved.</p>
+          <p>
+            © <span>{currentYear}</span> Vermin on Sol. All rights reserved.
+          </p>
         </div>
         <div className="footer-center">
           <a
@@ -22,7 +26,17 @@ const Footer = () => {
         </div>
         <div className="footer-right">
           <a
-            href="https://twitter.com"
+            href={`https://dexscreener.com/solana/${
+              import.meta.env.VITE_TOKEN_MINT_ADDRESS
+            }`}
+            className="footer-link"
+            target="_blank"
+            rel="noopener noref"
+          >
+            <SiSolana size={20} className="footer-icon" />
+          </a>
+          <a
+            href="https://x.com/verminsol"
             className="footer-link"
             target="_blank"
             rel="noopener noref"

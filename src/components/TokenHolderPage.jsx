@@ -3,8 +3,8 @@ import UserInfoDisplay from "./UserInfoDisplay";
 const TokenHolderPage = () => {
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Exclusive Content</h1>
-      <p>Welcome, token holder! You can access the gated content.</p>
+      <h1>Vermin Members Club</h1>
+      <p>Welcome, Vermin!</p>
       <UserInfoDisplay />
     </div>
   );

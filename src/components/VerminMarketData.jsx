@@ -147,6 +147,7 @@ const VerminMarketData = () => {
           padding: "20px",
           border: "1px solid #ccc",
           borderRadius: "8px",
+          marginBottom: "20px",
         }}
       >
         <h3>Liquidity Pool</h3>

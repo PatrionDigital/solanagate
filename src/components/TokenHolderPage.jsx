@@ -1,11 +1,12 @@
-import UserInfoDisplay from "./UserInfoDisplay";
+import VerminMarketData from "./VerminMarketData";
 
 const TokenHolderPage = () => {
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Vermin Members Club</h1>
-      <p>Welcome, Vermin!</p>
-      <UserInfoDisplay />
+    <div>
+      <VerminMarketData />
+      {/* Remove this component */}
+      {/* <VerminCandlestickChart /> */}
+      {/* Add other content here */}
     </div>
   );
 };

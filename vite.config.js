@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    include: [`@solana/spl-token`],
+    include: [`@solana/spl-token`, "recharts"],
   },
   resolve: {
     alias: {

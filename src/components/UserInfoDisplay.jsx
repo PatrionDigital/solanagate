@@ -47,11 +47,11 @@ const UserInfoDisplay = () => {
           title={userProfile.walletAddress} // Hover text showing full address
           onClick={() => copyToClipboard(userProfile.walletAddress)} // Click to copy address to clipboard
         >
-          {truncateAddress(userProfile.walletAddress)}
+          {truncateAddress(userProfile.walletAddress || "N/A")}
         </span>
       </p>
-      <p>Token Balance: {formatBalance(userProfile.tokenBalance)}</p>
-      <p>Hodl Time: {userProfile.hodlTime}</p>
+      <p>Token Balance: {formatBalance(userProfile.tokenBalance || 0)}</p>
+      <p>Hodl Time: {userProfile.hodlTime || "N/A"}</p>
       <hr />
       <DisconnectButton />
     </div>

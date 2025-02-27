@@ -34,7 +34,7 @@ const Header = () => {
           <Link to="/">
             <img src={logo} alt="App Logo" className="header-logo" />
           </Link>
-          <div className="header-title"></div>
+          <div className="header-title">Vermin Holders (beta)</div>
         </div>
         <nav>
           <ul className={`nav-list ${navMenuOpen ? "open" : ""}`}>

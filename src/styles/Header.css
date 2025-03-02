@@ -2,6 +2,8 @@
 
 .header {
   background-color: var(--header-background-color);
+  backdrop-filter: blud(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--text-color);
   padding: 10px 0;
   margin-bottom: 20px;
@@ -35,12 +37,13 @@
   height: 40px;
   //width: 40px;
   margin-right: 10px;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
 }
 
 .header-title {
   font-size: var(--text-size-huge);
   font-weight: bold;
-}
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
 .nav-list {
   list-style: none;
@@ -55,6 +58,7 @@
   margin: 0 10px;
   text-decoration: none;
   font-size: var(--text-size-medium);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
 .nav-item.active {
@@ -140,6 +144,8 @@
   top: 35px; /* Position below the icon */
   right: 0;
   background-color: var(--menu-background-color);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border-color);
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);

@@ -2,6 +2,7 @@ import { useState } from "react";
 import VerminMarketData from "./VerminMarketData";
 import VerminPriceChart from "./VerminPriceChart";
 import Collectibles from "./Collectibles";
+import "@/styles/TokenHolderPage.css";
 
 const TokenHolderPage = () => {
   const [activeSection, setActiveSection] = useState("Market Data");

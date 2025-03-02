@@ -19,7 +19,7 @@
   border: none;
   border-radius: 8px;
   background-color: rgba(240, 240, 240, 0.1);
-  color: #FFD700;
+  color: #ffd700;
   cursor: pointer;
   font-weight: normal;
   transition: all 0.2s ease;
@@ -27,7 +27,7 @@
 
 .token-holder-nav button.active {
   background-color: rgba(255, 215, 0, 0.2);
-  color: #FFD700;
+  color: #ffd700;
   font-weight: bold;
   box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
 }
@@ -49,7 +49,7 @@
 }
 
 .token-content-section h3 {
-  color: #FFD700;
+  color: #ffd700;
   margin-top: 0;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
 }
@@ -62,7 +62,7 @@
 }
 
 .data-grid strong {
-  color: #FFD700;
+  color: #ffd700;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
@@ -89,21 +89,21 @@
 
 .market-data-section {
   padding: 15px;
-  background-color: rgba(230, 230, 230, 0.6);
+  background-color: rgba(230, 230, 230, 0.3);
   border-radius: 6px;
   margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
 }
 
 .market-data-heading {
   margin-top: 0;
-  color: #FFD700;
+  color: #ffd700;
   text-align: center;
 }
 
 .section-heading {
   margin: 0 0 10px 0;
-  color: #FFD700;
+  color: #ffd700;
 }
 
 .links-container {

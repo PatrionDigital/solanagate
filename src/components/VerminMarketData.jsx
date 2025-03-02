@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useUserProfile } from "@/contexts/UserProfileContext";
+import "@/styles/TokenHolderPage.css";
+import LoadingSpinner from "./LoadingSpinner";
 
 const fetchVerminData = async () => {
   try {
@@ -42,8 +44,61 @@ const VerminMarketData = () => {
     fetchData();
   }, []);
 
-  if (isLoading) return <div>Loading market data...</div>;
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  if (isLoading) return <LoadingSpinner />;
+  if (error)
+    return (
+      <div className="market-data-container">
+        <p>Error loading market data: {error}</p>
+      </div>
+    );
+
+  if (!marketData)
+    return (
+      <div className="market-data-container">
+        <p>No market data available</p>
+      </div>
+    );
+  /*
+  const {
+    market_data: {
+      current_price,
+      price_change_percentage_24h,
+      price_change_percentage_7d,
+      price_change_percentage_30d,
+      market_cap,
+      total_volume,
+      circulating_supply,
+      total_supply,
+    },
+  } = marketData;*/
+  const formatCurrency = (value) => {
+    if (value >= 1000000) {
+      return `$${(value / 1000000).toFixed(2)}M`;
+    }
+    if (value >= 1000) {
+      return `$${(value / 1000).toFixed(2)}K`;
+    }
+    return `$${value.toFixed(2)}`;
+  };
+
+  const formatPercentage = (value) => {
+    return value ? `${value.toFixed(2)}%` : "N/A";
+  };
+
+  const formatSupply = (value) => {
+    if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(2)}M`;
+    }
+    if (value >= 1000) {
+      return `${(value / 1000).toFixed(2)}K`;
+    }
+    return value.toFixed(2);
+  };
+
+  const getColorForPercentage = (percentage) => {
+    if (!percentage) return "inherit";
+    return percentage >= 0 ? "#4caf50" : "#f44336";
+  };
 
   // Calculate the user's holdings in USD
   const tokenBalanceAdjusted = tokenBalance / 1e6; // Remove the last 6 decimals
@@ -53,22 +108,9 @@ const VerminMarketData = () => {
   return (
     <div style={{ padding: "20px" }}>
       {/* User Holdings Section */}
-      <div
-        style={{
-          padding: "20px",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          marginBottom: "20px",
-        }}
-      >
+      <div className="market-data-section">
         <h3>Your Holdings</h3>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: "10px",
-          }}
-        >
+        <div className="data-grid">
           <div>
             <strong>Token Balance:</strong>{" "}
             {formatNumber(tokenBalanceAdjusted, 2)}
@@ -86,22 +128,9 @@ const VerminMarketData = () => {
       </div>
 
       {/* Value Section */}
-      <div
-        style={{
-          padding: "20px",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          marginBottom: "20px",
-        }}
-      >
+      <div className="market-data-section">
         <h3>Value</h3>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: "10px",
-          }}
-        >
+        <div className="data-grid">
           <div>
             <strong>Price (USD):</strong> $
             {formatNumber(parseFloat(marketData?.priceUsd))}
@@ -114,22 +143,9 @@ const VerminMarketData = () => {
       </div>
 
       {/* Activity Section */}
-      <div
-        style={{
-          padding: "20px",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          marginBottom: "20px",
-        }}
-      >
+      <div className="market-data-section">
         <h3>Activity</h3>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: "10px",
-          }}
-        >
+        <div className="data-grid">
           <div>
             <strong>24h Volume (USD):</strong> $
             {formatNumber(parseFloat(marketData?.volume?.h24), 2)}
@@ -142,22 +158,9 @@ const VerminMarketData = () => {
       </div>
 
       {/* Liquidity Pool Section */}
-      <div
-        style={{
-          padding: "20px",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          marginBottom: "20px",
-        }}
-      >
+      <div className="market-data-section">
         <h3>Liquidity Pool</h3>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: "10px",
-          }}
-        >
+        <div className="data-grid">
           <div>
             <strong>Liquidity (USD):</strong> $
             {formatNumber(parseFloat(marketData?.liquidity?.usd), 2)}

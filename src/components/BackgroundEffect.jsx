@@ -68,7 +68,7 @@ const BackgroundEffect = () => {
       try {
         // In React, we need to import or require the image
         // For now, we'll use a placeholder URL and you'll need to add the actual image to your assets
-        const textureUrl = "/src/assets/smoke-texture.png"; // Update this path to your actual smoke texture
+        const textureUrl = "/smoke-texture.png"; // Update this path to your actual smoke texture
         const texture = await new Promise((resolve) => {
           new THREE.TextureLoader().load(textureUrl, resolve);
         });

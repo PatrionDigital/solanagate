@@ -5,10 +5,10 @@
   --link-color: #fff826; /* Link color */
   --link-active-color: #ffffff; /* Link active color */
   --link-hover-color: #f59794; /* Link hover color */
-  --background-color: rgb(132, 127, 127); /* Background color */
-  --menu-background-color: rgb(119, 121, 125);
-  --header-background-color: #282c34;
-  --footer-background-color: #282c34;
+  --background-color: transparent; /* Background color */
+  --menu-background-color: rgb(119, 121, 125, 0.8);
+  --header-background-color: rgba(40, 44, 52, 0.8);
+  --footer-background-color: rgba(40, 44, 52, 0.8);
   --text-color: fff826; /* Default text color */
   --font-size-tiny: 9px; /* Tiny text size */
   --font-size-small: 12px; /* Small text size */

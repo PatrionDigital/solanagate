@@ -1,0 +1,139 @@
+/* src/styles/TokenHolderPage.css */
+
+.token-holder-page {
+  width: 100%;
+  padding: 20px;
+}
+
+.token-holder-nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  min-width: 80%;
+}
+
+.token-holder-nav button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: rgba(240, 240, 240, 0.1);
+  color: #FFD700;
+  cursor: pointer;
+  font-weight: normal;
+  transition: all 0.2s ease;
+}
+
+.token-holder-nav button.active {
+  background-color: rgba(255, 215, 0, 0.2);
+  color: #FFD700;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+.token-holder-nav button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.token-content-section {
+  background-color: rgba(40, 44, 52, 0.7);
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.token-content-section h3 {
+  color: #FFD700;
+  margin-top: 0;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Style for data grid layouts */
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.data-grid strong {
+  color: #FFD700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Style for iframe containers */
+.iframe-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* New styles from VerminMarketData component */
+.market-data-container {
+  padding: 20px;
+  background-color: rgba(220, 220, 220, 0.7);
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.market-data-section {
+  padding: 15px;
+  background-color: rgba(230, 230, 230, 0.6);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.market-data-heading {
+  margin-top: 0;
+  color: #FFD700;
+  text-align: center;
+}
+
+.section-heading {
+  margin: 0 0 10px 0;
+  color: #FFD700;
+}
+
+.links-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.buy-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.dex-button {
+  background-color: #3f51b5;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Dynamic color for percentage changes */
+.positive-change {
+  color: #4caf50;
+}
+
+.negative-change {
+  color: #f44336;
+}

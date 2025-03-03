@@ -1,10 +1,12 @@
 import { useUserProfile } from "@/contexts/UserProfileContext";
+import { useWalletContext } from "@/contexts/WalletContext";
 import DisconnectButton from "@/components/DisconnectButton";
 import PropTypes from "prop-types";
 import "@/styles/UserInfoDisplay.css";
 
 const UserInfoDisplay = ({ className }) => {
-  const { userProfile } = useUserProfile();
+  const { userProfile, clearUserProfile } = useUserProfile();
+  const { disconnect } = useWalletContext();
 
   const formatBalance = (balance) => {
     const numericBalance = parseFloat(balance);
@@ -33,6 +35,21 @@ const UserInfoDisplay = ({ className }) => {
         });
     }
   };
+
+  // Handle disconnect with proper cleanup
+  const handleDisconnect = () => {
+    // First disconnect the wallet
+    disconnect();
+    // Then clear the user profile
+    clearUserProfile();
+  };
+
+  // Check wallet connection status before showing loading message
+  const { connected } = useWalletContext();
+
+  if (!connected) {
+    return <p>Wallet not connected</p>;
+  }
 
   if (!userProfile) {
     return <p>Loading user profile...</p>;
@@ -68,7 +85,7 @@ const UserInfoDisplay = ({ className }) => {
       <hr className="user-info-divider" />
 
       <div className="disconnect-button-container">
-        <DisconnectButton />
+        <DisconnectButton onDisconnect={handleDisconnect} />
       </div>
     </div>
   );

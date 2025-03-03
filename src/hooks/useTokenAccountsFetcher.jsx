@@ -1,11 +1,8 @@
 import { useEffect, useRef } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { useWalletContext } from "@/contexts/WalletContext";
-import {
-  saveUserProfile,
-  removeUserProfile,
-  getUserProfile,
-} from "@/utils/localStorageUtils";
+import { useUserProfile } from "@/contexts/UserProfileContext";
+import { getUserProfile } from "@/utils/localStorageUtils";
 
 const TOKEN_MINT_ADDRESS = new PublicKey(
   import.meta.env.VITE_TOKEN_MINT_ADDRESS
@@ -20,11 +17,12 @@ const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
 
 const useTokenAccountsFetcher = () => {
   const { connection, publicKey, setIsTokenHolder } = useWalletContext();
+  const { updateUserProfile } = useUserProfile();
   const isFetching = useRef(false);
 
   useEffect(() => {
     const userProfile = getUserProfile();
-    if (userProfile) {
+    if (userProfile && userProfile.tokenBalance) {
       setIsTokenHolder(userProfile.tokenBalance > 0);
       return;
     }
@@ -55,29 +53,46 @@ const useTokenAccountsFetcher = () => {
           if (balance > 0) {
             console.log("Target Tokens Found");
             setIsTokenHolder(true);
-            saveUserProfile({
+
+            // Get current profile to preserve other data (like hodlTime)
+            const currentProfile = getUserProfile() || {};
+            updateUserProfile({
+              ...currentProfile,
               walletAddress: publicKey.toBase58(),
               tokenBalance: balance,
             });
           } else {
             setIsTokenHolder(false);
-            removeUserProfile();
+            // Don't remove profile, just update token balance
+            const currentProfile = getUserProfile();
+            if (currentProfile) {
+              updateUserProfile({
+                ...currentProfile,
+                tokenBalance: 0,
+              });
+            }
           }
         } else {
           setIsTokenHolder(false);
-          removeUserProfile();
+          // Don't remove profile, just update token balance
+          const currentProfile = getUserProfile();
+          if (currentProfile) {
+            updateUserProfile({
+              ...currentProfile,
+              tokenBalance: 0,
+            });
+          }
         }
       } catch (error) {
         console.error("Error fetching token accounts:", error);
         setIsTokenHolder(false);
-        removeUserProfile();
       } finally {
         isFetching.current = false;
       }
     };
 
     fetchTokenAccount();
-  }, [publicKey, connection, setIsTokenHolder]);
+  }, [publicKey, connection, setIsTokenHolder, updateUserProfile]);
 
   return null;
 };

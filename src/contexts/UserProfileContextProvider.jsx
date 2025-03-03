@@ -1,7 +1,8 @@
 // src/contexts/UserProfileProvider.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { UserProfileContext } from "./UserProfileContext";
+import { useWalletContext } from "./WalletContext";
 import {
   getUserProfile,
   saveUserProfile,
@@ -10,16 +11,10 @@ import {
 
 export const UserProfileContextProvider = ({ children }) => {
   const [userProfile, setUserProfile] = useState(null);
+  const { connected, publicKey } = useWalletContext();
 
-  useEffect(() => {
-    const profile = getUserProfile();
-    console.log("Profile loaded from storage:", profile);
-    if (profile) {
-      setUserProfile(profile);
-    }
-  }, []);
-
-  const updateUserProfile = (profile) => {
+  // Define callback functions first, before they're used in useEffect
+  const updateUserProfile = useCallback((profile) => {
     console.log("Updating User Profile:", profile);
     if (!profile) {
       console.error("Cannot save undefined or null profile.");
@@ -31,12 +26,51 @@ export const UserProfileContextProvider = ({ children }) => {
     console.log("Updated profile:", updatedProfile);
     saveUserProfile(updatedProfile);
     setUserProfile(updatedProfile);
-  };
+  }, [userProfile]);
 
-  const clearUserProfile = () => {
+  const clearUserProfile = useCallback(() => {
+    console.log("Clearing user profile");
     removeUserProfile();
     setUserProfile(null);
-  };
+  }, []);
+
+  // Load profile from localStorage on initial mount
+  useEffect(() => {
+    const loadProfileFromStorage = () => {
+      const profile = getUserProfile();
+      console.log("Profile loaded from storage:", profile);
+      if (profile) {
+        setUserProfile(profile);
+      }
+    };
+
+    loadProfileFromStorage();
+  }, []);
+
+  // Handle wallet connection/disconnection
+  useEffect(() => {
+    if (connected && publicKey) {
+      // When wallet connects, we should only update the wallet address and preserve
+      // any existing token balance and hodl time data that might come from elsewhere
+      const existingProfile = getUserProfile();
+      
+      if (!userProfile || userProfile.walletAddress !== publicKey.toString()) {
+        const newProfile = {
+          ...(existingProfile || {}),
+          walletAddress: publicKey.toString(),
+        };
+        
+        // Only set tokenBalance and hodlTime if they don't exist
+        if (!newProfile.tokenBalance) newProfile.tokenBalance = 0;
+        if (!newProfile.hodlTime) newProfile.hodlTime = "N/A";
+        
+        updateUserProfile(newProfile);
+      }
+    } else if (!connected) {
+      // If we disconnect, clear the profile
+      clearUserProfile();
+    }
+  }, [connected, publicKey, userProfile, updateUserProfile, clearUserProfile]);
 
   return (
     <UserProfileContext.Provider

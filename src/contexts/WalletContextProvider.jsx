@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { Connection } from "@solana/web3.js";
 import {
@@ -17,18 +17,28 @@ const SOLANA_RPC_URL = import.meta.env.VITE_SOLANA_RPC_URL;
 
 export const WalletContextProvider = ({ children }) => {
   const [connection, setConnection] = useState(null);
-  const { publicKey, connected } = useWallet();
+  const { publicKey, connected, disconnect } = useWallet();
   const [isTokenHolder, setIsTokenHolder] = useState(null);
 
-  
-
+  // Initialize connection when component mounts
   useEffect(() => {
-    setConnection(new Connection(SOLANA_RPC_URL));
+    const newConnection = new Connection(SOLANA_RPC_URL);
+    setConnection(newConnection);
+  }, []);
+
+  // Reset token holder status when disconnected
+  useEffect(() => {
     if (!connected) {
       setIsTokenHolder(null);
-      return;
     }
-  }, [connected, publicKey]);
+  }, [connected]);
+
+  const handleDisconnect = useCallback(() => {
+    disconnect();
+    setIsTokenHolder(null);
+    // Note: The user profile is cleared in the UserInfoDisplay component
+    // through the clearUserProfile function from UserProfileContext
+  }, [disconnect]);
 
   return (
     <WalletContext.Provider
@@ -38,6 +48,7 @@ export const WalletContextProvider = ({ children }) => {
         connected,
         isTokenHolder,
         setIsTokenHolder,
+        disconnect: handleDisconnect,
       }}
     >
       {children}
@@ -61,6 +72,7 @@ export const WalletProviderWrapper = ({ children }) => {
 WalletContextProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
 WalletProviderWrapper.propTypes = {
   children: PropTypes.node.isRequired,
 };

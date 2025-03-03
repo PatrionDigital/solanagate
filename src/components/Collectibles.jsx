@@ -1,14 +1,18 @@
 const Collectibles = () => {
   return (
-    <div
-      style={{
-        padding: "20px",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-      }}
-    >
-      <h3>Collectibles</h3>
-      <p>NFT display will be implemented here.</p>
+    <div>
+      <h3 className="sub-section-heading">Collectibles</h3>
+
+      <div className="collectibles-grid">
+        {[1, 2, 3, 4].map((item) => (
+          <div key={item} className="nft-item">
+            <span className="nft-title">NFT {item}</span>
+            <div className="coming-soon-container">
+              <span className="coming-soon-text">Coming Soon</span>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

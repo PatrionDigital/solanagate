@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useUserProfile } from "@/contexts/UserProfileContext";
-import "@/styles/TokenHolderPage.css";
-import LoadingSpinner from "./LoadingSpinner";
 
 const fetchVerminData = async () => {
   try {
@@ -44,138 +42,111 @@ const VerminMarketData = () => {
     fetchData();
   }, []);
 
-  if (isLoading) return <LoadingSpinner />;
-  if (error)
-    return (
-      <div className="market-data-container">
-        <p>Error loading market data: {error}</p>
-      </div>
-    );
-
-  if (!marketData)
-    return (
-      <div className="market-data-container">
-        <p>No market data available</p>
-      </div>
-    );
-  /*
-  const {
-    market_data: {
-      current_price,
-      price_change_percentage_24h,
-      price_change_percentage_7d,
-      price_change_percentage_30d,
-      market_cap,
-      total_volume,
-      circulating_supply,
-      total_supply,
-    },
-  } = marketData;*/
-  const formatCurrency = (value) => {
-    if (value >= 1000000) {
-      return `$${(value / 1000000).toFixed(2)}M`;
-    }
-    if (value >= 1000) {
-      return `$${(value / 1000).toFixed(2)}K`;
-    }
-    return `$${value.toFixed(2)}`;
-  };
-
-  const formatPercentage = (value) => {
-    return value ? `${value.toFixed(2)}%` : "N/A";
-  };
-
-  const formatSupply = (value) => {
-    if (value >= 1000000) {
-      return `${(value / 1000000).toFixed(2)}M`;
-    }
-    if (value >= 1000) {
-      return `${(value / 1000).toFixed(2)}K`;
-    }
-    return value.toFixed(2);
-  };
-
-  const getColorForPercentage = (percentage) => {
-    if (!percentage) return "inherit";
-    return percentage >= 0 ? "#4caf50" : "#f44336";
-  };
+  if (isLoading) return <div>Loading market data...</div>;
+  if (error) return <div style={{ color: "red" }}>{error}</div>;
 
   // Calculate the user's holdings in USD
   const tokenBalanceAdjusted = tokenBalance / 1e6; // Remove the last 6 decimals
   const holdingsUsd =
     tokenBalanceAdjusted * parseFloat(marketData?.priceUsd || 0);
 
+  // Format wallet address for display
+  const truncateAddress = (address) => {
+    if (!address) return "N/A";
+    // For display similar to the screenshot
+    return `${address.slice(0, 6)}...${address.slice(-7)}`;
+  };
+
   return (
-    <div style={{ padding: "20px" }}>
+    <div>
       {/* User Holdings Section */}
       <div className="market-data-section">
-        <h3>Your Holdings</h3>
+        <h3 className="sub-section-heading">Your Holdings</h3>
         <div className="data-grid">
-          <div>
-            <strong>Token Balance:</strong>{" "}
-            {formatNumber(tokenBalanceAdjusted, 2)}
+          <div className="data-item">
+            <span className="data-label">Token Balance:</span>
+            <span className="data-value">
+              {formatNumber(tokenBalanceAdjusted, 2)}
+            </span>
           </div>
-          <div>
-            <strong>Holdings (USD):</strong> ${formatNumber(holdingsUsd, 2)}
+          <div className="data-item">
+            <span className="data-label">Holdings (USD):</span>
+            <span className="data-value">${formatNumber(holdingsUsd, 2)}</span>
           </div>
-          <div>
-            <strong>HODL Time:</strong> {hodlTime || "N/A"}
+          <div className="data-item">
+            <span className="data-label">HODL Time:</span>
+            <span className="data-value">{hodlTime || "N/A"}</span>
           </div>
-          <div>
-            <strong>Wallet Address:</strong> {walletAddress || "N/A"}
+          <div className="data-item">
+            <span className="data-label">Wallet:</span>
+            <span className="data-value">{truncateAddress(walletAddress)}</span>
           </div>
         </div>
       </div>
 
       {/* Value Section */}
       <div className="market-data-section">
-        <h3>Value</h3>
+        <h3 className="sub-section-heading">Value</h3>
         <div className="data-grid">
-          <div>
-            <strong>Price (USD):</strong> $
-            {formatNumber(parseFloat(marketData?.priceUsd))}
+          <div className="data-item">
+            <span className="data-label">Price (USD):</span>
+            <span className="data-value">
+              ${formatNumber(parseFloat(marketData?.priceUsd))}
+            </span>
           </div>
-          <div>
-            <strong>Market Cap (USD):</strong> $
-            {formatNumber(parseFloat(marketData?.marketCap), 2)}
+          <div className="data-item">
+            <span className="data-label">Market Cap (USD):</span>
+            <span className="data-value">
+              ${formatNumber(parseFloat(marketData?.marketCap), 2)}
+            </span>
           </div>
         </div>
       </div>
 
       {/* Activity Section */}
       <div className="market-data-section">
-        <h3>Activity</h3>
+        <h3 className="sub-section-heading">Activity</h3>
         <div className="data-grid">
-          <div>
-            <strong>24h Volume (USD):</strong> $
-            {formatNumber(parseFloat(marketData?.volume?.h24), 2)}
+          <div className="data-item">
+            <span className="data-label">24h Volume (USD):</span>
+            <span className="data-value">
+              ${formatNumber(parseFloat(marketData?.volume?.h24), 2)}
+            </span>
           </div>
-          <div>
-            <strong>24h Price Change:</strong>{" "}
-            {formatNumber(parseFloat(marketData?.priceChange?.h24), 2)}%
+          <div className="data-item">
+            <span className="data-label">24h Price Change:</span>
+            <span
+              className={`data-value ${
+                parseFloat(marketData?.priceChange?.h24) >= 0
+                  ? "positive-change"
+                  : "negative-change"
+              }`}
+            >
+              {formatNumber(parseFloat(marketData?.priceChange?.h24), 2)}%
+            </span>
           </div>
         </div>
       </div>
 
       {/* Liquidity Pool Section */}
       <div className="market-data-section">
-        <h3>Liquidity Pool</h3>
+        <h3 className="sub-section-heading">Liquidity Pool</h3>
         <div className="data-grid">
-          <div>
-            <strong>Liquidity (USD):</strong> $
-            {formatNumber(parseFloat(marketData?.liquidity?.usd), 2)}
-          </div>
-          <div>
-            <a
-              href={`https://raydium.io/liquidity/increase/?mode=add&pool_id=${marketData?.pairAddress}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#FFD700", textDecoration: "none" }}
-            >
-              Add to Raydium Liquidity Pool
-            </a>
+          <div className="data-item">
+            <span className="data-label">Liquidity (USD):</span>
+            <span className="data-value">
+              ${formatNumber(parseFloat(marketData?.liquidity?.usd), 2)}
+            </span>
           </div>
         </div>
+        <a
+          href={`https://raydium.io/liquidity/increase/?mode=add&pool_id=${marketData?.pairAddress}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="token-action-button"
+        >
+          Add to Raydium Liquidity Pool
+        </a>
       </div>
     </div>
   );

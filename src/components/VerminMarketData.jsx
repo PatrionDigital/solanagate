@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 
 const fetchVerminData = async () => {
@@ -25,21 +25,36 @@ const VerminMarketData = () => {
   const [error, setError] = useState(null);
   const { userProfile } = useUserProfile();
   const { hodlTime, tokenBalance, walletAddress } = userProfile || {};
+  const isMounted = useRef(true);
 
   useEffect(() => {
+    // Set up isMounted ref to track component mount status
+    isMounted.current = true;
+
     const fetchData = async () => {
       try {
         const data = await fetchVerminData();
-        setMarketData(data);
-        setIsLoading(false);
+        // Only update state if component is still mounted
+        if (isMounted.current) {
+          setMarketData(data);
+          setIsLoading(false);
+        }
       } catch (error) {
-        setError("Failed to load market data");
-        console.error("Market data fetch error:", error);
-        setIsLoading(false);
+        // Only update state if component is still mounted
+        if (isMounted.current) {
+          setError("Failed to load market data");
+          console.error("Market data fetch error:", error);
+          setIsLoading(false);
+        }
       }
     };
 
     fetchData();
+
+    // Cleanup function to run when component unmounts
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
 
   if (isLoading) return <div>Loading market data...</div>;

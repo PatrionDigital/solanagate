@@ -1,0 +1,17 @@
+/* src/styles/DisconnectButton.css */
+
+.disconnect-button {
+  background-color: rgba(212, 175, 55, 0.7);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.disconnect-button:hover {
+  background-color: rgba(212, 175, 55, 0.9);
+}

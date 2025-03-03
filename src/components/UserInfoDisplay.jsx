@@ -1,23 +1,24 @@
 import { useUserProfile } from "@/contexts/UserProfileContext";
 import DisconnectButton from "@/components/DisconnectButton";
+import PropTypes from "prop-types";
+import "@/styles/UserInfoDisplay.css";
 
-const UserInfoDisplay = () => {
-  const { userProfile } = useUserProfile(); // Get the profile from context
-  console.log("User profile in UserInfoDisplay:", userProfile);
+const UserInfoDisplay = ({ className }) => {
+  const { userProfile } = useUserProfile();
 
   const formatBalance = (balance) => {
-    const numericBalance = parseFloat(balance); // Ensure balance is a number
+    const numericBalance = parseFloat(balance);
     if (!isNaN(numericBalance)) {
-      return (numericBalance / 10 ** 6).toFixed(6); // Format balance
+      return (numericBalance / 10 ** 6).toFixed(2);
     }
-    return "0"; // Fallback for invalid balances
+    return "0";
   };
 
   const truncateAddress = (address) => {
     if (address && address.length > 10) {
       return `${address.slice(0, 4)}...${address.slice(-4)}`;
     }
-    return address; // Return as-is if it's too short to truncate
+    return address;
   };
 
   const copyToClipboard = (address) => {
@@ -38,24 +39,47 @@ const UserInfoDisplay = () => {
   }
 
   return (
-    <div style={{ textAlign: "center", marginTop: "20px" }}>
-      <h3>User Profile</h3>
-      <p>
-        Wallet Address:{" "}
+    <div className={`user-info-container ${className || ""}`}>
+      <h3 className="user-info-title">User Profile</h3>
+
+      <div className="user-info-item">
+        <span className="user-info-label">Wallet:</span>
         <span
-          style={{ textDecoration: "underline", cursor: "pointer" }}
-          title={userProfile.walletAddress} // Hover text showing full address
-          onClick={() => copyToClipboard(userProfile.walletAddress)} // Click to copy address to clipboard
+          className="user-info-address"
+          title={userProfile.walletAddress}
+          onClick={() => copyToClipboard(userProfile.walletAddress)}
         >
           {truncateAddress(userProfile.walletAddress || "N/A")}
         </span>
-      </p>
-      <p>Token Balance: {formatBalance(userProfile.tokenBalance || 0)}</p>
-      <p>Hodl Time: {userProfile.hodlTime || "N/A"}</p>
-      <hr />
-      <DisconnectButton />
+      </div>
+
+      <div className="user-info-item">
+        <span className="user-info-label">Token Balance:</span>
+        <span className="user-info-value">
+          {formatBalance(userProfile.tokenBalance || 0)}
+        </span>
+      </div>
+
+      <div className="user-info-item">
+        <span className="user-info-label">Hodl Time:</span>
+        <span className="user-info-value">{userProfile.hodlTime || "N/A"}</span>
+      </div>
+
+      <hr className="user-info-divider" />
+
+      <div className="disconnect-button-container">
+        <DisconnectButton />
+      </div>
     </div>
   );
+};
+
+UserInfoDisplay.propTypes = {
+  className: PropTypes.string,
+};
+
+UserInfoDisplay.defaultProps = {
+  className: "",
 };
 
 export default UserInfoDisplay;

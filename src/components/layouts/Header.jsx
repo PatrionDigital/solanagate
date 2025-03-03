@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { FaInfoCircle } from "react-icons/fa";
@@ -7,19 +7,21 @@ import logo from "@/assets/logo.avif";
 import UserInfoDisplay from "@/components/UserInfoDisplay";
 import { useWalletContext } from "@/contexts/WalletContext";
 
-// Header.jsx
-import "@/styles/Header.css"; // Import the CSS file
+// Import the CSS file
+import "@/styles/Header.css";
 
 const Header = () => {
   const { connected, isTokenHolder, setIsTokenHolder } = useWalletContext();
   const [navMenuOpen, setNavMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     if (!connected) {
       setIsTokenHolder(false);
     }
-  });
+  }, [connected, setIsTokenHolder]);
+
   const toggleMenu = () => {
     setNavMenuOpen(!navMenuOpen);
   };
@@ -27,6 +29,32 @@ const Header = () => {
   const toggleAccountMenu = () => {
     setAccountMenuOpen((prev) => !prev);
   };
+
+  // Close menus when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        navMenuOpen &&
+        !event.target.closest(".nav-list") &&
+        !event.target.closest(".hamburger-menu")
+      ) {
+        setNavMenuOpen(false);
+      }
+      if (
+        accountMenuOpen &&
+        !event.target.closest(".account-dropdown") &&
+        !event.target.closest(".user-icon")
+      ) {
+        setAccountMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [navMenuOpen, accountMenuOpen]);
+
   return (
     <header className="header">
       <div className="header-container">
@@ -34,34 +62,29 @@ const Header = () => {
           <Link to="/">
             <img src={logo} alt="App Logo" className="header-logo" />
           </Link>
-          <div className="header-title">Vermin Holders (beta)</div>
         </div>
         <nav>
           <ul className={`nav-list ${navMenuOpen ? "open" : ""}`}>
-            <li className="nav-item">
-              <Link
-                to="/"
-                className={
-                  location.pathname === "/" ? "nav-item active" : "nav-item"
-                }
-              >
+            <li
+              className={
+                location.pathname === "/" ? "nav-item active" : "nav-item"
+              }
+            >
+              <Link to="/">
                 <div className="nav-link-content">
-                  <IoHome size={20} style={{ marginRight: "5px" }} />
+                  <IoHome size={18} />
                   <span>Home</span>
                 </div>
               </Link>
             </li>
-            <li className="nav-item">
-              <Link
-                to="/about"
-                className={
-                  location.pathname === "/about"
-                    ? "nav-item active"
-                    : "nav-item"
-                }
-              >
+            <li
+              className={
+                location.pathname === "/about" ? "nav-item active" : "nav-item"
+              }
+            >
+              <Link to="/about">
                 <div className="nav-link-content">
-                  <FaInfoCircle size={20} style={{ marginRight: "5px" }} />
+                  <FaInfoCircle size={18} />
                   <span>About</span>
                 </div>
               </Link>

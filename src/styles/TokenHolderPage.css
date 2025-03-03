@@ -9,6 +9,18 @@
   margin-right: auto;
   box-sizing: border-box;
 }
+/* Update for src/styles/TokenHolderPage.css */
+
+.token-content-section {
+  background-color: rgba(50, 50, 50, 0.8);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  width: 85%;
+  overflow: hidden; /* Prevent content from overflowing */
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
 
 .token-holder-page {
   width: 100%;

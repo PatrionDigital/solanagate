@@ -10,32 +10,14 @@ const TokenHolderPage = () => {
   const sections = ["Market Data", "Chart and Swaps", "Collectibles"];
 
   return (
-    <div style={{ padding: "20px", width: "100%" }}>
-      {/* NavMenu */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "20px",
-          marginBottom: "20px",
-          width: "100%",
-          minWidth: "80%",
-        }}
-      >
+    <div className="token-holder-page">
+      {/* Navigation menu with button styling matching screenshot */}
+      <div className="token-holder-nav">
         {sections.map((section) => (
           <button
             key={section}
             onClick={() => setActiveSection(section)}
-            style={{
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "8px",
-              backgroundColor:
-                activeSection === section ? "#FFD700" : "#f0f0f0",
-              color: activeSection === section ? "#000" : "#FFD700",
-              cursor: "pointer",
-              fontWeight: activeSection === section ? "bold" : "normal",
-            }}
+            className={activeSection === section ? "active" : ""}
           >
             {section}
           </button>
@@ -43,7 +25,7 @@ const TokenHolderPage = () => {
       </div>
 
       {/* Active Section */}
-      <div style={{ width: "100%" }}>
+      <div className="token-content-section">
         {activeSection === "Market Data" && <VerminMarketData />}
         {activeSection === "Chart and Swaps" && <VerminPriceChart />}
         {activeSection === "Collectibles" && <Collectibles />}

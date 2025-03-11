@@ -4,13 +4,16 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-//Hooks
-//import useTokenAccountsFetcher from "@/hooks/useTokenAccountsFetcher";
 
 //Layouts
 import MainLayout from "@/components/layouts/MainLayout";
 import AboutLayout from "@/components/layouts/AboutLayout";
 import BackgroundEffect from "@/components/BackgroundEffect";
+
+// Import HoneycombAdminPage directly from the modules file
+import { HoneycombAdminPage } from "@/pages/honeycomb-admin/HoneycombModules";
+import "@/pages/honeycomb-admin/honeycombAdmin.css";
+import "@/pages/honeycomb-admin/adminAuth.css";
 
 //Styles
 import "@/styles/App.css";
@@ -23,6 +26,7 @@ function App() {
         <Routes>
           <Route path="/*" element={<MainLayout />} />
           <Route path="/about" element={<AboutLayout />} />
+          <Route path="/admin/honeycomb" element={<HoneycombAdminPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>

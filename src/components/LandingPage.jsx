@@ -1,9 +1,10 @@
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import CustomWalletButton from "@/components/CustomWalletButton";
+import "@/styles/CustomWalletButton.css";
 
 const LandingPage = () => (
   <div style={{ textAlign: "center", marginTop: "50px" }}>
     <h1>Welcome to Vermin on Solana dApp</h1>
-    <WalletMultiButton />
+    <CustomWalletButton />
     <p>Please connect your wallet to proceed.</p>
   </div>
 );

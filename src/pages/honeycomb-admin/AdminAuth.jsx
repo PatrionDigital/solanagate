@@ -9,6 +9,7 @@ import base58 from "bs58";
 // In a real application, these addresses would be stored securely server-side
 const ADMIN_ADDRESSES = [
   "72j257cEWGEaD3379m8w59bceMJDsqe3dCuaivXPF7RL",
+  "2TdY2FnnpBgXYGdNbDkzTk9tLZEq1uHrvZY4fFXQ9Aut", // Backpack Testing address
   // Add more admin addresses as needed
 ];
 

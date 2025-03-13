@@ -7,7 +7,10 @@ import {
   useWallet,
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
+import {
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+} from "@solana/wallet-adapter-wallets";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 // Contexts
@@ -57,7 +60,20 @@ export const WalletContextProvider = ({ children }) => {
 };
 
 export const WalletProviderWrapper = ({ children }) => {
-  const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
+  // Log wallet detection for debugging
+  useEffect(() => {
+    console.log("Wallet detection:");
+    console.log("- window.phantom:", !!window.phantom);
+    console.log("- window.solflare:", !!window.solflare);
+    console.log("- window.backpack:", !!window.backpack);
+  }, []);
+
+  // Define wallets using the standard wallet adapters
+  const wallets = useMemo(
+    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
+    []
+  );
+
   return (
     <ConnectionProvider endpoint={SOLANA_RPC_URL}>
       <WalletProvider wallets={wallets} autoConnect>

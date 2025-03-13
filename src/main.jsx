@@ -6,16 +6,24 @@ import App from "./App.jsx";
 import { WalletProviderWrapper } from "@/contexts/WalletContextProvider.jsx";
 import { UserProfileContextProvider } from "@/contexts/UserProfileContextProvider";
 import ProjectContextProvider from "@/contexts/ProjectContextProvider";
+import { ProfileProvider } from "@/contexts/ProfileContext";
+import HoneycombService from "@/services/honeycombService";
+
+// Honeycomb configuration
+const HONEYCOMB_API_URL = "https://edge.eboy.dev/";
+const honeycombService = new HoneycombService(HONEYCOMB_API_URL);
 
 // eslint-disable-next-line react/no-deprecated
 ReactDOM.render(
   <StrictMode>
     <WalletProviderWrapper>
-      <UserProfileContextProvider>
-        <ProjectContextProvider>
-          <App />
-        </ProjectContextProvider>
-      </UserProfileContextProvider>
+      <ProfileProvider client={honeycombService.client}>
+        <UserProfileContextProvider>
+          <ProjectContextProvider>
+            <App />
+          </ProjectContextProvider>
+        </UserProfileContextProvider>
+      </ProfileProvider>
     </WalletProviderWrapper>
   </StrictMode>,
   document.getElementById("root")

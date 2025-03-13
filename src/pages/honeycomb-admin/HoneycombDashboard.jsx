@@ -5,6 +5,7 @@ import * as web3 from "@solana/web3.js";
 import { Connection } from "@solana/web3.js";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import createEdgeClient from "@honeycomb-protocol/edge-client";
+import AdminUserDashboard from "@/components/user/AdminUserDashboard";
 
 // Constants
 const API_URL =
@@ -21,6 +22,7 @@ const HoneycombDashboard = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("projects");
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   // State to track expanded project cards
   const [expandedProjects, setExpandedProjects] = useState({});
@@ -76,6 +78,11 @@ const HoneycombDashboard = () => {
             );
             console.log("My projects:", myProjects);
             setProjects(myProjects);
+
+            // Set the first project as selected by default if none is selected
+            if (myProjects.length > 0 && !selectedProject) {
+              setSelectedProject(myProjects[0].address);
+            }
           }
 
           setError(null);
@@ -215,6 +222,7 @@ const HoneycombDashboard = () => {
               response.project[0],
               ...prevProjects,
             ]);
+            setSelectedProject(projectAddress);
             setShowCreateForm(false);
           }
         } catch (signError) {
@@ -586,7 +594,7 @@ const HoneycombDashboard = () => {
                 )}
 
                 <div className="project-actions">
-                  {!project.profileTrees && (
+                  {!project.profileTrees?.merkle_trees?.length && (
                     <button
                       className="btn-manage"
                       onClick={() => handleCreateProfileTree(project.address)}
@@ -712,6 +720,41 @@ const HoneycombDashboard = () => {
     isLoading: false,
   };
 
+  // Render the project selector for the users tab
+  const renderProjectSelector = () => {
+    if (projects.length === 0) {
+      return (
+        <div className="no-projects-warning">
+          <p>
+            No projects found. Please create a project first to manage users and
+            profiles.
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="project-selector">
+        <label htmlFor="project-select">Select Project:</label>
+        <select
+          id="project-select"
+          value={selectedProject || ""}
+          onChange={(e) => setSelectedProject(e.target.value)}
+          disabled={loading}
+        >
+          <option value="" disabled>
+            Select a project
+          </option>
+          {projects.map((project) => (
+            <option key={project.address} value={project.address}>
+              {project.name}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  };
+
   return (
     <div className="honeycomb-dashboard">
       <div className="dashboard-header">
@@ -732,6 +775,12 @@ const HoneycombDashboard = () => {
           onClick={() => setActiveTab("projects")}
         >
           Projects
+        </button>
+        <button
+          className={`tab-button ${activeTab === "users" ? "active" : ""}`}
+          onClick={() => setActiveTab("users")}
+        >
+          Users & Profiles
         </button>
         <button
           className={`tab-button ${activeTab === "assets" ? "active" : ""}`}
@@ -767,6 +816,28 @@ const HoneycombDashboard = () => {
               <LoadingSpinner message="Loading Honeycomb data..." />
             ) : (
               renderProjects()
+            )}
+          </div>
+        )}
+
+        {activeTab === "users" && (
+          <div className="user-profile-manager">
+            <div className="tab-header">
+              <h3>User & Profile Management</h3>
+              {renderProjectSelector()}
+            </div>
+
+            {loading ? (
+              <LoadingSpinner message="Loading user data..." />
+            ) : selectedProject ? (
+              <AdminUserDashboard
+                client={client}
+                projectAddress={selectedProject}
+              />
+            ) : (
+              <div className="no-project-selected">
+                <p>Please select a project to manage users and profiles.</p>
+              </div>
             )}
           </div>
         )}

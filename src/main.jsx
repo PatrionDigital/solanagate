@@ -5,13 +5,16 @@ import "./styles/Template.css";
 import App from "./App.jsx";
 import { WalletProviderWrapper } from "@/contexts/WalletContextProvider.jsx";
 import { UserProfileContextProvider } from "@/contexts/UserProfileContextProvider";
+import ProjectContextProvider from "@/contexts/ProjectContextProvider";
 
 // eslint-disable-next-line react/no-deprecated
 ReactDOM.render(
   <StrictMode>
     <WalletProviderWrapper>
       <UserProfileContextProvider>
-        <App />
+        <ProjectContextProvider>
+          <App />
+        </ProjectContextProvider>
       </UserProfileContextProvider>
     </WalletProviderWrapper>
   </StrictMode>,

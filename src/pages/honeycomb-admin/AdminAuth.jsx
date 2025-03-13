@@ -2,15 +2,121 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useWalletContext } from "@/contexts/WalletContext";
 import * as web3 from "@solana/web3.js";
-import {
-  isAdminAddress,
-  generateAuthChallenge,
-  verifySignature,
-  storeAuthSession,
-  checkAuthSession,
-  clearAuthSession,
-} from "./adminAuth";
+import nacl from "tweetnacl";
+import base58 from "bs58";
 
+// Admin authentication utilities
+// In a real application, these addresses would be stored securely server-side
+const ADMIN_ADDRESSES = [
+  "72j257cEWGEaD3379m8w59bceMJDsqe3dCuaivXPF7RL",
+  // Add more admin addresses as needed
+];
+
+/**
+ * Check if an address is an authorized admin
+ * @param {string} address - Wallet address to check
+ * @returns {boolean} Whether the address is authorized
+ */
+const isAdminAddress = (address) => {
+  if (!address) return false;
+  return ADMIN_ADDRESSES.includes(address);
+};
+
+/**
+ * Generate a challenge message for authentication
+ * @param {string} address - Wallet address
+ * @returns {string} Challenge message to sign
+ */
+const generateAuthChallenge = (address) => {
+  const timestamp = Date.now();
+  return `Authenticate to Honeycomb Admin Panel with address ${address}. Timestamp: ${timestamp}`;
+};
+
+/**
+ * Verify a signature against a wallet address and message
+ * @param {string} message - Original message that was signed
+ * @param {string} signature - Signature to verify
+ * @param {string} publicKey - Public key (address) that signed the message
+ * @returns {boolean} Whether the signature is valid
+ */
+const verifySignature = (message, signature, publicKey) => {
+  try {
+    // Convert message to Uint8Array
+    const messageBytes = new TextEncoder().encode(message);
+
+    // Convert signature from base58 to Uint8Array
+    const signatureBytes = base58.decode(signature);
+
+    // Convert publicKey from string to PublicKey and then to Uint8Array
+    const publicKeyBytes = new web3.PublicKey(publicKey).toBytes();
+
+    // Verify the signature using tweetnacl
+    return nacl.sign.detached.verify(
+      messageBytes,
+      signatureBytes,
+      publicKeyBytes
+    );
+  } catch (error) {
+    console.error("Error verifying signature:", error);
+    return false;
+  }
+};
+
+/**
+ * Store authentication session in localStorage
+ * @param {string} address - Authenticated address
+ * @param {string} signature - Signature from the authentication
+ */
+const storeAuthSession = (address, signature) => {
+  const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+  const session = {
+    address,
+    signature,
+    expiresAt,
+  };
+  localStorage.setItem("honeycomb_admin_auth", JSON.stringify(session));
+};
+
+/**
+ * Check if there is a valid auth session
+ * @returns {{isValid: boolean, address: string|null}} Authentication status
+ */
+const checkAuthSession = () => {
+  try {
+    const sessionData = localStorage.getItem("honeycomb_admin_auth");
+    if (!sessionData) {
+      return { isValid: false, address: null };
+    }
+
+    const session = JSON.parse(sessionData);
+
+    // Check if session has expired
+    if (session.expiresAt < Date.now()) {
+      localStorage.removeItem("honeycomb_admin_auth");
+      return { isValid: false, address: null };
+    }
+
+    // Check if address is still authorized
+    if (!isAdminAddress(session.address)) {
+      localStorage.removeItem("honeycomb_admin_auth");
+      return { isValid: false, address: null };
+    }
+
+    return { isValid: true, address: session.address };
+  } catch (error) {
+    console.error("Error checking auth session:", error);
+    return { isValid: false, address: null };
+  }
+};
+
+/**
+ * Clear the authentication session
+ */
+const clearAuthSession = () => {
+  localStorage.removeItem("honeycomb_admin_auth");
+};
+
+// AdminAuth Component
 const AdminAuth = ({ children, onAuthChange }) => {
   const { publicKey, connected, disconnect, connection } = useWalletContext();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -51,57 +157,50 @@ const AdminAuth = ({ children, onAuthChange }) => {
     }
   }, [connected, publicKey, onAuthChange]);
 
+  // Sign message with the wallet
   const signMessage = async (message) => {
     try {
-      // Check if the wallet supports message signing
+      // Convert the message to Uint8Array
+      const messageBytes = new TextEncoder().encode(message);
+
+      // Request wallet signature
+      // First try standard signMessage if available
       if (window.solana && window.solana.signMessage) {
-        console.log("Using direct signMessage method");
-        // Convert the message to Uint8Array
-        const messageBytes = new TextEncoder().encode(message);
-        // Ask the wallet to sign the message directly
-        const signature = await window.solana.signMessage(messageBytes, "utf8");
-        return signature;
-      } else if (window.solana && window.solana.signTransaction) {
-        console.log("Using transaction-based signing");
-        // Convert the message to Uint8Array
-        const messageBytes = new TextEncoder().encode(message);
-
-        // Create a transaction with a single instruction that includes the message
-        const instruction = new web3.TransactionInstruction({
-          keys: [],
-          programId: web3.SystemProgram.programId,
-          data: messageBytes,
-        });
-
-        const transaction = new web3.Transaction().add(instruction);
-        transaction.feePayer = publicKey;
-
-        // Prepare the transaction for signing (this doesn't send it)
-        const blockHash = await connection.getRecentBlockhash();
-        transaction.recentBlockhash = blockHash.blockhash;
-
-        // Request wallet to sign transaction - this is what will prompt the user
-        const signedTransaction = await window.solana.signTransaction(
-          transaction
+        const { signature } = await window.solana.signMessage(
+          messageBytes,
+          "utf8"
         );
+        return base58.encode(signature);
+      }
 
-        // Extract the signature
-        const signature = signedTransaction.signatures[0].signature;
-        if (signature) {
-          // Convert signature to base64 without using Buffer
-          // This avoids the "Buffer is not defined" error in Vite
-          const signatureArray = Array.from(signature);
-          const base64Signature = btoa(
-            String.fromCharCode.apply(null, signatureArray)
-          );
-          return base64Signature;
-        } else {
-          throw new Error("No signature found in signed transaction");
-        }
+      // Fallback to transaction-based signing if necessary
+      console.log("Using transaction-based signing");
+
+      // Create a transaction with a single instruction that includes the message
+      const instruction = new web3.TransactionInstruction({
+        keys: [],
+        programId: web3.SystemProgram.programId,
+        data: messageBytes,
+      });
+
+      const transaction = new web3.Transaction().add(instruction);
+      transaction.feePayer = publicKey;
+
+      // Prepare the transaction for signing (this doesn't send it)
+      const blockHash = await connection.getRecentBlockhash();
+      transaction.recentBlockhash = blockHash.blockhash;
+
+      // Request wallet to sign transaction
+      const signedTransaction = await window.solana.signTransaction(
+        transaction
+      );
+
+      // Extract the signature
+      const signature = signedTransaction.signatures[0].signature;
+      if (signature) {
+        return base58.encode(signature);
       } else {
-        throw new Error(
-          "Wallet does not support signing messages or transactions"
-        );
+        throw new Error("No signature found in signed transaction");
       }
     } catch (err) {
       console.error("Error signing message:", err);
@@ -109,6 +208,7 @@ const AdminAuth = ({ children, onAuthChange }) => {
     }
   };
 
+  // Authenticate with wallet signature
   const handleAuthenticate = async () => {
     if (!connected || !publicKey || !isAdmin) {
       return;
@@ -125,13 +225,8 @@ const AdminAuth = ({ children, onAuthChange }) => {
       console.log("Requesting signature for message:", challengeMessage);
       const signature = await signMessage(challengeMessage);
 
-      // In a real implementation, you would verify this signature against the message and public key
-      // For demo purposes, we'll just validate the admin address
-      const isValid = await verifySignature(
-        challengeMessage,
-        signature,
-        address
-      );
+      // Verify the signature
+      const isValid = verifySignature(challengeMessage, signature, address);
 
       if (isValid) {
         storeAuthSession(address, signature);
@@ -153,6 +248,7 @@ const AdminAuth = ({ children, onAuthChange }) => {
     }
   };
 
+  // Logout function
   const handleLogout = () => {
     clearAuthSession();
     setIsAuthenticated(false);
@@ -162,6 +258,7 @@ const AdminAuth = ({ children, onAuthChange }) => {
     }
   };
 
+  // Render based on authentication state
   if (!connected) {
     return (
       <div className="admin-auth">

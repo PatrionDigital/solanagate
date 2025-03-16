@@ -24,7 +24,7 @@ const VerminMarketData = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { userProfile } = useUserProfile();
-  const { hodlTime, tokenBalance, walletAddress } = userProfile || {};
+  const { hodlTime, tokenBalance, walletAddress, isAdmin } = userProfile || {};
   const isMounted = useRef(true);
 
   useEffect(() => {
@@ -82,6 +82,21 @@ const VerminMarketData = () => {
             <span className="data-label">Token Balance:</span>
             <span className="data-value">
               {formatNumber(tokenBalanceAdjusted, 2)}
+              {isAdmin && (
+                <span
+                  style={{
+                    marginLeft: "8px",
+                    backgroundColor: "#d4af37",
+                    color: "black",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  ADMIN
+                </span>
+              )}
             </span>
           </div>
           <div className="data-item">

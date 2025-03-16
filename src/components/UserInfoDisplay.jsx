@@ -2,6 +2,7 @@ import { useUserProfile } from "@/contexts/UserProfileContext";
 import { useWalletContext } from "@/contexts/WalletContext";
 import DisconnectButton from "@/components/DisconnectButton";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import "@/styles/UserInfoDisplay.css";
 
 const UserInfoDisplay = ({ className }) => {
@@ -74,6 +75,21 @@ const UserInfoDisplay = ({ className }) => {
         <span className="user-info-label">Token Balance:</span>
         <span className="user-info-value">
           {formatBalance(userProfile.tokenBalance || 0)}
+          {userProfile.isAdmin && (
+            <span
+              style={{
+                marginLeft: "8px",
+                backgroundColor: "#d4af37",
+                color: "black",
+                padding: "2px 6px",
+                borderRadius: "4px",
+                fontSize: "10px",
+                fontWeight: "bold",
+              }}
+            >
+              ADMIN
+            </span>
+          )}
         </span>
       </div>
 
@@ -85,6 +101,11 @@ const UserInfoDisplay = ({ className }) => {
       <hr className="user-info-divider" />
 
       <div className="disconnect-button-container">
+        {userProfile.isAdmin && (
+          <Link to="/admin" className="admin-panel-link">
+            Admin Panel
+          </Link>
+        )}
         <DisconnectButton onDisconnect={handleDisconnect} />
       </div>
     </div>

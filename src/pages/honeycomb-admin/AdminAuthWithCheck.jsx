@@ -4,121 +4,10 @@ import { useWalletContext } from "@/contexts/WalletContext";
 import * as web3 from "@solana/web3.js";
 import nacl from "tweetnacl";
 import base58 from "bs58";
+import { isAdminAddress } from "@/utils/adminUtils";
 
-// Admin authentication utilities
-// In a real application, these addresses would be stored securely server-side
-const ADMIN_ADDRESSES = [
-  "72j257cEWGEaD3379m8w59bceMJDsqe3dCuaivXPF7RL",
-  "2TdY2FnnpBgXYGdNbDkzTk9tLZEq1uHrvZY4fFXQ9Aut", // Backpack Testing address
-  // Add more admin addresses as needed
-];
-
-/**
- * Check if an address is an authorized admin
- * @param {string} address - Wallet address to check
- * @returns {boolean} Whether the address is authorized
- */
-const isAdminAddress = (address) => {
-  if (!address) return false;
-  return ADMIN_ADDRESSES.includes(address);
-};
-
-/**
- * Generate a challenge message for authentication
- * @param {string} address - Wallet address
- * @returns {string} Challenge message to sign
- */
-const generateAuthChallenge = (address) => {
-  const timestamp = Date.now();
-  return `Authenticate to Honeycomb Admin Panel with address ${address}. Timestamp: ${timestamp}`;
-};
-
-/**
- * Verify a signature against a wallet address and message
- * @param {string} message - Original message that was signed
- * @param {string} signature - Signature to verify
- * @param {string} publicKey - Public key (address) that signed the message
- * @returns {boolean} Whether the signature is valid
- */
-const verifySignature = (message, signature, publicKey) => {
-  try {
-    // Convert message to Uint8Array
-    const messageBytes = new TextEncoder().encode(message);
-
-    // Convert signature from base58 to Uint8Array
-    const signatureBytes = base58.decode(signature);
-
-    // Convert publicKey from string to PublicKey and then to Uint8Array
-    const publicKeyBytes = new web3.PublicKey(publicKey).toBytes();
-
-    // Verify the signature using tweetnacl
-    return nacl.sign.detached.verify(
-      messageBytes,
-      signatureBytes,
-      publicKeyBytes
-    );
-  } catch (error) {
-    console.error("Error verifying signature:", error);
-    return false;
-  }
-};
-
-/**
- * Store authentication session in localStorage
- * @param {string} address - Authenticated address
- * @param {string} signature - Signature from the authentication
- */
-const storeAuthSession = (address, signature) => {
-  const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-  const session = {
-    address,
-    signature,
-    expiresAt,
-  };
-  localStorage.setItem("honeycomb_admin_auth", JSON.stringify(session));
-};
-
-/**
- * Check if there is a valid auth session
- * @returns {{isValid: boolean, address: string|null}} Authentication status
- */
-const checkAuthSession = () => {
-  try {
-    const sessionData = localStorage.getItem("honeycomb_admin_auth");
-    if (!sessionData) {
-      return { isValid: false, address: null };
-    }
-
-    const session = JSON.parse(sessionData);
-
-    // Check if session has expired
-    if (session.expiresAt < Date.now()) {
-      localStorage.removeItem("honeycomb_admin_auth");
-      return { isValid: false, address: null };
-    }
-
-    // Check if address is still authorized
-    if (!isAdminAddress(session.address)) {
-      localStorage.removeItem("honeycomb_admin_auth");
-      return { isValid: false, address: null };
-    }
-
-    return { isValid: true, address: session.address };
-  } catch (error) {
-    console.error("Error checking auth session:", error);
-    return { isValid: false, address: null };
-  }
-};
-
-/**
- * Clear the authentication session
- */
-const clearAuthSession = () => {
-  localStorage.removeItem("honeycomb_admin_auth");
-};
-
-// AdminAuth Component
-const AdminAuth = ({ children, onAuthChange }) => {
+// Admin Authentication Component that uses the centralized admin address list
+const AdminAuthWithCheck = ({ children, onAuthChange }) => {
   const { publicKey, connected, disconnect, connection } = useWalletContext();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -157,6 +46,100 @@ const AdminAuth = ({ children, onAuthChange }) => {
       }
     }
   }, [connected, publicKey, onAuthChange]);
+
+  /**
+   * Generate a challenge message for authentication
+   * @param {string} address - Wallet address
+   * @returns {string} Challenge message to sign
+   */
+  const generateAuthChallenge = (address) => {
+    const timestamp = Date.now();
+    return `Authenticate to Honeycomb Admin Panel with address ${address}. Timestamp: ${timestamp}`;
+  };
+
+  /**
+   * Verify a signature against a wallet address and message
+   * @param {string} message - Original message that was signed
+   * @param {string} signature - Signature to verify
+   * @param {string} publicKey - Public key (address) that signed the message
+   * @returns {boolean} Whether the signature is valid
+   */
+  const verifySignature = (message, signature, publicKey) => {
+    try {
+      // Convert message to Uint8Array
+      const messageBytes = new TextEncoder().encode(message);
+
+      // Convert signature from base58 to Uint8Array
+      const signatureBytes = base58.decode(signature);
+
+      // Convert publicKey from string to PublicKey and then to Uint8Array
+      const publicKeyBytes = new web3.PublicKey(publicKey).toBytes();
+
+      // Verify the signature using tweetnacl
+      return nacl.sign.detached.verify(
+        messageBytes,
+        signatureBytes,
+        publicKeyBytes
+      );
+    } catch (error) {
+      console.error("Error verifying signature:", error);
+      return false;
+    }
+  };
+
+  /**
+   * Store authentication session in localStorage
+   * @param {string} address - Authenticated address
+   * @param {string} signature - Signature from the authentication
+   */
+  const storeAuthSession = (address, signature) => {
+    const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+    const session = {
+      address,
+      signature,
+      expiresAt,
+    };
+    localStorage.setItem("honeycomb_admin_auth", JSON.stringify(session));
+  };
+
+  /**
+   * Check if there is a valid auth session
+   * @returns {{isValid: boolean, address: string|null}} Authentication status
+   */
+  const checkAuthSession = () => {
+    try {
+      const sessionData = localStorage.getItem("honeycomb_admin_auth");
+      if (!sessionData) {
+        return { isValid: false, address: null };
+      }
+
+      const session = JSON.parse(sessionData);
+
+      // Check if session has expired
+      if (session.expiresAt < Date.now()) {
+        localStorage.removeItem("honeycomb_admin_auth");
+        return { isValid: false, address: null };
+      }
+
+      // Check if address is still authorized
+      if (!isAdminAddress(session.address)) {
+        localStorage.removeItem("honeycomb_admin_auth");
+        return { isValid: false, address: null };
+      }
+
+      return { isValid: true, address: session.address };
+    } catch (error) {
+      console.error("Error checking auth session:", error);
+      return { isValid: false, address: null };
+    }
+  };
+
+  /**
+   * Clear the authentication session
+   */
+  const clearAuthSession = () => {
+    localStorage.removeItem("honeycomb_admin_auth");
+  };
 
   // Sign message with the wallet
   const signMessage = async (message) => {
@@ -328,13 +311,14 @@ const AdminAuth = ({ children, onAuthChange }) => {
   );
 };
 
-AdminAuth.propTypes = {
+// Add PropTypes for the component
+AdminAuthWithCheck.propTypes = {
+  /** Content to render when authenticated */
   children: PropTypes.node.isRequired,
+  /** Callback function when authentication state changes */
   onAuthChange: PropTypes.func,
 };
 
-AdminAuth.defaultProps = {
+AdminAuthWithCheck.defaultProps = {
   onAuthChange: () => {},
 };
-
-export default AdminAuth;

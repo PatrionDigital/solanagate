@@ -19,6 +19,7 @@ const MainLayout = () => {
 
   const tokenLoading = isTokenHolder === null;
 
+  // Run the fetchers to check tokens and hodl time
   useTokenAccountsFetcher();
   useHodlTimeFetcher();
 

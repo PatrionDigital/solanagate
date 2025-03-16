@@ -26,7 +26,7 @@ function App() {
         <Routes>
           <Route path="/*" element={<MainLayout />} />
           <Route path="/about" element={<AboutLayout />} />
-          <Route path="/admin/honeycomb" element={<HoneycombAdminPage />} />
+          <Route path="/admin" element={<HoneycombAdminPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>

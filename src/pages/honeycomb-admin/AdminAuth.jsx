@@ -164,9 +164,16 @@ const AdminAuth = ({ children, onAuthChange }) => {
       // Convert the message to Uint8Array
       const messageBytes = new TextEncoder().encode(message);
 
-      // Request wallet signature
-      // First try standard signMessage if available
+      // First check for Backpack wallet
+      if (window.backpack) {
+        console.log("Using Backpack wallet for signing");
+        const { signature } = await window.backpack.signMessage(messageBytes);
+        return base58.encode(signature);
+      }
+
+      // Next try standard Solana wallet adapter
       if (window.solana && window.solana.signMessage) {
+        console.log("Using Solana adapter signMessage");
         const { signature } = await window.solana.signMessage(
           messageBytes,
           "utf8"
@@ -191,17 +198,17 @@ const AdminAuth = ({ children, onAuthChange }) => {
       const blockHash = await connection.getRecentBlockhash();
       transaction.recentBlockhash = blockHash.blockhash;
 
-      // Request wallet to sign transaction
-      const signedTransaction = await window.solana.signTransaction(
-        transaction
-      );
-
-      // Extract the signature
-      const signature = signedTransaction.signatures[0].signature;
-      if (signature) {
-        return base58.encode(signature);
+      // Using signTransaction from window.solana if available
+      if (window.solana && window.solana.signTransaction) {
+        const signedTransaction = await window.solana.signTransaction(
+          transaction
+        );
+        const signature = signedTransaction.signatures[0].signature;
+        if (signature) {
+          return base58.encode(signature);
+        }
       } else {
-        throw new Error("No signature found in signed transaction");
+        throw new Error("No suitable signing method found for this wallet");
       }
     } catch (err) {
       console.error("Error signing message:", err);

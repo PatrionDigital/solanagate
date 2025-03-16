@@ -24,7 +24,7 @@ const useTokenAccountsFetcher = () => {
   useEffect(() => {
     const userProfile = getUserProfile();
     if (userProfile && userProfile.tokenBalance) {
-      setIsTokenHolder(userProfile.tokenBalance > 0);
+      setIsTokenHolder(userProfile.tokenBalance > 0 || userProfile.isAdmin);
       return;
     }
 

@@ -19,6 +19,7 @@ export const PROJECT_ACTIONS = {
   SYNC_WITH_BLOCKCHAIN: "SYNC_WITH_BLOCKCHAIN",
   UPDATE_UI_SETTINGS: "UPDATE_UI_SETTINGS",
   IMPORT_DATA: "IMPORT_DATA",
+  SET_PROJECT_ACTIVE: "SET_PROJECT_ACTIVE",
 };
 
 // Initial state that can be imported by the provider

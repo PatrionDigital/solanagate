@@ -98,6 +98,18 @@ const projectReducer = (state, action) => {
         loading: false,
       };
 
+    // New action handler for setting a project as active or inactive
+    case PROJECT_ACTIONS.SET_PROJECT_ACTIVE:
+      console.log("Setting project active state:", action.payload);
+      return {
+        ...state,
+        projects: state.projects.map((project) =>
+          project.address === action.payload.projectAddress
+            ? { ...project, isActive: action.payload.isActive }
+            : project
+        ),
+      };
+
     default:
       return state;
   }
@@ -107,14 +119,23 @@ const projectReducer = (state, action) => {
 const ProjectContextProvider = ({ children, initialProjects = [] }) => {
   const [state, dispatch] = useReducer(projectReducer, {
     ...initialState,
-    projects: initialProjects,
+    projects: initialProjects.map((project) => ({
+      ...project,
+      isActive: project.isActive !== undefined ? project.isActive : false, // Add isActive flag to initial projects
+    })),
     currentProject: initialProjects.length > 0 ? initialProjects[0] : null,
   });
 
   // Helper functions for project management
   const createProject = (projectData) => {
-    dispatch({ type: PROJECT_ACTIONS.ADD_PROJECT, payload: projectData });
-    return projectData;
+    // Set default isActive to false for new projects
+    const projectWithActive = {
+      ...projectData,
+      isActive:
+        projectData.isActive !== undefined ? projectData.isActive : false,
+    };
+    dispatch({ type: PROJECT_ACTIONS.ADD_PROJECT, payload: projectWithActive });
+    return projectWithActive;
   };
 
   const updateProject = (projectData) => {
@@ -169,6 +190,25 @@ const ProjectContextProvider = ({ children, initialProjects = [] }) => {
         payload: error.message || "Failed to sync with blockchain",
       });
     }
+  };
+
+  // New function to toggle a project's active state
+  const setProjectActive = (projectAddress, isActive) => {
+    console.log(
+      `Setting project ${projectAddress} active to state to ${isActive}`
+    );
+    dispatch({
+      type: PROJECT_ACTIONS.SET_PROJECT_ACTIVE,
+      payload: { projectAddress, isActive },
+    });
+
+    // Return a resolved promise to make it async-compatible
+    return Promise.resolve();
+  };
+
+  // Get all active projects
+  const getActiveProjects = () => {
+    return state.projects.filter((project) => project.isActive);
   };
 
   // Helper functions for data management
@@ -233,12 +273,18 @@ const ProjectContextProvider = ({ children, initialProjects = [] }) => {
         throw new Error("Invalid data format: missing characters array");
       }
 
+      // Ensure all projects have isActive property
+      const projectsWithActive = parsedData.projects.map((project) => ({
+        ...project,
+        isActive: project.isActive !== undefined ? project.isActive : false,
+      }));
+
       // Prepare the data for import
       const importPayload = {
-        projects: parsedData.projects,
+        projects: projectsWithActive,
         characters: parsedData.characters,
         currentProject:
-          parsedData.projects.length > 0 ? parsedData.projects[0] : null,
+          projectsWithActive.length > 0 ? projectsWithActive[0] : null,
       };
 
       // Import the data
@@ -291,9 +337,14 @@ const ProjectContextProvider = ({ children, initialProjects = [] }) => {
             return {
               ...project,
               address: `project-${projectName}-${timestamp}`,
+              isActive:
+                project.isActive !== undefined ? project.isActive : false,
             };
           }
-          return project;
+          return {
+            ...project,
+            isActive: project.isActive !== undefined ? project.isActive : false,
+          };
         });
 
         // Set the projects and characters
@@ -351,9 +402,15 @@ const ProjectContextProvider = ({ children, initialProjects = [] }) => {
               return {
                 ...project,
                 address: `project-${projectName}-${timestamp}`,
+                isActive:
+                  project.isActive !== undefined ? project.isActive : false,
               };
             }
-            return project;
+            return {
+              ...project,
+              isActive:
+                project.isActive !== undefined ? project.isActive : false,
+            };
           });
           dispatch({ type: PROJECT_ACTIONS.SET_PROJECTS, payload: projects });
 
@@ -470,6 +527,9 @@ const ProjectContextProvider = ({ children, initialProjects = [] }) => {
     updateCharacter,
     deleteCharacter,
     getProjectCharacters,
+    // Project active state management
+    setProjectActive,
+    getActiveProjects,
     // Data management
     syncWithBlockchain,
     exportData,

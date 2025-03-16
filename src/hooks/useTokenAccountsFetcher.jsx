@@ -3,6 +3,7 @@ import { PublicKey } from "@solana/web3.js";
 import { useWalletContext } from "@/contexts/WalletContext";
 import { useUserProfile } from "@/contexts/UserProfileContext";
 import { getUserProfile } from "@/utils/localStorageUtils";
+import { isAdminAddress } from "@/utils/adminUtils";
 
 const TOKEN_MINT_ADDRESS = new PublicKey(
   import.meta.env.VITE_TOKEN_MINT_ADDRESS
@@ -35,6 +36,28 @@ const useTokenAccountsFetcher = () => {
     const fetchTokenAccount = async () => {
       isFetching.current = true;
       try {
+        // First check if the wallet is an admin address
+        const walletAddress = publicKey.toString();
+        if (isAdminAddress(walletAddress)) {
+          console.log("Admin wallet detected. Granting access.");
+          setIsTokenHolder(true);
+
+          // Get current profile to preserve other data
+          const currentProfile = getUserProfile() || {};
+          updateUserProfile({
+            ...currentProfile,
+            walletAddress: walletAddress,
+            // For admins, we set a token balance even if they don't have one
+            // This is just for display purposes
+            tokenBalance: currentProfile.tokenBalance || 1,
+            isAdmin: true, // Add a flag to indicate this is an admin account
+          });
+
+          isFetching.current = false;
+          return;
+        }
+
+        // For non-admin addresses, proceed with the normal token check
         const [ata] = PublicKey.findProgramAddressSync(
           [
             publicKey.toBuffer(),
@@ -60,6 +83,7 @@ const useTokenAccountsFetcher = () => {
               ...currentProfile,
               walletAddress: publicKey.toBase58(),
               tokenBalance: balance,
+              isAdmin: false,
             });
           } else {
             setIsTokenHolder(false);
@@ -69,6 +93,7 @@ const useTokenAccountsFetcher = () => {
               updateUserProfile({
                 ...currentProfile,
                 tokenBalance: 0,
+                isAdmin: false,
               });
             }
           }
@@ -80,6 +105,7 @@ const useTokenAccountsFetcher = () => {
             updateUserProfile({
               ...currentProfile,
               tokenBalance: 0,
+              isAdmin: false,
             });
           }
         }

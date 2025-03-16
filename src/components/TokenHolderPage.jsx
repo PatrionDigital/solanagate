@@ -1,13 +1,19 @@
 import { useState } from "react";
 import VerminMarketData from "./VerminMarketData";
 import VerminPriceChart from "./VerminPriceChart";
-import Collectibles from "./Collectibles";
+import GameAssets from "./game/GameAssets";
+import GameProfiles from "./game/GameProfiles";
 import "@/styles/TokenHolderPage.css";
 
 const TokenHolderPage = () => {
   const [activeSection, setActiveSection] = useState("Market Data");
 
-  const sections = ["Market Data", "Chart and Swaps", "Collectibles"];
+  const sections = [
+    "Market Data",
+    "Chart and Swaps",
+    "Game Assets",
+    "Game Profiles",
+  ];
 
   return (
     <div className="token-holder-page">
@@ -28,7 +34,8 @@ const TokenHolderPage = () => {
       <div className="token-content-section">
         {activeSection === "Market Data" && <VerminMarketData />}
         {activeSection === "Chart and Swaps" && <VerminPriceChart />}
-        {activeSection === "Collectibles" && <Collectibles />}
+        {activeSection === "Game Assets" && <GameAssets />}
+        {activeSection === "Game Profiles" && <GameProfiles />}
       </div>
     </div>
   );

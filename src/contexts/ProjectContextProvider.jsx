@@ -100,6 +100,7 @@ const projectReducer = (state, action) => {
 
     // New action handler for setting a project as active or inactive
     case PROJECT_ACTIONS.SET_PROJECT_ACTIVE:
+      console.log("Setting project active state:", action.payload);
       return {
         ...state,
         projects: state.projects.map((project) =>
@@ -193,10 +194,16 @@ const ProjectContextProvider = ({ children, initialProjects = [] }) => {
 
   // New function to toggle a project's active state
   const setProjectActive = (projectAddress, isActive) => {
+    console.log(
+      `Setting project ${projectAddress} active to state to ${isActive}`
+    );
     dispatch({
       type: PROJECT_ACTIONS.SET_PROJECT_ACTIVE,
       payload: { projectAddress, isActive },
     });
+
+    // Return a resolved promise to make it async-compatible
+    return Promise.resolve();
   };
 
   // Get all active projects

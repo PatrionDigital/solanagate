@@ -6,6 +6,7 @@ import { Connection } from "@solana/web3.js";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import createEdgeClient from "@honeycomb-protocol/edge-client";
 import AdminUserDashboard from "@/components/user/AdminUserDashboard";
+import { useProject } from "@/hooks/useProject";
 
 // Constants
 const API_URL =
@@ -15,6 +16,7 @@ const RPC_URL = import.meta.env.VITE_SOLANA_RPC_URL;
 // Honeycomb Dashboard Component
 const HoneycombDashboard = () => {
   const { publicKey, connected } = useWalletContext();
+  const { setProjectActive } = useProject();
   const [client, setClient] = useState(null);
   const [connection, setConnection] = useState(null);
   const [projects, setProjects] = useState([]);
@@ -238,6 +240,31 @@ const HoneycombDashboard = () => {
       setError("Failed to create project: " + err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handl toggling a project's Active status in the dApp
+  const handleProjectActiveToggle = async (
+    projectAddress,
+    currentActiveState
+  ) => {
+    try {
+      // Update the project's active state in context
+      await setProjectActive(projectAddress, !currentActiveState);
+
+      // Update the projects array with the new state
+      setProjects((prevProjects) =>
+        prevProjects.map((project) =>
+          project.address === projectAddress
+            ? { ...project, isActive: !currentActiveState }
+            : project
+        )
+      );
+
+      setError("");
+    } catch (err) {
+      console.error("Error toggling project active state:", err);
+      setError("Failed to update project status");
     }
   };
 
@@ -508,7 +535,25 @@ const HoneycombDashboard = () => {
               className="project-header"
               onClick={() => toggleProjectExpanded(project.address)}
             >
-              <h3>{project.name}</h3>
+              <h3>
+                {project.name}
+                <span
+                  className={`project-status-badge ${
+                    project.isActive
+                      ? "project-status-badge--active"
+                      : "project-status-badge--inactive"
+                  }`}
+                >
+                  <span
+                    className={`status-indicator ${
+                      project.isActive
+                        ? "status-indicator--active"
+                        : "status-indicator--inactive"
+                    }`}
+                  ></span>
+                  {project.isActive ? "Active" : "Inactive"}
+                </span>
+              </h3>
               <div className="project-address">
                 <span className="address-label">Address:</span>
                 <span className="address-value" title={project.address}>
@@ -542,6 +587,33 @@ const HoneycombDashboard = () => {
 
                 {project.profileTrees && (
                   <div className="detail-section">
+                    <h4>Project Visibility</h4>
+                    <div className="status-toggle">
+                      <label className="status-toggle__label">
+                        <span className="status-toggle__text">
+                          {project.isActive ? "Active" : "Inactive"}
+                        </span>
+                        <div className="status-toggle__switch">
+                          <input
+                            type="checkbox"
+                            checked={project.isActive || false}
+                            onChange={() =>
+                              handleProjectActiveToggle(
+                                project.address,
+                                project.isActive || false
+                              )
+                            }
+                            className="status-toggle__input"
+                          />
+                          <span className="status-toggle__slider"></span>
+                        </div>
+                      </label>
+                      <div className="status-toggle__description">
+                        {project.isActive
+                          ? "This project is visible to users and available in the app"
+                          : "This project is hidden from users and not available in the app"}
+                      </div>
+                    </div>
                     <h4>Profile Trees</h4>
                     <div className="detail-grid">
                       <div className="detail-item">

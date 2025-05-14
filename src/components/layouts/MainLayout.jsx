@@ -37,7 +37,7 @@ const MainLayout = () => {
   return (
     <>
       <Header />
-      <div className="main-layout-content">{renderContent()}</div>
+      <div className="main-layout-content pt-[72px] pb-[72px]">{renderContent()}</div>
       <Footer />
     </>
   );

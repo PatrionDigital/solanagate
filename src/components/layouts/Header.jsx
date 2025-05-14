@@ -3,12 +3,12 @@ import { useState, useEffect } from "react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { FaInfoCircle } from "react-icons/fa";
 import { IoPersonCircleOutline, IoHome } from "react-icons/io5";
+import { Button } from "@windmill/react-ui";
 import logo from "@/assets/logo.avif";
 import UserInfoDisplay from "@/components/UserInfoDisplay";
 import { useWalletContext } from "@/contexts/WalletContext";
+// Tailwind handles styling, so no need for custom CSS
 
-// Import the CSS file
-import "@/styles/Header.css";
 
 const Header = () => {
   const { connected, isTokenHolder, setIsTokenHolder } = useWalletContext();
@@ -56,66 +56,71 @@ const Header = () => {
   }, [navMenuOpen, accountMenuOpen]);
 
   return (
-    <header className="header">
-      <div className="header-container">
-        <div className="header-left">
-          <Link to="/">
-            <img src={logo} alt="App Logo" className="header-logo" />
-          </Link>
-        </div>
-        <nav>
-          <ul className={`nav-list ${navMenuOpen ? "open" : ""}`}>
-            <li
-              className={
-                location.pathname === "/" ? "nav-item active" : "nav-item"
-              }
-            >
-              <Link to="/">
-                <div className="nav-link-content">
-                  <IoHome size={18} />
-                  <span>Home</span>
-                </div>
+    <header className="fixed top-0 left-0 w-full bg-headerBg/80 backdrop-blur shadow-md border-b border-gold z-50">
+      <div className="flex items-center justify-between px-4 py-2 max-w-7xl mx-auto">
+        <Link to="/" className="flex items-center gap-2">
+          <img src={logo} alt="App Logo" className="h-10" />
+        </Link>
+        <nav className="hidden md:block">
+          <ul className="flex gap-6 text-footerText font-medium">
+            <li>
+              <Link to="/" className={`flex items-center gap-1 px-2 py-1 rounded hover:text-gold focus:text-gold active:text-gold transition ${location.pathname === "/" ? "text-gold font-bold" : ""}`}>
+                <IoHome size={18} />
+                <span>Home</span>
               </Link>
             </li>
-            <li
-              className={
-                location.pathname === "/about" ? "nav-item active" : "nav-item"
-              }
-            >
-              <Link to="/about">
-                <div className="nav-link-content">
-                  <FaInfoCircle size={18} />
-                  <span>About</span>
-                </div>
+            <li>
+              <Link to="/about" className={`flex items-center gap-1 px-2 py-1 rounded hover:text-gold focus:text-gold active:text-gold transition ${location.pathname === "/about" ? "text-gold font-bold" : ""}`}>
+                <FaInfoCircle size={18} />
+                <span>About</span>
               </Link>
             </li>
           </ul>
         </nav>
-        <div className="header-right">
-          <div className="hamburger-menu" onClick={toggleMenu}>
-            &#9776;
-          </div>
-          <div className="user-menu">
-            <IoPersonCircleOutline
-              size={32}
-              className="user-icon"
-              onClick={toggleAccountMenu}
-            />
-            {accountMenuOpen && (
-              <div className="account-dropdown">
-                {isTokenHolder ? (
-                  <UserInfoDisplay className="compressed-user-info" />
-                ) : (
-                  <>
-                    <p>Connect wallet to login</p>
-                    <WalletMultiButton />
-                  </>
-                )}
-              </div>
-            )}
-          </div>
+        {/* Hamburger menu for mobile */}
+        <div className="md:hidden flex items-center">
+          <Button layout="link" aria-label="Open Menu" onClick={toggleMenu} className="hover:text-gold focus:text-gold active:text-gold transition">
+            <span className="text-2xl">&#9776;</span>
+          </Button>
+        </div>
+        {/* User menu */}
+        <div className="relative ml-4">
+          <Button layout="link" aria-label="User Menu" onClick={toggleAccountMenu} className="p-0 hover:text-gold focus:text-gold active:text-gold transition">
+            <IoPersonCircleOutline size={32} className="text-gold hover:text-accent transition" />
+          </Button>
+          {accountMenuOpen && (
+            <div className="absolute right-0 mt-2 w-60 bg-menuBg/95 shadow-lg rounded-lg z-50 p-4">
+              {isTokenHolder ? (
+                <UserInfoDisplay className="compressed-user-info" />
+              ) : (
+                <div className="flex flex-col gap-2 items-center">
+                  <p className="text-sm text-headerText">Connect wallet to login</p>
+                  <WalletMultiButton className="w-full hover:text-gold focus:text-gold active:text-gold transition" />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
+      {/* Mobile nav menu */}
+      {navMenuOpen && (
+        <nav className="md:hidden bg-headerBg/90 backdrop-blur border-t border-goldBorder">
+          <ul className="flex flex-col gap-2 py-2 px-4">
+            <li>
+              <Link to="/" onClick={toggleMenu} className={`flex items-center gap-1 px-2 py-2 rounded hover:text-gold focus:text-gold active:text-gold transition ${location.pathname === "/" ? "text-gold font-bold" : ""}`}>
+                <IoHome size={18} />
+                <span>Home</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/about" onClick={toggleMenu} className={`flex items-center gap-1 px-2 py-2 rounded hover:text-gold focus:text-gold active:text-gold transition ${location.pathname === "/about" ? "text-gold font-bold" : ""}`}>
+                <FaInfoCircle size={18} />
+                <span>About</span>
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      )}
     </header>
   );
 };

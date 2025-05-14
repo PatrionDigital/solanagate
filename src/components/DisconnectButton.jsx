@@ -24,7 +24,11 @@ const DisconnectButton = ({ onDisconnect }) => {
   };
 
   return (
-    <button className="disconnect-button" onClick={handleDisconnect}>
+    <button
+      className="bg-transparent border border-gold/40 text-gold px-4 py-2 rounded-lg font-semibold hover:bg-gold/10 focus:bg-gold/20 focus:ring-2 focus:ring-gold/30 transition"
+      onClick={handleDisconnect}
+      type="button"
+    >
       Disconnect Wallet
     </button>
   );

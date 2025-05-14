@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import "./styles/index.css";
 import "./styles/Template.css";
 import App from "./App.jsx";
+import { Windmill } from '@windmill/react-ui';
 import { WalletProviderWrapper } from "@/contexts/WalletContextProvider.jsx";
 import { UserProfileContextProvider } from "@/contexts/UserProfileContextProvider";
 import ProjectContextProvider from "@/contexts/ProjectContextProvider";
@@ -16,15 +17,17 @@ const honeycombService = new HoneycombService(HONEYCOMB_API_URL);
 // eslint-disable-next-line react/no-deprecated
 ReactDOM.render(
   <StrictMode>
-    <WalletProviderWrapper>
-      <ProfileProvider client={honeycombService.client}>
-        <UserProfileContextProvider>
-          <ProjectContextProvider>
-            <App />
-          </ProjectContextProvider>
-        </UserProfileContextProvider>
-      </ProfileProvider>
-    </WalletProviderWrapper>
+    <Windmill>
+      <WalletProviderWrapper>
+        <ProfileProvider client={honeycombService.client}>
+          <UserProfileContextProvider>
+            <ProjectContextProvider>
+              <App />
+            </ProjectContextProvider>
+          </UserProfileContextProvider>
+        </ProfileProvider>
+      </WalletProviderWrapper>
+    </Windmill>
   </StrictMode>,
   document.getElementById("root")
 );

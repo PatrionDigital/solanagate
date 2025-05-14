@@ -102,7 +102,15 @@ const UserInfoDisplay = ({ className }) => {
 
       <div className="disconnect-button-container">
         {userProfile.isAdmin && (
-          <Link to="/admin" className="admin-panel-link">
+          <Link 
+            to="/admin" 
+            className="admin-panel-link"
+            onClick={(e) => {
+              e.stopPropagation();
+              // Close the account menu
+              document.dispatchEvent(new CustomEvent('close-account-menu'));
+            }}
+          >
             Admin Panel
           </Link>
         )}

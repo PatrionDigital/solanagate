@@ -1,10 +1,14 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
+import PropTypes from 'prop-types';
 import { useUserProfile } from "@/contexts/UserProfileContext";
+import { Table, TableBody, TableCell, TableContainer, TableRow } from "@windmill/react-ui";
+
+const VERMIN_TOKEN_ADDRESS = "4fMRncxv5XvsdpAmDxttpjw7pTqPLqKQpyD36jtNpump";
 
 const fetchVerminData = async () => {
   try {
     const response = await fetch(
-      "https://api.dexscreener.com/tokens/v1/solana/4fMRncxv5XvsdpAmDxttpjw7pTqPLqKQpyD36jtNpump"
+      `https://api.dexscreener.com/tokens/v1/solana/${VERMIN_TOKEN_ADDRESS}`
     );
     const data = await response.json();
     return data[0];
@@ -19,6 +23,7 @@ const formatNumber = (value, decimals = 8) => {
   return value.toFixed(decimals);
 };
 
+
 const VerminMarketData = () => {
   const [marketData, setMarketData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,35 +32,36 @@ const VerminMarketData = () => {
   const { hodlTime, tokenBalance, walletAddress, isAdmin } = userProfile || {};
   const isMounted = useRef(true);
 
+  const fetchAllData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+          // Fetch market data
+      const marketDataResponse = await fetchVerminData();
+
+      if (isMounted.current) {
+        setMarketData(marketDataResponse);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      if (isMounted.current) {
+        console.error("Error fetching data:", error);
+        setError("Failed to load market data");
+        setIsLoading(false);
+      }
+    }
+  }, []);
+
   useEffect(() => {
     // Set up isMounted ref to track component mount status
     isMounted.current = true;
-
-    const fetchData = async () => {
-      try {
-        const data = await fetchVerminData();
-        // Only update state if component is still mounted
-        if (isMounted.current) {
-          setMarketData(data);
-          setIsLoading(false);
-        }
-      } catch (error) {
-        // Only update state if component is still mounted
-        if (isMounted.current) {
-          setError("Failed to load market data");
-          console.error("Market data fetch error:", error);
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchData();
+    
+    fetchAllData();
 
     // Cleanup function to run when component unmounts
     return () => {
       isMounted.current = false;
     };
-  }, []);
+  }, [fetchAllData]);
 
   if (isLoading) return <div>Loading market data...</div>;
   if (error) return <div style={{ color: "red" }}>{error}</div>;
@@ -65,118 +71,280 @@ const VerminMarketData = () => {
   const holdingsUsd =
     tokenBalanceAdjusted * parseFloat(marketData?.priceUsd || 0);
 
-  // Format wallet address for display
-  const truncateAddress = (address) => {
+  // Format addresses for display
+  const truncateAddress = (address, start = 6, end = 7) => {
     if (!address) return "N/A";
-    // For display similar to the screenshot
-    return `${address.slice(0, 6)}...${address.slice(-7)}`;
+    if (address.length <= start + end) return address;
+    return `${address.slice(0, start)}...${address.slice(-end)}`;
   };
 
+  // Create a Card component for consistent styling
+  const MarketCard = ({ title, children, className = '' }) => (
+    <div className={`bg-gray-800 rounded-lg p-3 sm:p-4 shadow-lg h-full ${className}`}>
+      {title && <h3 className="text-gold text-sm sm:text-base font-bold mb-3">{title}</h3>}
+      <div className="h-full">
+        {children}
+      </div>
+    </div>
+  );
+  
+  // Add prop types for the MarketCard component
+  MarketCard.propTypes = {
+    title: PropTypes.string,
+    children: PropTypes.node,
+    className: PropTypes.string
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500 py-4">{error}</div>;
+  }
+
+  if (!marketData) {
+    return <div className="text-center text-gray-400 py-4">No market data available</div>;
+  }
+
   return (
-    <div>
-      {/* User Holdings Section */}
-      <div className="market-data-section">
-        <h3 className="sub-section-heading text-gold text-lg font-bold mb-2">Your Holdings</h3>
-        <table className="w-full text-white mb-6">
-          <tbody>
-            <tr>
-              <td className="py-1 pr-4 font-medium">Token Balance:</td>
-              <td className="py-1">
-                {formatNumber(tokenBalanceAdjusted, 2)}
-                {isAdmin && (
-                  <span
-                    style={{
-                      marginLeft: "8px",
-                      backgroundColor: "#d4af37",
-                      color: "black",
-                      padding: "2px 6px",
-                      borderRadius: "4px",
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    ADMIN
-                  </span>
-                )}
-              </td>
-            </tr>
-            <tr>
-              <td className="py-1 pr-4 font-medium">Holdings (USD):</td>
-              <td className="py-1">${formatNumber(holdingsUsd, 2)}</td>
-            </tr>
-            <tr>
-              <td className="py-1 pr-4 font-medium">HODL Time:</td>
-              <td className="py-1">{hodlTime || "N/A"}</td>
-            </tr>
-            <tr>
-              <td className="py-1 pr-4 font-medium">Wallet:</td>
-              <td className="py-1">{truncateAddress(walletAddress)}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div className="p-2 sm:p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* User Holdings Card */}
+          <MarketCard title="Your Holdings">
+            <div className="overflow-x-auto">
+              <TableContainer className="border border-gray-700 rounded-lg min-w-full">
+                <Table className="min-w-full">
+                  <TableBody>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Token Balance</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">
+                        <div className="flex items-center justify-center">
+                          {formatNumber(tokenBalanceAdjusted, 2)}
+                          {isAdmin && (
+                            <span className="ml-1 sm:ml-2 bg-gold text-black text-[9px] sm:text-xs font-bold px-1 sm:px-1.5 py-0.5 rounded">
+                              ADMIN
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Holdings (USD)</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">${formatNumber(holdingsUsd, 2)}</TableCell>
+                    </TableRow>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">HODL Time</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">{hodlTime || "N/A"}</TableCell>
+                    </TableRow>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Wallet</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">
+                        <span className="font-mono">{truncateAddress(walletAddress)}</span>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">HODL Time</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">{hodlTime || "N/A"}</TableCell>
+                    </TableRow>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Wallet</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">
+                        <span className="font-mono">{truncateAddress(walletAddress)}</span>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          </MarketCard>
 
-      {/* Value Section */}
-      <div className="market-data-section">
-        <h3 className="sub-section-heading text-gold text-lg font-bold mb-2">Value</h3>
-        <table className="w-full text-white mb-6">
-          <tbody>
-            <tr>
-              <td className="py-1 pr-4 font-medium">Price (USD):</td>
-              <td className="py-1">${formatNumber(parseFloat(marketData?.priceUsd))}</td>
-            </tr>
-            <tr>
-              <td className="py-1 pr-4 font-medium">Market Cap (USD):</td>
-              <td className="py-1">${formatNumber(parseFloat(marketData?.marketCap), 2)}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          {/* Value Card */}
+          <MarketCard title="Value">
+            <div className="overflow-x-auto">
+              <TableContainer className="border border-gray-700 rounded-lg min-w-full">
+                <Table className="min-w-full">
+                  <TableBody>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Price (USD)</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">${formatNumber(parseFloat(marketData?.priceUsd))}</TableCell>
+                    </TableRow>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Market Cap (USD)</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">${formatNumber(parseFloat(marketData?.marketCap), 2)}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          </MarketCard>
 
-      {/* Activity Section */}
-      <div className="market-data-section">
-        <h3 className="sub-section-heading text-gold text-lg font-bold mb-2">Activity</h3>
-        <table className="w-full text-white mb-6">
-          <tbody>
-            <tr>
-              <td className="py-1 pr-4 font-medium">24h Volume (USD):</td>
-              <td className="py-1">${formatNumber(parseFloat(marketData?.volume?.h24), 2)}</td>
-            </tr>
-            <tr>
-              <td className="py-1 pr-4 font-medium">24h Price Change:</td>
-              <td className="py-1">
-                <span
-                  className={`data-value ${
-                    parseFloat(marketData?.priceChange?.h24) >= 0
-                      ? "positive-change"
-                      : "negative-change"
-                  }`}
-                >
-                  {formatNumber(parseFloat(marketData?.priceChange?.h24), 2)}%
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          {/* Activity Card */}
+          <MarketCard title="Activity">
+            <div className="overflow-x-auto">
+              <TableContainer className="border border-gray-700 rounded-lg min-w-full">
+                <Table className="min-w-full">
+                  <TableBody>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-3 sm:py-2">Change (24h)</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-3 sm:py-2">
+                        <span
+                          className={`font-medium ${
+                            parseFloat(marketData?.priceChange?.h24) >= 0
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          {formatNumber(parseFloat(marketData?.priceChange?.h24), 2)}%
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                    {marketData?.txns?.h24 && (
+                      <TableRow className="border-t border-gray-700">
+                        <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-3 sm:py-2">
+                          Trades (24h)
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-3 sm:py-2">
+                          <div className="flex flex-col items-center">
+                            <div className="flex justify-center space-x-3 sm:space-x-4 mb-1">
+                              <span className="text-green-400">B</span>
+                              <span className="text-red-400">S</span>
+                              <span className="text-blue-400">T</span>
+                            </div>
+                            <div className="flex justify-center space-x-3 sm:space-x-4 font-mono">
+                              <span>{marketData.txns.h24.buys || 0}</span>
+                              <span>{marketData.txns.h24.sells || 0}</span>
+                              <span>{(marketData.txns.h24.buys || 0) + (marketData.txns.h24.sells || 0)}</span>
+                            </div>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                    {marketData?.volume?.h24 && (
+                      <TableRow className="border-t border-gray-700">
+                        <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-3 sm:py-2">Volume (24h)</TableCell>
+                        <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-3 sm:py-2">${formatNumber(marketData.volume.h24, 2)}</TableCell>
+                      </TableRow>
+                    )}
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Volume (7d)</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">
+                        ${marketData?.volume?.h7d ? formatNumber(parseFloat(marketData.volume.h7d), 2) : 'N/A'}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          </MarketCard>
 
-      {/* Liquidity Pool Section */}
-      <div className="market-data-section">
-        <h3 className="sub-section-heading text-gold text-lg font-bold mb-2">Liquidity Pool</h3>
-        <div className="data-grid">
-          <div className="data-item">
-            <span className="data-label text-white">Liquidity (USD):</span>
-            <span className="data-value text-white">${formatNumber(parseFloat(marketData?.liquidity?.usd), 2)}</span>
-          </div>
-        </div>
-        <a
-          href={`https://raydium.io/liquidity/increase/?mode=add&pool_id=${marketData?.pairAddress}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block mt-4 px-5 py-2 rounded-lg bg-gold text-black font-semibold shadow hover:bg-gold/80 focus:bg-gold/90 focus:outline-none transition"
-        >
-          Add to Raydium Liquidity Pool
-        </a>
+          {/* Liquidity Pool Card */}
+          <MarketCard title="Liquidity Pool">
+            <div className="overflow-x-auto">
+              <TableContainer className="border border-gray-700 rounded-lg min-w-full">
+                <Table className="min-w-full">
+                  <TableBody>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-3 sm:py-2">Total Liquidity</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-3 sm:py-2">${formatNumber(marketData?.liquidity?.usd, 2)}</TableCell>
+                    </TableRow>
+                    {marketData?.liquidity?.base && marketData?.baseToken?.symbol && (
+                      <TableRow className="border-t border-gray-700">
+                        <TableCell className="text-xs sm:text-sm text-left font-medium text-gray-300 px-1.5 py-1.5 sm:px-3 sm:py-2">
+                          <div>Base Token</div>
+                          <div className="text-gray-400 text-xs">({marketData.baseToken.symbol})</div>
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm text-right font-mono px-1.5 py-1.5 sm:px-3 sm:py-2">
+                          {formatNumber(parseFloat(marketData.liquidity.base), 2)}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                    {marketData?.liquidity?.quote && marketData?.quoteToken?.symbol && (
+                      <TableRow className="border-t border-gray-700">
+                        <TableCell className="text-xs sm:text-sm text-left font-medium text-gray-300 px-1.5 py-1.5 sm:px-3 sm:py-2">
+                          <div>Quote Token</div>
+                          <div className="text-gray-400 text-xs">({marketData.quoteToken.symbol})</div>
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm text-right font-mono px-1.5 py-1.5 sm:px-3 sm:py-2">
+                          {formatNumber(parseFloat(marketData.liquidity.quote), 2)}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+            <a
+              href={`https://raydium.io/liquidity/increase/?mode=add&pool_id=${marketData?.pairAddress}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full mt-2 sm:mt-3 flex justify-center px-3 py-1.5 text-xs sm:text-sm rounded-lg bg-gold text-black font-semibold shadow hover:bg-gold/80 focus:bg-gold/90 focus:outline-none transition"
+            >
+              Add to Raydium LP
+            </a>
+          </MarketCard>
+
+          {/* Contract Addresses Card */}
+          <MarketCard title="Contract Addresses">
+            <div className="overflow-x-auto">
+              <TableContainer className="border border-gray-700 rounded-lg min-w-full">
+                <Table className="min-w-full">
+                  <TableBody>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-3 sm:py-2">Token Address</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-3 sm:py-2">
+                        <div className="flex items-center justify-center space-x-1 sm:space-x-2">
+                          <span className="truncate max-w-[120px] sm:max-w-none text-xs sm:text-sm font-mono" title={import.meta.env.VITE_TOKEN_MINT_ADDRESS}>
+                            {truncateAddress(import.meta.env.VITE_TOKEN_MINT_ADDRESS, 6, 4)}
+                          </span>
+                          <a 
+                            href={`https://solscan.io/token/${import.meta.env.VITE_TOKEN_MINT_ADDRESS}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-shrink-0 text-gold hover:text-yellow-400 transition-colors"
+                            title="View on Solscan"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-4 sm:w-4" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                              <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                            </svg>
+                          </a>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow className="border-t border-gray-700">
+                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-3 sm:py-2">Liquidity Pool</TableCell>
+                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-3 sm:py-2">
+                        {marketData?.pairAddress ? (
+                          <div className="flex items-center justify-center space-x-1 sm:space-x-2">
+                            <span className="truncate max-w-[120px] sm:max-w-none text-[10px] sm:text-xs font-mono" title={marketData.pairAddress}>
+                              {truncateAddress(marketData.pairAddress, 6, 4)}
+                            </span>
+                            <a 
+                              href={`https://solscan.io/account/${marketData.pairAddress}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-shrink-0 text-gold hover:text-yellow-400 transition-colors"
+                              title="View on Solscan"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-4 sm:w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                              </svg>
+                            </a>
+                          </div>
+                        ) : 'N/A'}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          </MarketCard>
       </div>
     </div>
   );

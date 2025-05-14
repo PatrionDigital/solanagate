@@ -9,13 +9,14 @@ import "@/pages/honeycomb-admin/honeycombAdmin.css";
 import "@/pages/honeycomb-admin/adminAuth.css";
 
 function App() {
+
   return (
-    <>
+    <div className="w-full min-w-full">
       <BackgroundEffect />
-      <main style={{ padding: "0 20px", position: "relative", zIndex: 1 }}>
+      <main className="w-full min-w-full relative z-10">
         <RouterProvider router={router} />
       </main>
-    </>
+    </div>
   );
 }
 

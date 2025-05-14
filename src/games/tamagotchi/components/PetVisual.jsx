@@ -8,10 +8,9 @@ const PetVisual = ({ stage, mood, isSleeping, isSick, isDead }) => {
       return (
         <div className="pet-dead">
           {/* Dead pet appearance */}
-          <div className="h-64 w-64 mx-auto rounded-full bg-gray-800 border-4 border-red-500 flex items-center justify-center">
-            <span className="text-7xl">💀</span>
+          <div className="h-40 w-40 mx-auto rounded-full bg-gray-800/70 border-2 border-red-500/70 flex items-center justify-center">
+            <span className="text-5xl">💀</span>
           </div>
-          <p className="text-center mt-4 text-red-500 font-bold">Your pet has passed away</p>
         </div>
       );
     }

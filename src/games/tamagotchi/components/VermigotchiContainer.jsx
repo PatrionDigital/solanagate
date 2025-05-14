@@ -89,8 +89,8 @@ const VermigotchiContainer = () => {
   // If pet is dead, show a death panel with reset option
   if (pet && pet.isDead) {
     return (
-      <div className="w-full max-w-2xl mx-auto py-8 flex flex-col items-center justify-center">
-        <Card className="p-8 !bg-[rgba(50,50,50,0.92)] border border-red-600 rounded-lg shadow-2xl flex flex-col items-center gap-6">
+      <div className="w-full max-w-md mx-auto py-4">
+        <Card className="p-6 !bg-[rgba(50,50,50,0.92)] border border-red-600/70 rounded-lg shadow-lg flex flex-col items-center gap-4">
           <PetVisual
             stage={pet.stage}
             mood={pet.mood}
@@ -98,14 +98,14 @@ const VermigotchiContainer = () => {
             isSick={pet.isSick}
             isDead={pet.isDead}
           />
-          <h2 className="text-3xl font-bold text-red-500 mb-2">Your pet has passed away</h2>
+          <h2 className="text-2xl font-bold text-red-400">Your pet has passed away</h2>
           {message && (
-            <div className="bg-[rgba(0,0,0,0.3)] border border-red-500/30 p-3 rounded-md mt-2">
-              <p className="text-white text-center">{message}</p>
+            <div className="bg-[rgba(0,0,0,0.3)] border border-red-500/30 p-2 rounded-md w-full text-center">
+              <p className="text-white text-sm">{message}</p>
             </div>
           )}
           <Button
-            className="!bg-gold !text-black font-bold mt-6 px-8 py-3 text-lg focus:ring-2 focus:ring-gold/50 border-none"
+            className="!bg-gold !text-black font-bold mt-2 px-6 py-2 text-base focus:ring-2 focus:ring-gold/50 border-none w-full max-w-xs"
             style={{ backgroundColor: '#FFD700', color: '#111' }}
             onClick={resetPet}
           >

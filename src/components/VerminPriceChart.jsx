@@ -21,27 +21,6 @@ const VerminPriceChart = () => {
 
   return (
     <div>
-      <h3 className="section-heading">Vermin Price Chart</h3>
-
-      <div className="data-item" style={{ marginBottom: "15px" }}>
-        <label
-          style={{
-            display: "flex",
-            alignItems: "center",
-            cursor: "pointer",
-            color: "white",
-          }}
-        >
-          <input
-            type="checkbox"
-            checked={showSwaps}
-            onChange={toggleSwaps}
-            style={{ marginRight: "10px", width: "18px", height: "18px" }}
-          />
-          <span style={{ fontSize: "18px" }}>Show Swaps</span>
-        </label>
-      </div>
-
       <div className="chart-container">
         <iframe
           style={{
@@ -49,6 +28,7 @@ const VerminPriceChart = () => {
             width: "100%",
             borderRadius: "8px",
             border: "1px solid rgba(255, 255, 255, 0.1)",
+            marginBottom: "15px"
           }}
           id="geckoterminal-embed"
           title="GeckoTerminal Embed"
@@ -59,6 +39,27 @@ const VerminPriceChart = () => {
           allow="clipboard-write"
           allowFullScreen
         />
+      </div>
+      
+      <div className="flex justify-center">
+        <div className="data-item">
+          <label
+            style={{
+              display: "flex",
+              alignItems: "center",
+              cursor: "pointer",
+              color: "white",
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={showSwaps}
+              onChange={toggleSwaps}
+              style={{ marginRight: "10px", width: "18px", height: "18px" }}
+            />
+            <span style={{ fontSize: "18px" }}>Show Swaps</span>
+          </label>
+        </div>
       </div>
     </div>
   );

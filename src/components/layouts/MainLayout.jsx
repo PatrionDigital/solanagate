@@ -21,13 +21,13 @@ const MainLayout = ({ children }) => {
   };
 
   return (
-    <>
+    <div className="w-full min-w-full">
       <Header />
-      <div className="main-layout-content pt-[72px] pb-[72px]">
+      <div className="pt-[72px] pb-[72px] w-full min-w-full">
         {children || renderContent()}
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

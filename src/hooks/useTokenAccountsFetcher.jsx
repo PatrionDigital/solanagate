@@ -22,13 +22,16 @@ const useTokenAccountsFetcher = () => {
   const isFetching = useRef(false);
 
   useEffect(() => {
+    console.log('[TokenFetcher] RUN: publicKey:', publicKey, 'connection:', !!connection, 'isFetching:', isFetching.current);
     const userProfile = getUserProfile();
     if (userProfile && userProfile.tokenBalance) {
+      console.log('[TokenFetcher] From profile: tokenBalance:', userProfile.tokenBalance, 'isAdmin:', userProfile.isAdmin);
       setIsTokenHolder(userProfile.tokenBalance > 0 || userProfile.isAdmin);
       return;
     }
 
     if (!publicKey || !connection || isFetching.current) {
+      console.log('[TokenFetcher] Not ready: publicKey:', publicKey, 'connection:', !!connection, 'isFetching:', isFetching.current);
       setIsTokenHolder(null);
       return;
     }
@@ -36,6 +39,7 @@ const useTokenAccountsFetcher = () => {
     const fetchTokenAccount = async () => {
       isFetching.current = true;
       try {
+        console.log('[TokenFetcher] Fetching token account for', publicKey.toString());
         // First check if the wallet is an admin address
         const walletAddress = publicKey.toString();
         if (isAdminAddress(walletAddress)) {

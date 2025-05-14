@@ -38,29 +38,94 @@ export const VermigotchiProvider = ({ children }) => {
     }
   }, [pet]);
 
-  // Stat decay: every minute, degrade pet stats if alive and not sleeping
+  // --- AWAKE STATE ---
+  // Hunger increases by 0.02% every 1500ms
   useGameTimer(() => {
     if (!pet || pet.isDead || pet.isSleeping) return;
-    // Decay values (tune as needed)
-    const hungerDecay = 4;
-    const happinessDecay = 3;
-    const energyDecay = 2;
-    const healthDecay = (pet.hunger > 80 || pet.energy < 20) ? 5 : 1; // more health loss if starving/exhausted
-    const newStatus = {
-      ...pet.getStatus(),
-      hunger: Math.min(100, pet.hunger + hungerDecay),
-      happiness: Math.max(0, pet.happiness - happinessDecay),
-      energy: Math.max(0, pet.energy - energyDecay),
-      health: Math.max(0, pet.health - healthDecay),
-    };
-    let updatedPet = new VermigotchiPet(pet.name, newStatus);
-    // No updateMood() method; mood is computed via getMood()
-    if (updatedPet.health <= 0 || updatedPet.hunger >= 100 || updatedPet.energy <= 0) {
-      updatedPet.isDead = true;
-      setMessage("Your pet has passed away due to neglect.");
+    const hunger = Math.min(100, pet.hunger + 0.02);
+    setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), hunger }));
+  }, 1500);
+
+  // Happiness decreases by 0.02% every 1500ms if Hunger > 75%, else -0.01% every 2500ms
+  useGameTimer(() => {
+    if (!pet || pet.isDead || pet.isSleeping) return;
+    if (pet.hunger > 75) {
+      const happiness = Math.max(0, pet.happiness - 0.02);
+      setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), happiness }));
     }
-    setPet(updatedPet);
-  }, 60000); // 60 seconds
+  }, 1500);
+  useGameTimer(() => {
+    if (!pet || pet.isDead || pet.isSleeping) return;
+    if (pet.hunger <= 75) {
+      const happiness = Math.max(0, pet.happiness - 0.01);
+      setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), happiness }));
+    }
+  }, 2500);
+
+  // Energy decreases by 0.02% every 1500ms
+  useGameTimer(() => {
+    if (!pet || pet.isDead || pet.isSleeping) return;
+    const energy = Math.max(0, pet.energy - 0.02);
+    setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), energy }));
+  }, 1500);
+
+  // If Hunger+Energy < 55%, Health decreases by 0.01% every 2500ms
+  useGameTimer(() => {
+    if (!pet || pet.isDead || pet.isSleeping) return;
+    if ((pet.hunger + pet.energy) < 55) {
+      const health = Math.max(0, pet.health - 0.01);
+      setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), health }));
+    }
+  }, 2500);
+
+  // --- ASLEEP STATE ---
+  // Hunger increases by 0.01% every 2500ms
+  useGameTimer(() => {
+    if (!pet || pet.isDead || !pet.isSleeping) return;
+    const hunger = Math.min(100, pet.hunger + 0.01);
+    setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), hunger }));
+  }, 2500);
+
+  // Energy increases by 0.01% every 2000ms
+  useGameTimer(() => {
+    if (!pet || pet.isDead || !pet.isSleeping) return;
+    const energy = Math.min(100, pet.energy + 0.01);
+    setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), energy }));
+  }, 2000);
+
+  // Happiness decreases as in awake state
+  useGameTimer(() => {
+    if (!pet || pet.isDead || !pet.isSleeping) return;
+    if (pet.hunger > 75) {
+      const happiness = Math.max(0, pet.happiness - 0.02);
+      setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), happiness }));
+    }
+  }, 1500);
+  useGameTimer(() => {
+    if (!pet || pet.isDead || !pet.isSleeping) return;
+    if (pet.hunger <= 75) {
+      const happiness = Math.max(0, pet.happiness - 0.01);
+      setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), happiness }));
+    }
+  }, 2500);
+
+  // Health decreases as in awake state
+  useGameTimer(() => {
+    if (!pet || pet.isDead || !pet.isSleeping) return;
+    if ((pet.hunger + pet.energy) < 55) {
+      const health = Math.max(0, pet.health - 0.01);
+      setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), health }));
+    }
+  }, 2500);
+
+  // Health increases very gradually if happiness > 85 and hunger < 35
+  useGameTimer(() => {
+    if (!pet || pet.isDead) return;
+    if (pet.happiness > 85 && pet.hunger < 35) {
+      const health = Math.min(100, pet.health + 0.0005);
+      setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), health }));
+    }
+  }, 5000);
 
   const hasPet = !!pet;
   const isPetAlive = pet && !pet.isDead;

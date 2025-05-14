@@ -19,9 +19,13 @@ const GameIntro = ({ onCreatePet, walletConnected }) => {
     return (
       <div className="w-full max-w-4xl mx-auto py-8">
         <Card className="p-6 !bg-[rgba(50,50,50,0.8)] border border-gold rounded-lg shadow-lg backdrop-blur text-center">
-          <h2 className="text-2xl text-gold font-bold mb-4">Welcome to Vermigotchi</h2>
+          <h2 className="text-2xl text-gold font-bold mb-4">
+            Welcome to Vermigotchi
+          </h2>
           <div className="mb-6">
-            <p className="text-white mb-4">Please connect your wallet to play.</p>
+            <p className="text-white mb-4">
+              Please connect your wallet to play.
+            </p>
           </div>
         </Card>
       </div>
@@ -31,20 +35,41 @@ const GameIntro = ({ onCreatePet, walletConnected }) => {
   return (
     <div className="w-full max-w-4xl mx-auto py-8">
       <Card className="p-6 !bg-[rgba(50,50,50,0.8)] border border-gold rounded-lg shadow-lg backdrop-blur">
-        <h2 className="text-2xl text-gold font-bold mb-4 text-center">Welcome to Vermigotchi</h2>
+        <h2 className="text-2xl text-gold font-bold mb-4 text-center">
+          Welcome to Vermigotchi
+        </h2>
         <div className="mb-6">
-          <p className="text-white mb-4">Adopt and raise your very own digital pet! Take care of it by feeding, playing, and making sure it gets enough rest.</p>
+          <p className="text-white mb-4">
+            Adopt and raise your very own digital pet! Take care of it by
+            feeding, playing, and making sure it gets enough rest.
+          </p>
           <div className="bg-[rgba(0,0,0,0.3)] border border-gold/30 p-4 rounded-md mb-4">
             <h3 className="text-gold font-bold mb-2">How to Play:</h3>
-            <ul className="text-white list-disc pl-6 space-y-2">
-              <li>Your pet has hunger, happiness, energy and health stats that change over time</li>
-              <li><strong className="text-gold">Feed</strong> your pet to reduce hunger (costs 5 tokens)</li>
-              <li><strong className="text-gold">Play</strong> with your pet to increase happiness (costs 3 tokens)</li>
-              <li><strong className="text-gold">Sleep</strong> lets your pet regain energy (free)</li>
-              <li><strong className="text-gold">Medicine</strong> instantly restores health (costs 10 tokens)</li>
-              <li><strong className="text-gold">Special</strong> care boosts all stats (costs 20 tokens)</li>
-              <li>If your pet's stats get too low, it will get sick or die</li>
-              <li>Watch your pet grow through different stages as it ages!</li>
+            <ul className="text-white list-none text-sm space-y-2">
+              <li>
+                Your pet has hunger, happiness, energy and health stats that
+                change over time
+              </li>
+              <li>
+                <strong className="text-gold">Feed</strong> your pet to reduce
+                hunger (costs 5 $VERMIN)
+              </li>
+              <li>
+                <strong className="text-gold">Play</strong> with your pet to
+                increase happiness (costs 3 $VERMIN)
+              </li>
+              <li>
+                <strong className="text-gold">Sleep</strong> lets your pet
+                regain energy (free)
+              </li>
+              <li>
+                <strong className="text-gold">Medicine</strong> instantly
+                restores health (costs 10 $VERMIN)
+              </li>
+              <li>
+                <strong className="text-gold">Special</strong> care boosts all
+                stats (costs 20 $VERMIN)
+              </li>
             </ul>
           </div>
         </div>
@@ -61,9 +86,10 @@ const GameIntro = ({ onCreatePet, walletConnected }) => {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
                 type="submit"
-                className="bg-gold text-black font-bold focus:ring-2 focus:ring-gold/50"
+                className="!bg-gold !text-black font-bold focus:ring-2 focus:ring-gold/50 border-none"
+                style={{ backgroundColor: "#FFD700", color: "#111" }}
               >
-                Create Pet (50 tokens)
+                Create Pet (50 $VERMIN)
               </Button>
             </div>
           </div>

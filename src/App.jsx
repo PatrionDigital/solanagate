@@ -20,6 +20,7 @@ import "@/pages/honeycomb-admin/adminAuth.css";
 
 //Styles
 import "@/styles/App.css";
+import "./theme-buttons.css";
 
 function App() {
   return (

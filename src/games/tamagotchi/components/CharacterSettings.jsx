@@ -31,10 +31,10 @@ const CharacterSettings = ({ currentName, onRename, onReset, onClose }) => {
             placeholder="Enter new name"
           />
           {error && <p className="text-red-500 mb-2">{error}</p>}
-          <Button type="submit" className="bg-gold text-black font-bold w-full mb-4 focus:ring-2 focus:ring-gold/50">Save Name</Button>
+          <Button type="submit" className="primary w-full mb-4">Save Name</Button>
         </form>
         <div className="border-t border-gray-700 pt-4 mt-2">
-          <Button onClick={onReset} className="bg-red-700 w-full flex items-center justify-center gap-2">
+          <Button onClick={onReset} className="cancel w-full flex items-center justify-center gap-2">
             <FaTrash /> Reset Pet
           </Button>
         </div>

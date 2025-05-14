@@ -17,6 +17,18 @@ const actionOptions = [
   { value: 'special', label: 'Special', icon: <FaStar className="inline-block mr-2" /> },
 ];
 
+function capitalizeStage(stage) {
+  if (!stage) return '';
+  return stage.charAt(0).toUpperCase() + stage.slice(1);
+}
+
+function formatAge(ageDays) {
+  if (typeof ageDays !== 'number' || isNaN(ageDays)) return '';
+  const days = Math.floor(ageDays);
+  const hours = Math.floor((ageDays - days) * 24);
+  return `${days}d ${hours}h`;
+}
+
 const VermigotchiContainer = () => {
   const { publicKey } = useWalletContext();
   const [showIntro, setShowIntro] = useState(true);
@@ -35,7 +47,7 @@ const VermigotchiContainer = () => {
     setPet
   } = useVermigotchi();
   const [showSettings, setShowSettings] = useState(false);
-  const [selectedAction, setSelectedAction] = useState('feed');
+  const [selectedAction, setSelectedAction] = useState('');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
 
@@ -53,6 +65,24 @@ const VermigotchiContainer = () => {
   if (showIntro) {
     return (
       <GameIntro onCreatePet={handleCreatePet} walletConnected={!!publicKey} />
+    );
+  }
+
+  // If pet is null (reset), show a full-panel message
+  if (!pet) {
+    return (
+      <div className="w-full max-w-2xl mx-auto py-16 flex flex-col items-center justify-center min-h-[400px]">
+        <Card className="p-10 !bg-[rgba(50,50,50,0.95)] border border-gold rounded-lg shadow-2xl flex flex-col items-center gap-8 w-full">
+          <h2 className="text-2xl font-bold text-gold mb-4 text-center">Your pet has been reset.<br/>Create a new one!</h2>
+          <Button
+            className="!bg-gold !text-black font-bold px-8 py-3 text-lg focus:ring-2 focus:ring-gold/50 border-none"
+            style={{ backgroundColor: '#FFD700', color: '#111' }}
+            onClick={() => setShowIntro(true)}
+          >
+            Back to Introduction
+          </Button>
+        </Card>
+      </div>
     );
   }
 
@@ -116,13 +146,14 @@ const VermigotchiContainer = () => {
           <div className="block md:hidden w-full mb-4">
             <select
               className="w-full px-4 py-2 rounded-lg bg-[rgba(60,60,60,0.7)] text-gold border border-gold/40 focus:ring-2 focus:ring-gold/30 focus:outline-none font-semibold"
-              value={''}
+              value={selectedAction}
               onChange={e => {
                 setSelectedAction(e.target.value);
                 setPendingAction(e.target.value);
                 setConfirmOpen(true);
               }}
             >
+              <option value="" disabled>Game Actions...</option>
               {actionOptions.map(opt => (
                 <option key={opt.value} value={opt.value} className="text-black">
                   {/* Render label dynamically for sleep */}
@@ -160,7 +191,7 @@ const VermigotchiContainer = () => {
         {/* Top row: 2 columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Character visual */}
-          <div className="flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center gap-2">
             {pet ? (
               <PetVisual
                 stage={pet.stage}
@@ -170,6 +201,11 @@ const VermigotchiContainer = () => {
                 isDead={pet.isDead}
               />
             ) : null}
+            {message && (
+              <div className="bg-[rgba(0,0,0,0.3)] border border-gold/30 p-3 rounded-md mt-2 w-full max-w-xs">
+                <p className="text-white text-center">{message}</p>
+              </div>
+            )}
           </div>
           {/* Character stats and name + settings */}
           <div className="flex flex-col gap-4 justify-center">
@@ -185,7 +221,25 @@ const VermigotchiContainer = () => {
                     <FaCog size={22} />
                   </button>
                 </div>
-                <p className="text-white">Age: {pet.age} days | Stage: {pet.stage}</p>
+                <div className="flex flex-col gap-1 items-start text-white">
+                  <span className="inline-block w-28 font-mono text-xs text-right align-middle select-none mb-1">Age: {formatAge(pet.age)}</span>
+                  <div className="flex flex-row items-center gap-2">
+                    {["egg", "baby", "child", "teen", "adult"].map(stageName => (
+                      <span
+                        key={stageName}
+                        className={
+                          "inline-block w-16 font-mono text-center align-middle select-none rounded " +
+                          (pet.stage === stageName
+                            ? "bg-gold text-black font-bold border border-gold shadow"
+                            : "bg-gray-800 text-gold/60 border border-gold/10")
+                        }
+                      >
+                        {capitalizeStage(stageName)}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
                 <PetStatus
                   hunger={pet.hunger}
                   happiness={pet.happiness}
@@ -194,11 +248,7 @@ const VermigotchiContainer = () => {
                 />
               </>
             )}
-            {message && (
-              <div className="bg-[rgba(0,0,0,0.3)] border border-gold/30 p-3 rounded-md mt-2">
-                <p className="text-white">{message}</p>
-              </div>
-            )}
+
           </div>
         </div>
 
@@ -220,10 +270,13 @@ const VermigotchiContainer = () => {
               default: return '';
             }
           })()}
-          onCancel={() => setConfirmOpen(false)}
+          onCancel={() => {
+            setConfirmOpen(false);
+            setSelectedAction(''); // Reset to default after cancel
+          }}
           onConfirm={() => {
             setConfirmOpen(false);
-            setSelectedAction(''); // Reset so user can select same action again
+            setSelectedAction(''); // Reset to default after confirm
             // Actually trigger the action
             if (pendingAction === 'feed') feedPet();
             if (pendingAction === 'play') playWithPet();

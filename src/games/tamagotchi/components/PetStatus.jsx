@@ -27,7 +27,7 @@ const PetStatus = ({ hunger, happiness, energy, health }) => {
       <div className="mb-3">
         <div className="flex justify-between mb-1">
           <span className="text-sm text-white">Hunger</span>
-          <span className="text-sm text-white"><NumberFlow value={Math.floor(hunger * 100) / 100} decimals={2} />%</span>
+          <span className="text-sm text-white w-20 text-right font-mono inline-block align-middle select-none"><NumberFlow value={parseFloat(hunger.toFixed(2))} decimals={2} />%</span>
         </div>
         <div className="w-full bg-gray-700 rounded-full h-2.5">
           <div
@@ -40,7 +40,7 @@ const PetStatus = ({ hunger, happiness, energy, health }) => {
       <div className="mb-3">
         <div className="flex justify-between mb-1">
           <span className="text-sm text-white">Happiness</span>
-          <span className="text-sm text-white"><NumberFlow value={Math.floor(happiness * 100) / 100} decimals={2} />%</span>
+          <span className="text-sm text-white w-20 text-right font-mono inline-block align-middle select-none"><NumberFlow value={parseFloat(happiness.toFixed(2))} decimals={2} />%</span>
         </div>
         <div className="w-full bg-gray-700 rounded-full h-2.5">
           <div
@@ -53,7 +53,7 @@ const PetStatus = ({ hunger, happiness, energy, health }) => {
       <div className="mb-3">
         <div className="flex justify-between mb-1">
           <span className="text-sm text-white">Energy</span>
-          <span className="text-sm text-white"><NumberFlow value={Math.floor(energy * 100) / 100} decimals={2} />%</span>
+          <span className="text-sm text-white w-20 text-right font-mono inline-block align-middle select-none"><NumberFlow value={parseFloat(energy.toFixed(2))} decimals={2} />%</span>
         </div>
         <div className="w-full bg-gray-700 rounded-full h-2.5">
           <div
@@ -66,7 +66,7 @@ const PetStatus = ({ hunger, happiness, energy, health }) => {
       <div className="mb-3">
         <div className="flex justify-between mb-1">
           <span className="text-sm text-white">Health</span>
-          <span className="text-sm text-white"><NumberFlow value={Math.floor(health * 100) / 100} decimals={2} />%</span>
+          <span className="text-sm text-white w-20 text-right font-mono inline-block align-middle select-none"><NumberFlow value={parseFloat(health.toFixed(2))} decimals={2} />%</span>
         </div>
         <div className="w-full bg-gray-700 rounded-full h-2.5">
           <div

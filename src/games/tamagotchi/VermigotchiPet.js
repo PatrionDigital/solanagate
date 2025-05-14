@@ -135,7 +135,7 @@ class VermigotchiPet {
       this.isDead = true;
     }
     const daysSinceCreation = (now - new Date(this.createdAt)) / (1000 * 60 * 60 * 24);
-    this.age = Math.floor(daysSinceCreation);
+    this.age = daysSinceCreation;
     this.updateEvolutionStage();
     this.lastSaved = now.toISOString();
   }

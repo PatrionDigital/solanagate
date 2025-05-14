@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { FaInfoCircle } from "react-icons/fa";
-import { IoPersonCircleOutline, IoHome } from "react-icons/io5";
+import { IoPersonCircleOutline, IoHome, IoGameController } from "react-icons/io5";
 import { Button } from "@windmill/react-ui";
 import logo from "@/assets/logo.avif";
 import UserInfoDisplay from "@/components/UserInfoDisplay";
@@ -70,6 +70,12 @@ const Header = () => {
               </Link>
             </li>
             <li>
+              <Link to="/games" className={`flex items-center gap-1 px-2 py-1 rounded hover:text-gold focus:text-gold active:text-gold transition ${location.pathname.startsWith("/games") ? "text-gold font-bold" : ""}`}>
+                <IoGameController size={18} />
+                <span>Games</span>
+              </Link>
+            </li>
+            <li>
               <Link to="/about" className={`flex items-center gap-1 px-2 py-1 rounded hover:text-gold focus:text-gold active:text-gold transition ${location.pathname === "/about" ? "text-gold font-bold" : ""}`}>
                 <FaInfoCircle size={18} />
                 <span>About</span>
@@ -110,6 +116,12 @@ const Header = () => {
               <Link to="/" onClick={toggleMenu} className={`flex items-center gap-1 px-2 py-2 rounded hover:text-gold focus:text-gold active:text-gold transition ${location.pathname === "/" ? "text-gold font-bold" : ""}`}>
                 <IoHome size={18} />
                 <span>Home</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/games" onClick={toggleMenu} className={`flex items-center gap-1 px-2 py-2 rounded hover:text-gold focus:text-gold active:text-gold transition ${location.pathname.startsWith("/games") ? "text-gold font-bold" : ""}`}>
+                <IoGameController size={18} />
+                <span>Games</span>
               </Link>
             </li>
             <li>

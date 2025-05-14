@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@honeycomb-protocol/edge-client": "^0.0.7-beta.13",
+    "@number-flow/react": "^0.5.9",
     "@solana/spl-token": "^0.4.9",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",

@@ -8,6 +8,9 @@ import {
 //Layouts
 import MainLayout from "@/components/layouts/MainLayout";
 import AboutLayout from "@/components/layouts/AboutLayout";
+import GameLayout from "@/components/layouts/GameLayout";
+import VermigotchiContainer from "@/games/tamagotchi/components/VermigotchiContainer";
+import { VermigotchiProvider } from "@/games/tamagotchi/context/VermigotchiContext";
 import BackgroundEffect from "@/components/BackgroundEffect";
 
 // Import HoneycombAdminPage directly from the modules file
@@ -26,6 +29,13 @@ function App() {
         <Routes>
           <Route path="/*" element={<MainLayout />} />
           <Route path="/about" element={<AboutLayout />} />
+          <Route path="/games" element={<GameLayout />}>
+            <Route index element={
+              <VermigotchiProvider>
+                <VermigotchiContainer />
+              </VermigotchiProvider>
+            } />
+          </Route>
           <Route path="/admin" element={<HoneycombAdminPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

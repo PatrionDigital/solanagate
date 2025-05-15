@@ -1,17 +1,55 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { useWallet } from "@solana/wallet-adapter-react";
 import useProfile from "../../hooks/useProfile";
 import useHoneycombAuth from "../../hooks/useHoneycombAuth";
+import { Card, Button } from "@windmill/react-ui";
 import ProfileCard from "./ProfileCard";
 import ProfileBadges from "./ProfileBadges";
 import ProfileAssets from "./ProfileAssets";
 import ProfileEditor from "./ProfileEditor";
+import AdminProtected from "../AdminProtected";
+
+// Admin Debug Panel Component
+const SpinnerGameDebugPanel = ({ onDebugAction }) => {
+  const [message, setMessage] = useState("");
+
+  const handleAddSpin = useCallback(() => {
+    if (onDebugAction) onDebugAction("addSpin");
+    setMessage("+1 spin added!");
+    setTimeout(() => setMessage(""), 1500);
+  }, [onDebugAction]);
+
+  const handleResetHistory = useCallback(() => {
+    if (onDebugAction) onDebugAction("resetHistory");
+    setMessage("Spin history and spins reset!");
+    setTimeout(() => setMessage(""), 1500);
+  }, [onDebugAction]);
+
+  return (
+    <Card className="vermin-spinner-debug-panel mt-4">
+      <h3 className="text-lg font-semibold mb-2">Spinner Game Debug</h3>
+      <div className="flex space-x-2">
+        <Button size="small" onClick={handleAddSpin}>
+          Add Spin
+        </Button>
+        <Button size="small" layout="outline" onClick={handleResetHistory}>
+          Reset History
+        </Button>
+      </div>
+      {message && <div className="mt-2 text-sm text-green-500">{message}</div>}
+    </Card>
+  );
+};
+
+SpinnerGameDebugPanel.propTypes = {
+  onDebugAction: PropTypes.func.isRequired,
+};
 
 /**
  * Dashboard component integrating all profile management features
  */
-const ProfileDashboard = ({ client, className = "" }) => {
+const ProfileDashboard = ({ client, className = "", onSpinnerDebugAction }) => {
   const { connected } = useWallet();
   const { profileLoading, hasProfile, refreshProfile } = useProfile();
 
@@ -191,6 +229,12 @@ const ProfileDashboard = ({ client, className = "" }) => {
       </div>
 
       <div className="profile-dashboard__content">
+        {/* Admin Debug Panel */}
+        {onSpinnerDebugAction && (
+          <AdminProtected>
+            <SpinnerGameDebugPanel onDebugAction={onSpinnerDebugAction} />
+          </AdminProtected>
+        )}
         {activeView === "profile" && (
           <div className="profile-dashboard__profile-view">
             <ProfileCard showEditButton={false} />
@@ -245,6 +289,7 @@ const ProfileDashboard = ({ client, className = "" }) => {
 ProfileDashboard.propTypes = {
   client: PropTypes.object.isRequired,
   className: PropTypes.string,
+  onSpinnerDebugAction: PropTypes.func,
 };
 
 export default ProfileDashboard;

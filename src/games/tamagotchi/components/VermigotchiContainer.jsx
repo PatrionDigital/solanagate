@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, Button } from "@windmill/react-ui";
 import ActionConfirmModal from "./ActionConfirmModal";
 import { useWalletContext } from "@/contexts/WalletContext";
@@ -7,6 +8,7 @@ import PetStatus from "./PetStatus";
 import GameIntro from "./GameIntro";
 import CharacterSettings from "./CharacterSettings";
 import { FaCog, FaUtensils, FaGamepad, FaMedkit, FaStar, FaMoon, FaSun } from "react-icons/fa";
+import { FiArrowLeft } from "react-icons/fi";
 import { useVermigotchi } from "../hooks/useVermigotchi";
 
 const actionOptions = [
@@ -30,7 +32,12 @@ function formatAge(ageDays) {
 }
 
 const VermigotchiContainer = () => {
+  const navigate = useNavigate();
   const { publicKey } = useWalletContext();
+  
+  const handleBackToGames = () => {
+    navigate('/games');
+  };
   const [showIntro, setShowIntro] = useState(true);
   const {
     pet,
@@ -139,6 +146,17 @@ const VermigotchiContainer = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto py-8">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="vermin-spinner-game-title">Vermigotchi</h2>
+        <Button 
+          onClick={handleBackToGames}
+          layout="outline"
+          className="flex items-center gap-2 text-sm"
+          size="small"
+        >
+          <FiArrowLeft /> Back to Games
+        </Button>
+      </div>
       <Card className="p-6 !bg-[rgba(50,50,50,0.8)] border border-gold rounded-lg shadow-lg backdrop-blur flex flex-col gap-6">
         {/* Action selector menu (mobile/desktop) */}
         <div className="w-full mb-4">

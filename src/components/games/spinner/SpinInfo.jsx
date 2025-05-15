@@ -31,15 +31,6 @@ const SpinInfo = ({ spins, character, totalWinnings }) => {
           <span className="vermin-spinner-stat-value">{formatPrizeValue(totalWinnings)} VERMIN</span>
         </div>
       </div>
-      <div className="vermin-spinner-instructions">
-        <h4>How to Play:</h4>
-        <ul>
-          <li>You get 1 free spin every day</li>
-          <li>Keep your Vermigotchi happy to earn bonus spins!</li>
-          <li>Higher evolution levels give better prize bonuses</li>
-          <li>Win up to 15 VERMIN tokens per spin</li>
-        </ul>
-      </div>
     </Card>
   );
 };

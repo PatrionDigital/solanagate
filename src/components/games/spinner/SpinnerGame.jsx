@@ -1,18 +1,24 @@
 // src/components/games/spinner/SpinnerGame.jsx
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useVermigotchi } from "@/games/tamagotchi/hooks/useVermigotchi";
+import SpinInstructions from "./SpinInstructions";
 import useSpinnerGame from "@/hooks/useSpinnerGame";
 import Wheel from "./Wheel";
-import SpinnerGameDebugPanel from "./SpinnerGameDebugPanel";
 import SpinInfo from "./SpinInfo";
 import SpinHistory from "./SpinHistory";
 import "@/styles/SpinnerGame.css";
-import AdminProtected from "@/components/AdminProtected";
-import { Button } from "@windmill/react-ui";
+import { Button, Card } from "@windmill/react-ui";
 import Confetti from "react-confetti";
+import { FiArrowLeft } from "react-icons/fi";
 
 const SpinnerGame = () => {
+  const navigate = useNavigate();
+  
+  const handleBackToGames = () => {
+    navigate('/games');
+  };
   // Get the current Vermigotchi pet from context
   const { pet } = useVermigotchi();
 
@@ -47,10 +53,6 @@ const SpinnerGame = () => {
     spin,
     getTotalWinnings,
     canSpin,
-    triggerOnboarding,
-    setSpins,
-    setSpinHistory,
-    setLastSpinTime,
   } = useSpinnerGame(pet, handleSpinComplete);
 
   // Local state and effects must be declared before any return
@@ -67,8 +69,7 @@ const SpinnerGame = () => {
   const [showPrize, setShowPrize] = useState(false);
   const [currentPrize, setCurrentPrize] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
-
-
+  const [activeTab, setActiveTab] = useState('info');
 
   // Handle spin button click
   const handleSpin = (e) => {
@@ -77,78 +78,20 @@ const SpinnerGame = () => {
     spin();
   };
 
-
-  // Handle spin completion is now passed directly to useSpinnerGame
-
-
-  // Handler for debug panel actions (admin only)
-  const handleDebugAction = (action) => {
-    if (!character) return;
-    const spinnerKey = `vermin_spinner_${character.id || character.name}`;
-    if (action === "addSpin") {
-      setSpins((prev) => {
-        const newSpins = prev + 1;
-        // Update localStorage
-        const saved = localStorage.getItem(spinnerKey);
-        if (saved) {
-          const data = JSON.parse(saved);
-          localStorage.setItem(
-            spinnerKey,
-            JSON.stringify({
-              ...data,
-              remainingSpins: newSpins,
-            })
-          );
-        }
-        return newSpins;
-      });
-    } else if (action === "resetHistory") {
-      setSpins(1);
-      setSpinHistory([]);
-      setLastSpinTime(null);
-      localStorage.setItem(
-        spinnerKey,
-        JSON.stringify({
-          history: [],
-          lastSpinTime: null,
-          remainingSpins: 1,
-        })
-      );
-    }
-  };
-
-  // Show onboarding modal/message for first-time players
-  const onboardingMessage = triggerOnboarding ? (
-    <div className="vermin-spinner-onboarding-modal">
-      <div className="vermin-spinner-onboarding-content">
-        <h2>Welcome to the Vermin Spinner!</h2>
-        <p>
-          This is your first time playing. Spin the wheel for a chance to win
-          VERMIN tokens. Good luck!
-        </p>
-        <ul>
-          <li>🎯 You get 1 free spin every day</li>
-          <li>😊 Keep your Vermigotchi happy for bonus spins</li>
-          <li>🧬 Higher evolution = bigger prizes</li>
-        </ul>
-      </div>
-    </div>
-  ) : null;
-
   return (
-    <>
-      <div className="vermin-spinner-game">
+    <div className="w-full max-w-4xl mx-auto py-8">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="vermin-spinner-game-title">Vermin Spinner Game</h2>
-        {/* Admin Debug Panel */}
-        {character && (
-          <AdminProtected>
-            <SpinnerGameDebugPanel
-              character={character}
-              onDebugAction={handleDebugAction}
-            />
-          </AdminProtected>
-        )}
-        {onboardingMessage}
+        <Button 
+          onClick={handleBackToGames}
+          layout="outline"
+          className="flex items-center gap-2 text-sm"
+          size="small"
+        >
+          <FiArrowLeft /> Back to Games
+        </Button>
+      </div>
+      <Card className="p-6 !bg-[rgba(50,50,50,0.8)] border border-gold rounded-lg shadow-lg backdrop-blur">
         <div className="vermin-spinner-game-main">
           <div className="vermin-spinner-game-left">
             {console.log('[SpinnerGame] Rendering <Wheel />', { isSpinning, prizeIndex })}
@@ -169,20 +112,45 @@ const SpinnerGame = () => {
             </Button>
           </div>
           <div className="vermin-spinner-game-right">
-            <div className="vermin-spinner-game-info-row">
-              <SpinInfo
-                spins={spins}
-                character={character}
-                totalWinnings={getTotalWinnings()}
-              />
+            <div className="vermin-tabs">
+              <button
+                className={`vermin-tab ${activeTab === 'info' ? 'active' : ''}`}
+                onClick={() => setActiveTab('info')}
+              >
+                Game Info
+              </button>
+              <button
+                className={`vermin-tab ${activeTab === 'history' ? 'active' : ''}`}
+                onClick={() => setActiveTab('history')}
+              >
+                Spin History
+              </button>
+              <button
+                className={`vermin-tab ${activeTab === 'howtoplay' ? 'active' : ''}`}
+                onClick={() => setActiveTab('howtoplay')}
+              >
+                How to Play
+              </button>
             </div>
-            <div className="vermin-spinner-game-history-row">
-              <SpinHistory history={spinHistory} />
+            <div className="vermin-tab-content">
+              {activeTab === 'info' && (
+                <SpinInfo
+                  spins={spins}
+                  character={character}
+                  totalWinnings={getTotalWinnings()}
+                />
+              )}
+              {activeTab === 'history' && (
+                <SpinHistory history={spinHistory} />
+              )}
+              {activeTab === 'howtoplay' && (
+                <SpinInstructions />
+              )}
             </div>
           </div>
         </div>
-        {/* Prize notification */}
-      </div>
+      </Card>
+      {/* Prize notification */}
       {showPrize && currentPrize && (
         <>
           <Confetti
@@ -218,7 +186,7 @@ const SpinnerGame = () => {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 };
 

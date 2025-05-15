@@ -55,11 +55,12 @@ const SpinnerGame = () => {
   }
 
   // Handle spin button click
-  const handleSpin = () => {
-    if (canSpin) {
-      spin();
-    }
+  const handleSpin = (e) => {
+    e.stopPropagation(); // Prevent bubbling
+    if (!canSpin || isSpinning) return;
+    spin();
   };
+
 
   // Handle spin completion
   const handleSpinComplete = () => {
@@ -148,10 +149,10 @@ const SpinnerGame = () => {
           />
           <Button
             className={`vermin-spinner-btn ${
-              !canSpin ? "vermin-spinner-btn--disabled" : ""
+              !canSpin || isSpinning ? "vermin-spinner-btn--disabled" : ""
             }`}
             onClick={handleSpin}
-            disabled={!canSpin}
+            disabled={!canSpin || isSpinning}
           >
             {isSpinning ? "Spinning..." : `Spin (${spins} left)`}
           </Button>

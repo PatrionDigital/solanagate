@@ -96,19 +96,20 @@ const Wheel = ({ isSpinning, prizeIndex, onSpinComplete }) => {
 
   return (
     <div className="vermin-spinner-wheel-container" style={{ position: 'relative', width: 300, height: 300 }}>
-      {/* Single red marker at the top */}
+      {/* Single red triangle marker at the top */}
       <div
         className="vermin-spinner-wheel-marker"
         style={{
           position: 'absolute',
           top: 0,
           left: '50%',
-          transform: 'translate(-50%, -50%)',
+          transform: 'translate(-50%, -10px)',
           width: 0,
           height: 0,
-          borderLeft: '16px solid transparent',
-          borderRight: '16px solid transparent',
-          borderBottom: '24px solid #FF0000',
+          borderLeft: '12px solid transparent',
+          borderRight: '12px solid transparent',
+          borderTop: '20px solid #FF0000',
+          borderBottom: 'none',
           zIndex: 2,
           pointerEvents: 'none',
         }}

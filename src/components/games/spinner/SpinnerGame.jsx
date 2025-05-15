@@ -1,5 +1,5 @@
 // src/components/games/spinner/SpinnerGame.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { useVermigotchi } from "@/games/tamagotchi/hooks/useVermigotchi";
 import useSpinnerGame from "@/hooks/useSpinnerGame";
@@ -10,12 +10,34 @@ import SpinHistory from "./SpinHistory";
 import "@/styles/SpinnerGame.css";
 import AdminProtected from "@/components/AdminProtected";
 import { Button } from "@windmill/react-ui";
+import Confetti from "react-confetti";
 
 const SpinnerGame = () => {
   // Get the current Vermigotchi pet from context
   const { pet } = useVermigotchi();
 
   // Always call the hook, even if pet is null
+  const handleSpinComplete = useCallback((updatedHistory) => {
+    console.log('[SpinnerGame] handleSpinComplete called with history:', updatedHistory);
+    const lastSpin = updatedHistory[updatedHistory.length - 1];
+    if (lastSpin) {
+      setCurrentPrize(lastSpin);
+      setShowPrize(true);
+      // Trigger scale-in animation after the modal is shown
+      setTimeout(() => setIsAnimating(true), 10);
+      console.log('[SpinnerGame] Prize modal should show. Prize:', lastSpin);
+      
+      // Start hiding animation slightly before the timeout to allow for smooth exit
+      setTimeout(() => {
+        setIsAnimating(false);
+        // Wait for the scale-out animation to complete before hiding the modal
+        setTimeout(() => setShowPrize(false), 300);
+      }, 4700); // 5000ms total - 300ms for animation
+    } else {
+      console.log('[SpinnerGame] No lastSpin found in updatedHistory');
+    }
+  }, []);
+
   const {
     spins,
     isSpinning,
@@ -29,7 +51,7 @@ const SpinnerGame = () => {
     setSpins,
     setSpinHistory,
     setLastSpinTime,
-  } = useSpinnerGame(pet);
+  } = useSpinnerGame(pet, handleSpinComplete);
 
   // Local state and effects must be declared before any return
   // (move all hooks here)
@@ -44,17 +66,9 @@ const SpinnerGame = () => {
   // Show prize notification
   const [showPrize, setShowPrize] = useState(false);
   const [currentPrize, setCurrentPrize] = useState(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
 
-
-  // Show loading if pet or character is null
-  if (!pet || !character) {
-    return (
-      <div className="vermin-spinner-loading">
-        <h3>Loading your Vermigotchi...</h3>
-      </div>
-    );
-  }
 
   // Handle spin button click
   const handleSpin = (e) => {
@@ -64,16 +78,7 @@ const SpinnerGame = () => {
   };
 
 
-  // Handle spin completion
-  const handleSpinComplete = () => {
-    const lastSpin = spinHistory[spinHistory.length - 1];
-    if (lastSpin) {
-      setCurrentPrize(lastSpin);
-      setShowPrize(true);
-      setTimeout(() => setShowPrize(false), 5000);
-    }
-    // No longer remounting the Wheel; reset logic is handled internally
-  };
+  // Handle spin completion is now passed directly to useSpinnerGame
 
 
   // Handler for debug panel actions (admin only)
@@ -131,69 +136,89 @@ const SpinnerGame = () => {
   ) : null;
 
   return (
-    <div className="vermin-spinner-game">
-      <h2 className="vermin-spinner-game-title">Vermin Spinner Game</h2>
-      {/* Admin Debug Panel */}
-      {character && (
-        <AdminProtected>
-          <SpinnerGameDebugPanel
-            character={character}
-            onDebugAction={handleDebugAction}
-          />
-        </AdminProtected>
-      )}
-      {onboardingMessage}
-      <div className="vermin-spinner-game-main">
-        <div className="vermin-spinner-game-left">
-          <Wheel
-            isSpinning={isSpinning}
-            prizeIndex={prizeIndex}
-            onSpinComplete={handleSpinComplete}
-          />
-          <Button
-            className={`vermin-spinner-btn ${
-              !canSpin || isSpinning ? "vermin-spinner-btn--disabled" : ""
-            }`}
-            onClick={handleSpin}
-            disabled={!canSpin || isSpinning}
-            style={{ marginTop: 24 }}
-          >
-            {isSpinning ? "Spinning..." : `Spin (${spins} left)`}
-          </Button>
-        </div>
-        <div className="vermin-spinner-game-right">
-          <div className="vermin-spinner-game-info-row">
-            <SpinInfo
-              spins={spins}
+    <>
+      <div className="vermin-spinner-game">
+        <h2 className="vermin-spinner-game-title">Vermin Spinner Game</h2>
+        {/* Admin Debug Panel */}
+        {character && (
+          <AdminProtected>
+            <SpinnerGameDebugPanel
               character={character}
-              totalWinnings={getTotalWinnings()}
+              onDebugAction={handleDebugAction}
             />
+          </AdminProtected>
+        )}
+        {onboardingMessage}
+        <div className="vermin-spinner-game-main">
+          <div className="vermin-spinner-game-left">
+            {console.log('[SpinnerGame] Rendering <Wheel />', { isSpinning, prizeIndex })}
+            <Wheel
+              isSpinning={isSpinning}
+              prizeIndex={prizeIndex}
+              onSpinComplete={handleSpinComplete}
+            />
+            <Button
+              className={`vermin-spinner-btn ${
+                !canSpin || isSpinning ? "vermin-spinner-btn--disabled" : ""
+              }`}
+              onClick={handleSpin}
+              disabled={!canSpin || isSpinning}
+              style={{ marginTop: 24 }}
+            >
+              {isSpinning ? "Spinning..." : `Spin (${spins} left)`}
+            </Button>
           </div>
-          <div className="vermin-spinner-game-history-row">
-            <SpinHistory history={spinHistory} />
-          </div>
-        </div>
-      </div>
-      {/* Prize notification */}
-      {showPrize && currentPrize && (
-        <div className="vermin-spinner-prize-notification">
-          <h3>🎉 You Won! 🎉</h3>
-          <div className="vermin-spinner-prize-amount">
-            {currentPrize.finalValue} VERMIN
-          </div>
-          {currentPrize.baseValue !== currentPrize.finalValue && (
-            <div className="vermin-spinner-prize-bonus">
-              {currentPrize.evolutionLevel} bonus: +
-              {(
-                (currentPrize.finalValue / currentPrize.baseValue - 1) *
-                100
-              ).toFixed(0)}
-              %
+          <div className="vermin-spinner-game-right">
+            <div className="vermin-spinner-game-info-row">
+              <SpinInfo
+                spins={spins}
+                character={character}
+                totalWinnings={getTotalWinnings()}
+              />
             </div>
-          )}
+            <div className="vermin-spinner-game-history-row">
+              <SpinHistory history={spinHistory} />
+            </div>
+          </div>
         </div>
+        {/* Prize notification */}
+      </div>
+      {showPrize && currentPrize && (
+        <>
+          <Confetti
+            numberOfPieces={250}
+            recycle={false}
+            width={window.innerWidth}
+            height={window.innerHeight}
+          />
+          <div className="vermin-prize-notification-container">
+            <div className={`vermin-prize-notification ${isAnimating ? 'scale-in' : 'scale-out'}`}>
+              <h3 className="vermin-prize-title">🎉 You Won! 🎉</h3>
+              <div className="vermin-spinner-prize-amount">
+                {currentPrize.finalValue} <span className="vermin-prize-token">VERMIN</span>
+              </div>
+              {currentPrize.baseValue !== currentPrize.finalValue && (
+                <div className="vermin-prize-bonus">
+                  (Base: {currentPrize.baseValue} + Bonus:{' '}
+                  {currentPrize.finalValue - currentPrize.baseValue})
+                </div>
+              )}
+              <div className="vermin-prize-actions">
+                <Button
+                  onClick={() => {
+                    setIsAnimating(false);
+                    setTimeout(() => setShowPrize(false), 300);
+                  }}
+                  className="vermin-spinner-prize-close-btn"
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
-    </div>
+    </>
   );
 };
 

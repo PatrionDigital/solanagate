@@ -41,10 +41,6 @@ const Wheel = ({ isSpinning, prizeIndex, onSpinComplete }) => {
       ctx.font = "bold 16px Arial";
       ctx.fillText(segment.label, radius - 20, 5);
       // --- DEBUG: Draw prize index number in each segment ---
-      ctx.font = "bold 18px Arial";
-      ctx.fillStyle = "#ff0";
-      ctx.textAlign = "center";
-      ctx.fillText(index.toString(), radius - 60, -10);
       // --- END DEBUG ---
       ctx.restore();
     });
@@ -65,6 +61,7 @@ const Wheel = ({ isSpinning, prizeIndex, onSpinComplete }) => {
     }
     // Detect transition from not spinning to spinning
     if (!prevIsSpinning.current && isSpinning) {
+      console.log('[Wheel] isSpinning transitioned to true. Starting animation. prizeIndex:', prizeIndex);
       // Step 1: Instantly reset wheel to 0deg, no transition
       wheelRef.current.style.transition = 'none';
       wheelRef.current.style.transform = 'rotate(0deg)';
@@ -80,6 +77,7 @@ const Wheel = ({ isSpinning, prizeIndex, onSpinComplete }) => {
           // Schedule spin complete callback after animation
           spinTimeoutRef.current = setTimeout(() => {
             spinTimeoutRef.current = null;
+            console.log('[Wheel] Spin animation complete. Calling onSpinComplete.');
             if (onSpinComplete) onSpinComplete();
           }, 4000);
         });
@@ -89,6 +87,7 @@ const Wheel = ({ isSpinning, prizeIndex, onSpinComplete }) => {
     // Cleanup on unmount or re-spin
     return () => {
       if (spinTimeoutRef.current) {
+        console.log('[Wheel] Cleaning up spinTimeout before animation complete.');
         clearTimeout(spinTimeoutRef.current);
         spinTimeoutRef.current = null;
       }

@@ -13,9 +13,10 @@ import {
 
 /**
  * Custom hook for managing spinner game state
- * Accepts either a character object (preferred, e.g. from VermigotchiContext) or a characterId for legacy/project context.
+ * @param {Object|string} characterOrId - Character object or ID
+ * @param {Function} [onSpinComplete] - Callback called when spin completes
  */
-const useSpinnerGame = (characterOrId) => {
+const useSpinnerGame = (characterOrId, onSpinComplete) => {
   const { updateUserProfile, userProfile } = useUserProfile();
   const { updateCharacter } = useProject();
   // Set initial spins to 1 for first-time player
@@ -166,6 +167,12 @@ const useSpinnerGame = (characterOrId) => {
       const updatedHistory = [...spinHistory, newSpin];
       setSpinHistory(updatedHistory);
       console.debug('[SpinnerGame] Spin history updated', { updatedHistory });
+      
+      // Call onSpinComplete with the latest history if provided
+      if (typeof onSpinComplete === 'function') {
+        onSpinComplete(updatedHistory);
+      }
+      
       setLastSpinTime(now);
       console.debug('[SpinnerGame] Last spin time updated', { now });
       setSpins(prev => {
@@ -196,7 +203,7 @@ const useSpinnerGame = (characterOrId) => {
         });
       }
     }, 5000); // 5 seconds for the spinning animation
-  }, [isSpinning, spins, character, prizeIndex, spinHistory, saveSpinnerData, userProfile, updateUserProfile, lastSpinTime]);
+  }, [isSpinning, spins, character, prizeIndex, spinHistory, saveSpinnerData, userProfile, updateUserProfile, lastSpinTime, onSpinComplete]);
 
   // Get total winnings
   const getTotalWinnings = useCallback(() => {

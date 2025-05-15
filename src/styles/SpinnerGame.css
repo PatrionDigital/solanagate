@@ -227,6 +227,84 @@
   z-index: 1000;
   animation: vermin-spinner-prize-notification 0.5s ease-out;
 }
+/* Prize Notification */
+.vermin-prize-notification-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.vermin-prize-notification {
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 2rem 3rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  min-width: 280px;
+  transform: scale(0);
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  pointer-events: auto;
+}
+
+.vermin-prize-notification.scale-in {
+  transform: scale(1);
+}
+
+.vermin-prize-notification.scale-out {
+  transform: scale(0);
+}
+
+.vermin-spinner-prize-close-btn {
+  margin-top: 1rem;
+  background: #4a5568;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.vermin-spinner-prize-close-btn:hover {
+  background: #2d3748;
+}
+
+.vermin-prize-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #d4af37;
+}
+
+.vermin-spinner-prize-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.vermin-prize-token {
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.vermin-prize-bonus {
+  font-size: 1.1rem;
+  color: #ffd700;
+  margin-bottom: 0.5rem;
+}
+
+.vermin-prize-actions {
+  margin-top: 1.5rem;
+}
+
 @keyframes vermin-spinner-prize-notification {
   0% {
     transform: translate(-50%, -50%) scale(0.8);

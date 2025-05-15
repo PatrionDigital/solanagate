@@ -1,30 +1,21 @@
 // src/components/games/spinner/SpinnerGame.jsx
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useProject } from "@/hooks/useProject";
+import { useVermigotchi } from "@/games/tamagotchi/hooks/useVermigotchi";
 import useSpinnerGame from "@/hooks/useSpinnerGame";
 import Wheel from "./Wheel";
+import SpinnerGameDebugPanel from "./SpinnerGameDebugPanel";
 import SpinInfo from "./SpinInfo";
 import SpinHistory from "./SpinHistory";
 import "@/styles/SpinnerGame.css";
-import { Button, Label, Select, Card } from "@windmill/react-ui";
+import AdminProtected from "@/components/AdminProtected";
+import { Button } from "@windmill/react-ui";
 
-const SpinnerGame = ({ characterId }) => {
-  const { state } = useProject();
-  const [characters, setCharacters] = useState([]);
-  const [selectedCharacterId, setSelectedCharacterId] = useState(characterId || "");
+const SpinnerGame = () => {
+  // Get the current Vermigotchi pet from context
+  const { pet } = useVermigotchi();
 
-  // Load characters
-  useEffect(() => {
-    if (state.characters) {
-      setCharacters(state.characters);
-      if (!characterId && state.characters.length > 0) {
-        setSelectedCharacterId(state.characters[0].id);
-      }
-    }
-  }, [state.characters, characterId]);
-
-  // Get spinner game state from hook
+  // Always call the hook, even if pet is null
   const {
     spins,
     isSpinning,
@@ -33,13 +24,35 @@ const SpinnerGame = ({ characterId }) => {
     prizeIndex,
     spin,
     getTotalWinnings,
-    canSpin
-  } = useSpinnerGame(selectedCharacterId);
+    canSpin,
+    triggerOnboarding,
+    setSpins,
+    setSpinHistory,
+    setLastSpinTime,
+  } = useSpinnerGame(pet);
 
-  // Handle character selection
-  const handleCharacterChange = (e) => {
-    setSelectedCharacterId(e.target.value);
-  };
+  // Local state and effects must be declared before any return
+  // (move all hooks here)
+  // Example: const [showPrize, setShowPrize] = useState(false);
+  // ... other hooks
+  // (Assume all hooks are now at the top, before any return)
+
+  useEffect(() => {
+    console.log("[SpinnerGame] character changed:", character);
+  }, [character]);
+
+  // Show prize notification
+  const [showPrize, setShowPrize] = useState(false);
+  const [currentPrize, setCurrentPrize] = useState(null);
+
+  // Show loading if pet or character is null
+  if (!pet || !character) {
+    return (
+      <div className="vermin-spinner-loading">
+        <h3>Loading your Vermigotchi...</h3>
+      </div>
+    );
+  }
 
   // Handle spin button click
   const handleSpin = () => {
@@ -47,10 +60,6 @@ const SpinnerGame = ({ characterId }) => {
       spin();
     }
   };
-
-  // Show prize notification
-  const [showPrize, setShowPrize] = useState(false);
-  const [currentPrize, setCurrentPrize] = useState(null);
 
   // Handle spin completion
   const handleSpinComplete = () => {
@@ -62,40 +71,73 @@ const SpinnerGame = ({ characterId }) => {
     }
   };
 
-  if (characters.length === 0) {
-    return (
-      <Card className="vermin-spinner-game vermin-spinner-game--no-characters">
-        <h2 className="vermin-spinner-game-title">Vermin Spinner Game</h2>
-        <p>You need to create a Vermigotchi character first to play the spinner game.</p>
-        <Button
-          className="vermin-spinner-game-button"
-          onClick={() => window.location.href = "/games/vermigotchi"}
-        >
-          Create a Vermigotchi
-        </Button>
-      </Card>
-    );
-  }
+  // Handler for debug panel actions (admin only)
+  const handleDebugAction = (action) => {
+    if (!character) return;
+    const spinnerKey = `vermin_spinner_${character.id || character.name}`;
+    if (action === "addSpin") {
+      setSpins((prev) => {
+        const newSpins = prev + 1;
+        // Update localStorage
+        const saved = localStorage.getItem(spinnerKey);
+        if (saved) {
+          const data = JSON.parse(saved);
+          localStorage.setItem(
+            spinnerKey,
+            JSON.stringify({
+              ...data,
+              remainingSpins: newSpins,
+            })
+          );
+        }
+        return newSpins;
+      });
+    } else if (action === "resetHistory") {
+      setSpins(1);
+      setSpinHistory([]);
+      setLastSpinTime(null);
+      localStorage.setItem(
+        spinnerKey,
+        JSON.stringify({
+          history: [],
+          lastSpinTime: null,
+          remainingSpins: 1,
+        })
+      );
+    }
+  };
+
+  // Show onboarding modal/message for first-time players
+  const onboardingMessage = triggerOnboarding ? (
+    <div className="vermin-spinner-onboarding-modal">
+      <div className="vermin-spinner-onboarding-content">
+        <h2>Welcome to the Vermin Spinner!</h2>
+        <p>
+          This is your first time playing. Spin the wheel for a chance to win
+          VERMIN tokens. Good luck!
+        </p>
+        <ul>
+          <li>🎯 You get 1 free spin every day</li>
+          <li>😊 Keep your Vermigotchi happy for bonus spins</li>
+          <li>🧬 Higher evolution = bigger prizes</li>
+        </ul>
+      </div>
+    </div>
+  ) : null;
 
   return (
     <div className="vermin-spinner-game">
       <h2 className="vermin-spinner-game-title">Vermin Spinner Game</h2>
-      {/* Character selection */}
-      <div className="vermin-spinner-character-select">
-        <Label htmlFor="character-select">Select your Vermigotchi:</Label>
-        <Select
-          id="character-select"
-          value={selectedCharacterId}
-          onChange={handleCharacterChange}
-          disabled={isSpinning}
-        >
-          {characters.map(char => (
-            <option key={char.id} value={char.id}>
-              {char.name} - Level {char.level}
-            </option>
-          ))}
-        </Select>
-      </div>
+      {/* Admin Debug Panel */}
+      {character && (
+        <AdminProtected>
+          <SpinnerGameDebugPanel
+            character={character}
+            onDebugAction={handleDebugAction}
+          />
+        </AdminProtected>
+      )}
+      {onboardingMessage}
       {/* Main game area */}
       <div className="vermin-spinner-game-container">
         <div className="vermin-spinner-game-wheel">
@@ -105,7 +147,9 @@ const SpinnerGame = ({ characterId }) => {
             onSpinComplete={handleSpinComplete}
           />
           <Button
-            className={`vermin-spinner-btn ${!canSpin ? "vermin-spinner-btn--disabled" : ""}`}
+            className={`vermin-spinner-btn ${
+              !canSpin ? "vermin-spinner-btn--disabled" : ""
+            }`}
             onClick={handleSpin}
             disabled={!canSpin}
           >
@@ -125,11 +169,17 @@ const SpinnerGame = ({ characterId }) => {
       {showPrize && currentPrize && (
         <div className="vermin-spinner-prize-notification">
           <h3>🎉 You Won! 🎉</h3>
-          <div className="vermin-spinner-prize-amount">{currentPrize.finalValue} VERMIN</div>
+          <div className="vermin-spinner-prize-amount">
+            {currentPrize.finalValue} VERMIN
+          </div>
           {currentPrize.baseValue !== currentPrize.finalValue && (
             <div className="vermin-spinner-prize-bonus">
               {currentPrize.evolutionLevel} bonus: +
-              {((currentPrize.finalValue / currentPrize.baseValue - 1) * 100).toFixed(0)}%
+              {(
+                (currentPrize.finalValue / currentPrize.baseValue - 1) *
+                100
+              ).toFixed(0)}
+              %
             </div>
           )}
         </div>

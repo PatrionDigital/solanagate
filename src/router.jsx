@@ -66,7 +66,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "spinner",
-            element: <SpinnerGame />
+            element: (
+              <VermigotchiProvider>
+                <SpinnerGame />
+              </VermigotchiProvider>
+            )
           },
         ],
       },

@@ -393,41 +393,53 @@
   pointer-events: none;
 }
 
-.vermin-prize-notification {
-  background: rgba(0, 0, 0, 0.9);
+.vermin-prize-notification-card {
+  background: rgba(40, 40, 40, 0.95);
   color: white;
   padding: 2rem 3rem;
-  border-radius: 16px;
+  border: 1px solid #d4af37;
+  border-radius: 0.5rem;
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  min-width: 280px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  min-width: 300px;
   transform: scale(0);
   transform-origin: center;
   transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
   pointer-events: auto;
+  backdrop-filter: blur(8px);
 }
 
-.vermin-prize-notification.scale-in {
+.vermin-prize-notification-card.scale-in {
   transform: scale(1);
 }
 
-.vermin-prize-notification.scale-out {
+.vermin-prize-notification-card.scale-out {
   transform: scale(0);
 }
 
 .vermin-spinner-prize-close-btn {
-  margin-top: 1rem;
-  background: #4a5568;
-  color: white;
+  margin-top: 1.5rem;
+  background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
+  color: #000;
   border: none;
-  padding: 0.5rem 1.5rem;
+  padding: 0.6rem 2.5rem;
   border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .vermin-spinner-prize-close-btn:hover {
-  background: #2d3748;
+  background: linear-gradient(135deg, #f1c40f 0%, #d4af37 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.vermin-spinner-prize-close-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(212, 175, 55, 0.3);
 }
 
 .vermin-prize-title {
@@ -445,6 +457,13 @@
 .vermin-prize-token {
   font-size: 1.1rem;
   font-weight: 400;
+}
+
+.vermin-prize-message {
+  font-size: 1.2rem;
+  color: #fff;
+  margin: 1rem 0;
+  line-height: 1.5;
 }
 
 .vermin-prize-bonus {

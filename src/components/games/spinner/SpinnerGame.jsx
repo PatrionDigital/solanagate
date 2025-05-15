@@ -153,23 +153,36 @@ const SpinnerGame = () => {
       {/* Prize notification */}
       {showPrize && currentPrize && (
         <>
-          <Confetti
-            numberOfPieces={250}
-            recycle={false}
-            width={window.innerWidth}
-            height={window.innerHeight}
-          />
+          {currentPrize.finalValue > 0 && (
+            <Confetti
+              numberOfPieces={250}
+              recycle={false}
+              width={window.innerWidth}
+              height={window.innerHeight}
+            />
+          )}
           <div className="vermin-prize-notification-container">
-            <div className={`vermin-prize-notification ${isAnimating ? 'scale-in' : 'scale-out'}`}>
-              <h3 className="vermin-prize-title">🎉 You Won! 🎉</h3>
-              <div className="vermin-spinner-prize-amount">
-                {currentPrize.finalValue} <span className="vermin-prize-token">VERMIN</span>
-              </div>
-              {currentPrize.baseValue !== currentPrize.finalValue && (
-                <div className="vermin-prize-bonus">
-                  (Base: {currentPrize.baseValue} + Bonus:{' '}
-                  {currentPrize.finalValue - currentPrize.baseValue})
-                </div>
+            <Card className={`vermin-prize-notification-card ${isAnimating ? 'scale-in' : 'scale-out'}`}>
+              {currentPrize.finalValue > 0 ? (
+                <>
+                  <h3 className="vermin-prize-title">🎉 You Won! 🎉</h3>
+                  <div className="vermin-spinner-prize-amount">
+                    {currentPrize.finalValue} <span className="vermin-prize-token">VERMIN</span>
+                  </div>
+                  {currentPrize.baseValue !== currentPrize.finalValue && (
+                    <div className="vermin-prize-bonus">
+                      (Base: {currentPrize.baseValue} + Bonus:{' '}
+                      {currentPrize.finalValue - currentPrize.baseValue})
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <h3 className="vermin-prize-title">😭 Better Luck Next Time!</h3>
+                  <div className="vermin-prize-message">
+                    Sorry! You didn&apos;t win anything this time.
+                  </div>
+                </>
               )}
               <div className="vermin-prize-actions">
                 <Button
@@ -179,10 +192,10 @@ const SpinnerGame = () => {
                   }}
                   className="vermin-spinner-prize-close-btn"
                 >
-                  Close
+                  OK
                 </Button>
               </div>
-            </div>
+            </Card>
           </div>
         </>
       )}

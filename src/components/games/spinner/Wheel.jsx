@@ -7,6 +7,9 @@ import { PRIZE_SEGMENTS } from "@/utils/spinnerUtils";
 const Wheel = ({ isSpinning, prizeIndex, onSpinComplete }) => {
   const wheelRef = useRef(null);
   const canvasRef = useRef(null);
+  const spinTimeoutRef = useRef(null); // Track spin animation timeout
+  const prevIsSpinning = useRef(false); // Track previous isSpinning for transition detection
+
 
   // Draw the wheel on canvas
   useEffect(() => {
@@ -52,35 +55,44 @@ const Wheel = ({ isSpinning, prizeIndex, onSpinComplete }) => {
 
   }, []);
 
-  // Always reset wheel to segment 0 at the top when not spinning
+  // Only animate/reset when isSpinning transitions from false to true
   useEffect(() => {
     if (!wheelRef.current) return;
-    if (!isSpinning) {
+    // Clear previous timeout
+    if (spinTimeoutRef.current) {
+      clearTimeout(spinTimeoutRef.current);
+      spinTimeoutRef.current = null;
+    }
+    // Detect transition from not spinning to spinning
+    if (!prevIsSpinning.current && isSpinning) {
+      // Step 1: Instantly reset wheel to 0deg, no transition
       wheelRef.current.style.transition = 'none';
       wheelRef.current.style.transform = 'rotate(0deg)';
+      // Step 2: Force browser to apply styles before animating
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (!wheelRef.current) return;
+          const segmentAngle = 360 / PRIZE_SEGMENTS.length;
+          const fullRotations = 5 * 360;
+          const totalRotation = fullRotations - (prizeIndex * segmentAngle);
+          wheelRef.current.style.transition = 'transform 4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+          wheelRef.current.style.transform = `rotate(${totalRotation}deg)`;
+          // Schedule spin complete callback after animation
+          spinTimeoutRef.current = setTimeout(() => {
+            spinTimeoutRef.current = null;
+            if (onSpinComplete) onSpinComplete();
+          }, 4000);
+        });
+      });
     }
-  }, [isSpinning]);
-
-  // Handle spinning animation
-  useEffect(() => {
-    if (!wheelRef.current || !isSpinning) return;
-    // Step 1: Instantly reset wheel to 0deg, remove transition
-    wheelRef.current.style.transition = 'none';
-    wheelRef.current.style.transform = 'rotate(0deg)';
-    const segmentAngle = 360 / PRIZE_SEGMENTS.length;
-    // Correct: segment N at the top for prizeIndex N
-    const fullRotations = 5 * 360;
-    const totalRotation = fullRotations - (prizeIndex * segmentAngle);
-    // Step 2: On next animation frame, set transition and animate to target
-    requestAnimationFrame(() => {
-      if (!wheelRef.current) return;
-      wheelRef.current.style.transition = 'transform 4s cubic-bezier(0.2, 0.8, 0.2, 1)';
-      wheelRef.current.style.transform = `rotate(${totalRotation}deg)`;
-      // Call onSpinComplete after animation duration
-      setTimeout(() => {
-        if (onSpinComplete) onSpinComplete();
-      }, 4000);
-    });
+    prevIsSpinning.current = isSpinning;
+    // Cleanup on unmount or re-spin
+    return () => {
+      if (spinTimeoutRef.current) {
+        clearTimeout(spinTimeoutRef.current);
+        spinTimeoutRef.current = null;
+      }
+    };
   }, [isSpinning, prizeIndex, onSpinComplete]);
 
   return (

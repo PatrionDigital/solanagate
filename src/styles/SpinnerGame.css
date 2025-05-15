@@ -5,6 +5,34 @@
   margin: 0 auto;
   padding: 20px;
 }
+.vermin-spinner-game-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: flex-start;
+  justify-items: center;
+}
+.vermin-spinner-game-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 400px;
+}
+.vermin-spinner-game-right {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 400px;
+}
+.vermin-spinner-game-info-row {
+  width: 100%;
+}
+.vermin-spinner-game-history-row {
+  width: 100%;
+}
 .vermin-spinner-game-title {
   color: #d4af37;
   text-align: center;

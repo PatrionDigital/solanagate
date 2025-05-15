@@ -45,6 +45,8 @@ const SpinnerGame = () => {
   const [showPrize, setShowPrize] = useState(false);
   const [currentPrize, setCurrentPrize] = useState(null);
 
+
+
   // Show loading if pet or character is null
   if (!pet || !character) {
     return (
@@ -70,7 +72,9 @@ const SpinnerGame = () => {
       setShowPrize(true);
       setTimeout(() => setShowPrize(false), 5000);
     }
+    // No longer remounting the Wheel; reset logic is handled internally
   };
+
 
   // Handler for debug panel actions (admin only)
   const handleDebugAction = (action) => {
@@ -139,9 +143,8 @@ const SpinnerGame = () => {
         </AdminProtected>
       )}
       {onboardingMessage}
-      {/* Main game area */}
-      <div className="vermin-spinner-game-container">
-        <div className="vermin-spinner-game-wheel">
+      <div className="vermin-spinner-game-main">
+        <div className="vermin-spinner-game-left">
           <Wheel
             isSpinning={isSpinning}
             prizeIndex={prizeIndex}
@@ -153,17 +156,22 @@ const SpinnerGame = () => {
             }`}
             onClick={handleSpin}
             disabled={!canSpin || isSpinning}
+            style={{ marginTop: 24 }}
           >
             {isSpinning ? "Spinning..." : `Spin (${spins} left)`}
           </Button>
         </div>
-        <div className="vermin-spinner-game-info">
-          <SpinInfo
-            spins={spins}
-            character={character}
-            totalWinnings={getTotalWinnings()}
-          />
-          <SpinHistory history={spinHistory} />
+        <div className="vermin-spinner-game-right">
+          <div className="vermin-spinner-game-info-row">
+            <SpinInfo
+              spins={spins}
+              character={character}
+              totalWinnings={getTotalWinnings()}
+            />
+          </div>
+          <div className="vermin-spinner-game-history-row">
+            <SpinHistory history={spinHistory} />
+          </div>
         </div>
       </div>
       {/* Prize notification */}

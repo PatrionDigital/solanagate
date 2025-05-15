@@ -125,6 +125,40 @@
   margin-top: 0;
 }
 
+/* Mobile Selector */
+.vermin-mobile-selector {
+  display: none; /* Hidden by default, shown on mobile */
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.vermin-mobile-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d4af37;
+  border-radius: 8px;
+  background-color: rgba(40, 40, 40, 0.9);
+  color: #fff;
+  font-size: 1rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  cursor: pointer;
+}
+
+.vermin-mobile-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+}
+
+.vermin-mobile-select option {
+  background-color: #2d2d2d;
+  color: #fff;
+  padding: 0.5rem;
+}
+
 /* Hide the top border of the content panel under the active tab only */
 .vermin-tab.active {
   background-clip: padding-box;
@@ -503,6 +537,19 @@
   font-size: 14px;
 }
 @media screen and (max-width: 768px) {
+  /* Show mobile selector and hide desktop tabs */
+  .vermin-mobile-selector {
+    display: block;
+  }
+  
+  .vermin-tabs {
+    display: none;
+  }
+  
+  /* Adjust tab content for mobile */
+  .vermin-tab-content {
+    margin-top: 1rem;
+  }
   .vermin-spinner-game-main {
     display: block;
     padding: 0;

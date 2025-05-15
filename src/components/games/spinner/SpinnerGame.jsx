@@ -112,6 +112,20 @@ const SpinnerGame = () => {
             </Button>
           </div>
           <div className="vermin-spinner-game-right">
+            {/* Mobile Selector - Only visible on small screens */}
+            <div className="vermin-mobile-selector">
+              <select
+                value={activeTab}
+                onChange={(e) => setActiveTab(e.target.value)}
+                className="vermin-mobile-select"
+              >
+                <option value="info">Game Info</option>
+                <option value="history">Spin History</option>
+                <option value="howtoplay">How to Play</option>
+              </select>
+            </div>
+            
+            {/* Desktop Tabs - Hidden on mobile */}
             <div className="vermin-tabs">
               <button
                 className={`vermin-tab ${activeTab === 'info' ? 'active' : ''}`}

@@ -1,0 +1,249 @@
+/* src/styles/SpinnerGame.css - All classes prefixed with vermin-spinner- */
+.vermin-spinner-game {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.vermin-spinner-game-title {
+  color: #d4af37;
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+.vermin-spinner-character-select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+.vermin-spinner-game-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.vermin-spinner-game-wheel {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.vermin-spinner-game-info {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.vermin-spinner-wheel-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 20px auto;
+}
+.vermin-spinner-wheel {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.2s ease;
+  transform-origin: center;
+  position: relative;
+}
+.vermin-spinner-wheel-canvas {
+  width: 100%;
+  height: 100%;
+}
+.vermin-spinner-wheel-marker {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 20px solid #ff0000;
+  z-index: 2;
+}
+.vermin-spinner-btn {
+  margin-top: 20px;
+  padding: 12px 30px;
+  background-color: rgba(212, 175, 55, 0.8);
+  color: black;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.vermin-spinner-btn:hover {
+  background-color: rgba(212, 175, 55, 1);
+  transform: scale(1.05);
+}
+.vermin-spinner-btn--disabled,
+.vermin-spinner-btn--disabled:hover {
+  background-color: rgba(100, 100, 100, 0.8);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: not-allowed;
+  transform: none;
+}
+.vermin-spinner-info-card {
+  background-color: rgba(60, 60, 60, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 15px;
+}
+.vermin-spinner-info-title {
+  color: #d4af37;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 10px;
+}
+.vermin-spinner-info-content {
+  margin-bottom: 15px;
+}
+.vermin-spinner-stat {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.vermin-spinner-stat-label {
+  color: #d4af37;
+}
+.vermin-spinner-stat-value {
+  font-weight: bold;
+}
+.vermin-spinner-instructions {
+  background-color: rgba(40, 40, 40, 0.8);
+  border-radius: 8px;
+  padding: 10px 15px;
+}
+.vermin-spinner-instructions h4 {
+  color: #d4af37;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+.vermin-spinner-instructions ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.vermin-spinner-instructions li {
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+.vermin-spinner-history {
+  background-color: rgba(60, 60, 60, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 15px;
+}
+.vermin-spinner-history-title {
+  color: #d4af37;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 10px;
+}
+.vermin-spinner-history-empty-message {
+  text-align: center;
+  color: #aaa;
+  font-style: italic;
+}
+.vermin-spinner-history-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+.vermin-spinner-history-item {
+  background-color: rgba(40, 40, 40, 0.8);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+.vermin-spinner-history-item-time {
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 5px;
+}
+.vermin-spinner-history-item-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.vermin-spinner-history-item-prize {
+  font-weight: bold;
+  color: #d4af37;
+  font-size: 16px;
+}
+.vermin-spinner-history-item-bonus {
+  font-size: 12px;
+  color: #aaa;
+}
+.vermin-spinner-prize-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(40, 40, 40, 0.95);
+  border: 2px solid #d4af37;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+  z-index: 1000;
+  animation: vermin-spinner-prize-notification 0.5s ease-out;
+}
+@keyframes vermin-spinner-prize-notification {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+.vermin-spinner-prize-notification h3 {
+  color: #d4af37;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+.vermin-spinner-prize-amount {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 10px;
+}
+.vermin-spinner-prize-bonus {
+  color: #4BC0C0;
+  font-size: 14px;
+}
+@media screen and (max-width: 768px) {
+  .vermin-spinner-game-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .vermin-spinner-wheel-container {
+    width: 250px;
+    height: 250px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .vermin-spinner-wheel-container {
+    width: 200px;
+    height: 200px;
+  }
+  .vermin-spinner-game-title {
+    font-size: 24px;
+  }
+  .vermin-spinner-prize-amount {
+    font-size: 28px;
+  }
+}

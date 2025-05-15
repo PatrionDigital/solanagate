@@ -15,6 +15,8 @@ import { HoneycombAdminPage } from "@/pages/honeycomb-admin/HoneycombModules";
 // Games
 import { VermigotchiProvider } from "@/games/tamagotchi/context/VermigotchiContext";
 import VermigotchiContainer from "@/games/tamagotchi/components/VermigotchiContainer";
+import GameDashboard from "@/components/games/GameDashboard";
+import SpinnerGame from "@/components/games/spinner/SpinnerGame";
 
 export const router = createBrowserRouter([
   // Public routes
@@ -51,6 +53,11 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
+            // GameDashboard for /games
+            element: <GameDashboard />
+          },
+          {
+            path: "vermigotchi",
             element: (
               <VermigotchiProvider>
                 <VermigotchiContainer />
@@ -58,12 +65,8 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "vermi",
-            element: (
-              <VermigotchiProvider>
-                <VermigotchiContainer />
-              </VermigotchiProvider>
-            ),
+            path: "spinner",
+            element: <SpinnerGame />
           },
         ],
       },

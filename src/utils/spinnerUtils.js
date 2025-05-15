@@ -66,11 +66,51 @@ export const getBonusSpins = (happiness) => {
 };
 
 /**
- * Get a random segment index for the wheel
+ * Get a random segment index for the wheel with weighted odds
  * @returns {number} Random index for prize selection
+ * 
+ * Prize Distribution:
+ * - 15 VERMIN: 1.5% chance
+ * - 10 VERMIN: 4% chance
+ * - 5 VERMIN: 5% chance
+ * - 0 VERMIN: 10% chance
+ * - 0.1 & 0.5 VERMIN: 23.85% each (47.7% total)
+ * - 1 & 3 VERMIN: 15.9% each (31.8% total)
  */
 export const getRandomPrizeIndex = () => {
-  return Math.floor(Math.random() * PRIZE_SEGMENTS.length);
+  const random = Math.random() * 100; // 0-100
+  
+  // Find the index of each prize in PRIZE_SEGMENTS
+  const prizeIndices = {
+    zero: PRIZE_SEGMENTS.findIndex(prize => prize.value === 0),
+    pointOne: PRIZE_SEGMENTS.findIndex(prize => prize.value === 0.1),
+    pointFive: PRIZE_SEGMENTS.findIndex(prize => prize.value === 0.5),
+    one: PRIZE_SEGMENTS.findIndex(prize => prize.value === 1),
+    three: PRIZE_SEGMENTS.findIndex(prize => prize.value === 3),
+    five: PRIZE_SEGMENTS.findIndex(prize => prize.value === 5),
+    ten: PRIZE_SEGMENTS.findIndex(prize => prize.value === 10),
+    fifteen: PRIZE_SEGMENTS.findIndex(prize => prize.value === 15)
+  };
+
+  // Fixed percentage prizes (20.5% total)
+  if (random < 1.5) return prizeIndices.fifteen;  // 0-1.5%: 15 VERMIN (1.5%)
+  if (random < 5.5) return prizeIndices.ten;      // 1.5-5.5%: 10 VERMIN (4%)
+  if (random < 10.5) return prizeIndices.five;    // 5.5-10.5%: 5 VERMIN (5%)
+  if (random < 20.5) return prizeIndices.zero;    // 10.5-20.5%: 0 VERMIN (10%)
+  
+  // Remaining 79.5% distributed in two cohorts:
+  // - 60% of 79.5% = 47.7% for 0.1 & 0.5 VERMIN (23.85% each)
+  // - 40% of 79.5% = 31.8% for 1 & 3 VERMIN (15.9% each)
+  const remainingRandom = Math.random() * 100; // 0-100% of remaining
+  
+  // First cohort: 0.1 and 0.5 VERMIN (47.7% total)
+  if (remainingRandom < 50) {
+    return Math.random() < 0.5 ? prizeIndices.pointOne : prizeIndices.pointFive;
+  }
+  // Second cohort: 1 and 3 VERMIN (31.8% total)
+  else {
+    return Math.random() < 0.5 ? prizeIndices.one : prizeIndices.three;
+  }
 };
 
 /**

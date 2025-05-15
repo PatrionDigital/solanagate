@@ -27,24 +27,14 @@ class VermigotchiPet {
     this.playCount = options.playCount ?? 0;
     this.medicineCount = options.medicineCount ?? 0;
     this.specialCareCount = options.specialCareCount ?? 0;
-    // === ALPHA TESTING: Evolution thresholds set to 1-minute intervals ===
-    // Original (production):
-    // this.evolutionStages = {
-    //   egg: 0,
-    //   baby: 1,
-    //   child: 3,
-    //   teen: 7,
-    //   adult: 14
-    // };
-    // For alpha testing, each stage is 1 minute apart (1/1440 days):
+    // Evolution thresholds in days
     this.evolutionStages = {
       egg: 0,
-      baby: 1/1440,
-      child: 2/1440,
-      teen: 3/1440,
-      adult: 4/1440
+      baby: 1,     // 1 day to baby
+      child: 3,    // 3 days to child
+      teen: 7,     // 7 days to teen
+      adult: 14    // 14 days to adult
     };
-    // === End alpha testing block ===
   }
 
   feed(amount = 10) {

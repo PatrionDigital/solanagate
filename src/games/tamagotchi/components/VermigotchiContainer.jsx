@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, Button } from "@windmill/react-ui";
 import ActionConfirmModal from "./ActionConfirmModal";
 import { useWalletContext } from "@/contexts/WalletContext";
@@ -7,6 +8,7 @@ import PetStatus from "./PetStatus";
 import GameIntro from "./GameIntro";
 import CharacterSettings from "./CharacterSettings";
 import { FaCog, FaUtensils, FaGamepad, FaMedkit, FaStar, FaMoon, FaSun } from "react-icons/fa";
+import { FiArrowLeft } from "react-icons/fi";
 import { useVermigotchi } from "../hooks/useVermigotchi";
 
 const actionOptions = [
@@ -30,7 +32,12 @@ function formatAge(ageDays) {
 }
 
 const VermigotchiContainer = () => {
+  const navigate = useNavigate();
   const { publicKey } = useWalletContext();
+  
+  const handleBackToGames = () => {
+    navigate('/games');
+  };
   const [showIntro, setShowIntro] = useState(true);
   const {
     pet,
@@ -139,6 +146,17 @@ const VermigotchiContainer = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto py-8">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="vermin-spinner-game-title">Vermigotchi</h2>
+        <Button 
+          onClick={handleBackToGames}
+          layout="outline"
+          className="flex items-center gap-2 text-sm"
+          size="small"
+        >
+          <FiArrowLeft /> Back to Games
+        </Button>
+      </div>
       <Card className="p-6 !bg-[rgba(50,50,50,0.8)] border border-gold rounded-lg shadow-lg backdrop-blur flex flex-col gap-6">
         {/* Action selector menu (mobile/desktop) */}
         <div className="w-full mb-4">
@@ -221,22 +239,27 @@ const VermigotchiContainer = () => {
                     <FaCog size={22} />
                   </button>
                 </div>
-                <div className="flex flex-col gap-1 items-start text-white">
-                  <span className="inline-block w-28 font-mono text-xs text-right align-middle select-none mb-1">Age: {formatAge(pet.age)}</span>
-                  <div className="flex flex-row items-center gap-2">
-                    {["egg", "baby", "child", "teen", "adult"].map(stageName => (
-                      <span
-                        key={stageName}
-                        className={
-                          "inline-block w-16 font-mono text-center align-middle select-none rounded " +
-                          (pet.stage === stageName
-                            ? "bg-gold text-black font-bold border border-gold shadow"
-                            : "bg-gray-800 text-gold/60 border border-gold/10")
-                        }
-                      >
-                        {capitalizeStage(stageName)}
-                      </span>
-                    ))}
+                <div className="flex flex-col gap-2 items-start text-white w-full">
+                  <div className="flex items-center gap-2 w-full">
+                    <span className="font-mono text-xs align-middle select-none w-16">Age:</span>
+                    <span className="font-mono text-sm">{formatAge(pet.age)}</span>
+                  </div>
+                  <div className="w-full overflow-hidden">
+                    <div className="flex items-center justify-between w-full">
+                      {["egg", "baby", "child", "teen", "adult"].map(stageName => (
+                        <span
+                          key={stageName}
+                          className={
+                            "inline-block px-1.5 py-0.5 text-[10px] sm:text-xs font-mono text-center align-middle select-none rounded whitespace-nowrap flex-1 " +
+                            (pet.stage === stageName
+                              ? "bg-gold text-black font-bold border border-gold shadow"
+                              : "bg-gray-700/50 text-gray-400 border border-gray-600")
+                          }
+                        >
+                          {capitalizeStage(stageName)}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 

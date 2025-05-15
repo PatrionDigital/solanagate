@@ -39,59 +39,59 @@ export const VermigotchiProvider = ({ children }) => {
   }, [pet]);
 
   // --- AWAKE STATE ---
-  // Hunger increases by 0.02% every 1500ms
+  // Hunger increases by 0.02% every 225 seconds (reduced by 85% from 1500s)
   useGameTimer(() => {
     if (!pet || pet.isDead || pet.isSleeping) return;
     const hunger = Math.min(100, pet.hunger + 0.02);
     setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), hunger }));
-  }, 1500);
+  }, 225000);
 
-  // Happiness decreases by 0.02% every 1500ms if Hunger > 75%, else -0.01% every 2500ms
+  // Happiness decreases by 0.02% every 225 seconds if Hunger > 75%, else -0.01% every 375 seconds
   useGameTimer(() => {
     if (!pet || pet.isDead || pet.isSleeping) return;
     if (pet.hunger > 75) {
       const happiness = Math.max(0, pet.happiness - 0.02);
       setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), happiness }));
     }
-  }, 1500);
+  }, 225000);
   useGameTimer(() => {
     if (!pet || pet.isDead || pet.isSleeping) return;
     if (pet.hunger <= 75) {
       const happiness = Math.max(0, pet.happiness - 0.01);
       setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), happiness }));
     }
-  }, 2500);
+  }, 375000);
 
-  // Energy decreases by 0.02% every 1500ms
+  // Energy decreases by 0.02% every 225 seconds
   useGameTimer(() => {
     if (!pet || pet.isDead || pet.isSleeping) return;
     const energy = Math.max(0, pet.energy - 0.02);
     setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), energy }));
-  }, 1500);
+  }, 225000);
 
-  // If Hunger+Energy < 55%, Health decreases by 0.01% every 2500ms
+  // If Hunger+Energy < 55%, Health decreases by 0.01% every 375 seconds
   useGameTimer(() => {
     if (!pet || pet.isDead || pet.isSleeping) return;
     if ((pet.hunger + pet.energy) < 55) {
       const health = Math.max(0, pet.health - 0.01);
       setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), health }));
     }
-  }, 2500);
+  }, 375000);
 
   // --- ASLEEP STATE ---
-  // Hunger increases by 0.01% every 2500ms
+  // Hunger increases by 0.01% every 375 seconds
   useGameTimer(() => {
     if (!pet || pet.isDead || !pet.isSleeping) return;
     const hunger = Math.min(100, pet.hunger + 0.01);
     setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), hunger }));
-  }, 2500);
+  }, 375000);
 
-  // Energy increases by 0.01% every 2000ms
+  // Energy increases by 0.01% every 300 seconds
   useGameTimer(() => {
     if (!pet || pet.isDead || !pet.isSleeping) return;
     const energy = Math.min(100, pet.energy + 0.01);
     setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), energy }));
-  }, 2000);
+  }, 300000);
 
   // Happiness decreases as in awake state
   useGameTimer(() => {
@@ -100,14 +100,14 @@ export const VermigotchiProvider = ({ children }) => {
       const happiness = Math.max(0, pet.happiness - 0.02);
       setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), happiness }));
     }
-  }, 1500);
+  }, 225000);
   useGameTimer(() => {
     if (!pet || pet.isDead || !pet.isSleeping) return;
     if (pet.hunger <= 75) {
       const happiness = Math.max(0, pet.happiness - 0.01);
       setPet(new VermigotchiPet(pet.name, { ...pet, ...pet.getStatus(), happiness }));
     }
-  }, 2500);
+  }, 375000);
 
   // Health decreases as in awake state
   useGameTimer(() => {

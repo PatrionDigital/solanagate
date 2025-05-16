@@ -2,14 +2,14 @@
 
 /* Define global variables */
 :root {
-  --link-color: #646cff; /* Link color */
-  --link-active-color: #ff22ff; /* Link active color */
-  --link-hover-color: #0077b5; /* Link hover color */
-  --background-color: #242424; /* Background color */
-  --menu-background-color: rgb(119, 121, 125);
-  --header-background-color: #282c34;
-  --footer-background-color: #282c34;
-  --text-color: white; /* Default text color */
+  --link-color: #fff826; /* Link color */
+  --link-active-color: #ffffff; /* Link active color */
+  --link-hover-color: #f59794; /* Link hover color */
+  --background-color: transparent; /* Background color */
+  --menu-background-color: rgb(119, 121, 125, 0.8);
+  --header-background-color: rgba(40, 44, 52, 0.8);
+  --footer-background-color: rgba(40, 44, 52, 0.8);
+  --text-color: fff826; /* Default text color */
   --font-size-tiny: 9px; /* Tiny text size */
   --font-size-small: 12px; /* Small text size */
   --font-size-medium: 16px; /* Medium text size */

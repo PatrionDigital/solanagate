@@ -1,0 +1,599 @@
+/* src/styles/SpinnerGame.css - All classes prefixed with token-spinner- */
+.vermin-spinner-game {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.vermin-spinner-game-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: flex-start;
+  justify-items: center;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Round the top corners of the card */
+.vermin-spinner-game-main > .rounded-lg {
+  border-radius: 0.5rem !important;
+}
+
+.vermin-spinner-game-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 400px;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  position: relative;
+  top: 1px;
+}
+
+.vermin-spinner-game-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 400px;
+  height: 400px; /* Fixed height for the entire right panel */
+}
+
+.token-tabs {
+  display: flex;
+  position: relative;
+  z-index: 2; /* Above the card but below active tab */
+  margin: 0;
+  padding: 0 16px; /* Match card padding */
+  margin-top: -12px; /* Adjust vertical position */
+}
+
+.vermin-tab {
+  background-color: #000;
+  border: 1px solid #d4af37;
+  border-bottom-width: 0.5px;
+  border-bottom-style: solid;
+  border-bottom-color: #d4af37;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0 -1px 0 0;
+  border-radius: 8px 8px 0 0;
+  z-index: 1;
+}
+
+.vermin-tab:first-child {
+  margin-left: 0;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 0;
+}
+
+.vermin-tab:last-child {
+  margin-right: 0;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 0;
+}
+
+.vermin-tab.active {
+  background-color: rgba(50, 50, 50, 0.8);
+  color: #fff;
+  border-bottom: none;
+  border-left: 1px solid #d4af37;
+  border-right: 1px solid #d4af37;
+  margin-bottom: -1px;
+  z-index: 3;
+  position: relative;
+  border-radius: 8px 8px 0 0;
+}
+
+.vermin-tab:focus,
+.vermin-tab:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.vermin-tab:hover {
+  background-color: #ffe066;
+  border-color: #ffe066;
+  color: #222;
+}
+
+.vermin-tab-content {
+  border: 1px solid #d4af37;
+  border-top: 1px solid #d4af37;
+  border-radius: 8px 8px 8px 8px;
+  padding: 16px;
+  background-color: transparent;
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+}
+
+.token-spinner-mobile-selector {
+  display: none; /* Hidden by default, shown on mobile */
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.token-spinner-mobile-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d4af37;
+  border-radius: 8px;
+  background-color: rgba(40, 40, 40, 0.9);
+  color: #fff;
+  font-size: 1rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23d4af37' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  cursor: pointer;
+}
+
+.token-spinner-mobile-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+}
+
+.token-spinner-mobile-select option {
+  background-color: #2d2d2d;
+  color: #fff;
+  padding: 0.5rem;
+}
+
+/* Desktop tabs */
+.token-spinner-tabs {
+  display: flex;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid #444;
+  width: 100%;
+}
+
+.token-spinner-tab {
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  color: #888;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border: none;
+  background: transparent;
+  position: relative;
+  transition: all 0.2s ease;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  margin-right: 0.25rem;
+  white-space: nowrap;
+}
+
+.token-spinner-tab:hover {
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.token-spinner-tab.active {
+  color: #d4af37;
+  background: rgba(40, 40, 40, 0.9);
+  border: 1px solid #444;
+  border-bottom-color: transparent;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 1;
+}
+
+.token-spinner-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(40, 40, 40, 0.9);
+}
+
+.token-tab.active::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  height: 2px;
+  background: rgba(50, 50, 50, 0.8); /* Match panel bg */
+  z-index: 5;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  pointer-events: none;
+}
+
+/* Cover the top border under the active tab using a pseudo-element */
+.token-tab-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: var(--active-tab-left, 0px);
+  width: var(--active-tab-width, 120px);
+  height: 2px;
+  background: rgba(60, 60, 60, 0.8);
+  z-index: 2;
+}
+
+.token-spinner-game-info-row {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.token-spinner-game-history-row {
+  width: 100%;
+}
+.token-spinner-game-title {
+  color: #d4af37;
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+.token-spinner-character-select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+.token-spinner-game-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.token-spinner-game-wheel {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.token-spinner-game-info {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.token-spinner-wheel-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.token-spinner-wheel {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.2s ease;
+  transform-origin: center;
+  position: relative;
+}
+.token-spinner-wheel-canvas {
+  width: 100%;
+  height: 100%;
+}
+.token-spinner-wheel-marker {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 20px solid #ff0000;
+  z-index: 2;
+}
+.token-spinner-btn {
+  margin-top: 20px;
+  padding: 12px 30px;
+  background-color: rgba(212, 175, 55, 0.8);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.token-spinner-btn:hover {
+  background-color: rgba(212, 175, 55, 1);
+  transform: scale(1.05);
+}
+.token-spinner-btn--disabled,
+.token-spinner-btn--disabled:hover {
+  background-color: rgba(100, 100, 100, 0.8);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: not-allowed;
+  transform: none;
+}
+.token-spinner-info-card {
+  background-color: rgba(60, 60, 60, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 15px;
+}
+.token-spinner-info-title {
+  color: #d4af37;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 10px;
+}
+.token-spinner-info-content {
+  margin-bottom: 15px;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+  margin-right: -4px;
+}
+.token-spinner-stat {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.token-spinner-stat-label {
+  color: #d4af37;
+}
+.token-spinner-stat-value {
+  font-weight: bold;
+  color: #ffffff;
+}
+.token-spinner-instructions {
+  background-color: rgba(40, 40, 40, 0.8);
+  border-radius: 8px;
+  padding: 10px 15px;
+  color: #ffffff;
+}
+
+.token-spinner-instructions h4 {
+  color: #d4af37;
+}
+.token-spinner-instructions h4 {
+  color: #d4af37;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+.token-spinner-instructions ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.token-spinner-instructions li {
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+.token-spinner-history {
+  background-color: rgba(60, 60, 60, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 15px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.token-spinner-history-title {
+  color: #d4af37;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 10px;
+}
+.token-spinner-history-empty-message {
+  text-align: center;
+  color: #aaa;
+  font-style: italic;
+}
+.token-spinner-history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-right: -4px;
+}
+.token-spinner-history-item {
+  background-color: rgba(40, 40, 40, 0.8);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+.token-spinner-history-item-time {
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 5px;
+}
+.token-spinner-history-item-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.token-spinner-history-item-prize {
+  font-weight: bold;
+  color: #d4af37;
+  font-size: 16px;
+}
+.token-spinner-history-item-bonus {
+  font-size: 12px;
+  color: #aaa;
+}
+.token-spinner-prize-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(40, 40, 40, 0.95);
+  border: 2px solid #d4af37;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+  z-index: 1000;
+  animation: token-spinner-prize-notification 0.5s ease-out;
+}
+/* Prize Notification */
+.token-spinner-prize-notification-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.token-spinner-prize-notification-card {
+  background: rgba(40, 40, 40, 0.95);
+  color: white;
+  padding: 2rem 3rem;
+  border: 1px solid #d4af37;
+  border-radius: 0.5rem;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  min-width: 300px;
+  transform: scale(0);
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+}
+
+.token-spinner-prize-notification-card.scale-in {
+  transform: scale(1);
+}
+
+.token-spinner-prize-notification-card.scale-out {
+  transform: scale(0);
+}
+
+.token-spinner-prize-close-btn {
+  margin-top: 1.5rem;
+  background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
+  color: #000;
+  border: none;
+  padding: 0.6rem 2.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.token-spinner-prize-close-btn:hover {
+  background: linear-gradient(135deg, #f1c40f 0%, #d4af37 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.token-spinner-prize-close-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(212, 175, 55, 0.3);
+}
+
+.token-spinner-prize-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #d4af37;
+}
+
+.token-spinner-prize-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.token-spinner-prize-token {
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.token-spinner-prize-message {
+  font-size: 1.2rem;
+  color: #fff;
+  margin: 1rem 0;
+  line-height: 1.5;
+}
+
+.token-spinner-prize-bonus {
+  font-size: 1.1rem;
+  color: #ffd700;
+  margin-bottom: 0.5rem;
+}
+
+.token-spinner-prize-actions {
+  margin-top: 1.5rem;
+}
+
+@keyframes token-spinner-prize-notification {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+.vermin-spinner-prize-notification h3 {
+  color: #d4af37;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+.token-spinner-prize-amount {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 10px;
+}
+.token-spinner-prize-bonus {
+  color: #4BC0C0;
+  font-size: 14px;
+}
+@media screen and (max-width: 768px) {
+  .vermin-spinner-game-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .vermin-spinner-wheel-container {
+    width: 250px;
+    height: 250px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .vermin-spinner-wheel-container {
+    width: 200px;
+    height: 200px;
+  }
+  .vermin-spinner-game-title {
+    font-size: 24px;
+  }
+  .vermin-spinner-prize-amount {
+    font-size: 28px;
+  }
+}

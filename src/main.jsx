@@ -1,17 +1,33 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom";
 import "./styles/index.css";
 import "./styles/Template.css";
 import App from "./App.jsx";
+import { Windmill } from '@windmill/react-ui';
 import { WalletProviderWrapper } from "@/contexts/WalletContextProvider.jsx";
 import { UserProfileContextProvider } from "@/contexts/UserProfileContextProvider";
+import ProjectContextProvider from "@/contexts/ProjectContextProvider";
+import { ProfileProvider } from "@/contexts/ProfileContext";
+import HoneycombService from "@/services/honeycombService";
 
-createRoot(document.getElementById("root")).render(
+// Honeycomb configuration
+const HONEYCOMB_API_URL = "https://edge.eboy.dev/";
+const honeycombService = new HoneycombService(HONEYCOMB_API_URL);
+
+// eslint-disable-next-line react/no-deprecated
+ReactDOM.render(
   <StrictMode>
-    <WalletProviderWrapper>
-      <UserProfileContextProvider>
-        <App />
-      </UserProfileContextProvider>
-    </WalletProviderWrapper>
-  </StrictMode>
+    <Windmill>
+      <WalletProviderWrapper>
+        <ProfileProvider client={honeycombService.client}>
+          <UserProfileContextProvider>
+            <ProjectContextProvider>
+              <App />
+            </ProjectContextProvider>
+          </UserProfileContextProvider>
+        </ProfileProvider>
+      </WalletProviderWrapper>
+    </Windmill>
+  </StrictMode>,
+  document.getElementById("root")
 );

@@ -1,0 +1,54 @@
+/* src/styles/BackgroundEffect.css */
+
+/* Ensure the canvas displays properly and doesn't interfere with content */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: transparent !important;
+}
+
+/* Add some contrast to text to ensure it's readable over the background */
+.main-layout-content,
+.about-layout-content {
+  color: var(--text-color);
+  text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 2;
+  background-color: transparent !important;
+}
+
+/* Adjust card and container backgrounds to have some transparency */
+.main-layout-content > div,
+.about-layout-content > div {
+  background-color: rgba(40, 44, 52, 0.7);
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 15px;
+}
+
+/* Style content containers in token holder page*/
+div[style*="padding: 20px"] {
+  background-color: rgba(40, 44, 52, 0.7) !important;
+  border-radius: 8px !important;
+  backdrop-filter: blur(5px) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  margin-bottom: 15px;
+}
+
+/* Override border colors to be more visible */
+div[style*="border: 1px solid #ccc"] {
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+/* Enhance visibility for important UI elements */
+button,
+.wallet-adapter-button {
+  position: relative;
+  z-index: 5;
+}

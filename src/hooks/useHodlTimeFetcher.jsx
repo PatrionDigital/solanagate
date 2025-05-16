@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { useWalletContext } from "@/contexts/WalletContext";
+import { useUserProfile } from "@/contexts/UserProfileContext";
 import {
   getUserProfile,
-  removeUserProfile,
-  saveUserProfile,
 } from "@/utils/localStorageUtils";
 
 const TOKEN_MINT_ADDRESS = new PublicKey(
@@ -19,6 +18,7 @@ const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
 
 const useHodlTimeFetcher = () => {
   const { connection, publicKey } = useWalletContext();
+  const { updateUserProfile } = useUserProfile();
   const [hodlTime, setHodlTime] = useState(null);
   const isFetching = useRef(false);
 
@@ -95,10 +95,13 @@ const useHodlTimeFetcher = () => {
 
               const formattedDuration = formatTime(duration);
               setHodlTime(formattedDuration);
-              saveUserProfile((prev) => ({
-                ...prev,
+              
+              // Get current profile to preserve other data
+              const currentProfile = getUserProfile() || {};
+              updateUserProfile({
+                ...currentProfile,
                 hodlTime: formattedDuration,
-              }));
+              });
             } else {
               console.log("No matching token transfer found");
               setHodlTime(null);
@@ -106,12 +109,10 @@ const useHodlTimeFetcher = () => {
           }
         } else {
           console.log("No signatures found for address:", ata.toBase58());
-          removeUserProfile();
           setHodlTime(null);
         }
       } catch (error) {
         console.error("Error fetching hodl time:", error);
-        removeUserProfile();
         setHodlTime(null);
       } finally {
         isFetching.current = false;
@@ -119,7 +120,7 @@ const useHodlTimeFetcher = () => {
     };
 
     fetchHodlTime();
-  }, [publicKey, connection]);
+  }, [publicKey, connection, updateUserProfile]);
 
   return hodlTime;
 };

@@ -1,30 +1,22 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-//Hooks
-//import useTokenAccountsFetcher from "@/hooks/useTokenAccountsFetcher";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router";
+import BackgroundEffect from "@/components/BackgroundEffect";
 
-//Layouts
-import MainLayout from "@/components/layouts/MainLayout";
-import AboutLayout from "@/components/layouts/AboutLayout";
-
-//Styles
+// Styles
 import "@/styles/App.css";
+import "@/styles/theme-buttons.css";
+import "@/pages/honeycomb-admin/honeycombAdmin.css";
+import "@/pages/honeycomb-admin/adminAuth.css";
 
 function App() {
+
   return (
-    <Router>
-      <main style={{ padding: "0 20px" }}>
-        <Routes>
-          <Route path="/*" element={<MainLayout />} />
-          <Route path="/about" element={<AboutLayout />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+    <div className="w-full min-w-full">
+      <BackgroundEffect />
+      <main className="w-full min-w-full relative z-10">
+        <RouterProvider router={router} />
       </main>
-    </Router>
+    </div>
   );
 }
 

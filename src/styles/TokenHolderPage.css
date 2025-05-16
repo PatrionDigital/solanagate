@@ -1,0 +1,236 @@
+/* src/styles/TokenHolderPage.css */
+
+/* Common styles for all section buttons and content */
+.token-holder-nav,
+.token-content-section {
+  width: 85%; /* Set ONE fixed width for both nav and content */
+  max-width: 1200px; /* Added max-width to prevent extreme widths on large screens */
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+/* Update for src/styles/TokenHolderPage.css */
+
+.token-content-section {
+  background-color: rgba(50, 50, 50, 0.8);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  width: 85%;
+  overflow: hidden; /* Prevent content from overflowing */
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.token-holder-page {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.token-holder-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.token-holder-nav button {
+  padding: 15px;
+  border: none;
+  border-radius: 15px;
+  background-color: #19161c; /* solanaBlack */
+  color: #00ffba; /* solanaGreen */
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 20px;
+  transition: all 0.2s ease;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid #9945ff;
+}
+
+.token-holder-nav button.active {
+  background-color: #9945ff; /* solanaPurple */
+  color: #fff;
+  font-weight: bold;
+  border: 3px solid #00ffba;
+  padding: 12px;
+}
+
+.token-holder-nav button:hover {
+  background-color: #00ffba; /* solanaGreen */
+  color: #19161c;
+}
+
+.token-content-section {
+  background-color: rgba(50, 50, 50, 0.8);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  width: 85%;
+  overflow: hidden; /* Prevent content from overflowing */
+}
+
+/* Section headers - exactly matching screenshot */
+.section-heading {
+  color: #d4af37;
+  margin: 0 0 20px 0;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* Sub-section headings */
+.sub-section-heading {
+  color: #d4af37;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Match the display format in the screenshots */
+.data-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.data-item {
+  background-color: rgba(80, 80, 80, 0.8);
+  border-radius: 8px;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.data-label {
+  color: #d4af37;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: left;
+}
+
+.data-value {
+  color: white;
+  font-size: 18px;
+  text-align: right;
+}
+
+/* Action button styling */
+.token-action-button {
+  background-color: rgba(212, 175, 55, 0.7);
+  color: white;
+  padding: 12px 15px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 15px;
+  box-sizing: border-box;
+}
+
+.token-action-button:hover {
+  background-color: rgba(212, 175, 55, 0.9);
+}
+
+/* Market data sections */
+.market-data-section {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Chart container */
+.chart-container {
+  width: 100%;
+  margin-top: 15px;
+  box-sizing: border-box;
+}
+
+/* Positive/negative values */
+.positive-change {
+  color: #4caf50;
+}
+
+.negative-change {
+  color: #f44336;
+}
+
+/* Desktop layout adjustments */
+@media (min-width: 769px) {
+  .token-holder-nav {
+    flex-direction: row;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .token-holder-nav button {
+    flex: 1;
+  }
+}
+
+/* Collectibles specific styles */
+.collectibles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nft-item {
+  background-color: rgba(80, 80, 80, 0.8);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.nft-title {
+  color: #d4af37;
+  font-weight: bold;
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.coming-soon-container {
+  background-color: rgba(100, 100, 100, 0.4);
+  border-radius: 6px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.coming-soon-text {
+  color: #d4af37;
+  opacity: 0.7;
+  font-size: 20px;
+}
+
+/* Responsive styles for mobile */
+@media (max-width: 600px) {
+  .collectibles-grid {
+    grid-template-columns: 1fr; /* Single column on small screens */
+  }
+}

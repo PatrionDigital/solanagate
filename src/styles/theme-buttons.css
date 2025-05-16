@@ -1,0 +1,75 @@
+/* Global Primary Button Theme (Solana) */
+.btn,
+.button,
+.btn-primary,
+.Button,
+button.primary,
+[role="button"].primary {
+  background-color: #19161c !important; /* Solana Black */
+  color: #00ffba !important; /* Solana Green */
+  border: 2px solid #9945ff !important; /* Solana Purple */
+  font-weight: bold !important;
+  box-shadow: 0 2px 8px 0 rgba(0,255,186,0.10) !important;
+  text-shadow: none !important;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.btn:hover,
+.button:hover,
+.btn-primary:hover,
+.Button:hover,
+button.primary:hover,
+[role="button"].primary:hover,
+.btn:focus,
+.button:focus,
+.btn-primary:focus,
+.Button:focus,
+button.primary:focus,
+[role="button"].primary:focus {
+  background-color: #00ffba !important; /* Solana Green */
+  color: #19161c !important; /* Solana Black */
+  border: 2px solid #9945ff !important;
+  outline: none !important;
+  box-shadow: 0 4px 16px 0 rgba(0,255,186,0.20) !important;
+}
+.btn:disabled,
+.button:disabled,
+.btn-primary:disabled,
+.Button:disabled,
+button.primary:disabled,
+[role="button"].primary:disabled {
+  opacity: 0.5 !important;
+  background-color: #19161c !important; /* Solana Black */
+  color: #888 !important;
+  border: 2px solid #9945ff !important;
+  cursor: not-allowed !important;
+}
+
+/* Global Cancel Button Theme (Reddish Gold) */
+.btn-cancel,
+.Button-cancel,
+button.cancel,
+[role="button"].cancel {
+  background-color: #e16b3a !important;
+  color: #fff !important;
+  border: 2px solid #a33c0a !important;
+  font-weight: bold !important;
+}
+.btn-cancel:hover,
+.Button-cancel:hover,
+button.cancel:hover,
+[role="button"].cancel:hover {
+  background-color: #f18b4c !important;
+  color: #fff !important;
+  border: 2px solid #a33c0a !important;
+  box-shadow: 0 2px 8px 0 rgba(225,107,58,0.10) !important;
+}
+.btn-cancel:focus,
+.Button-cancel:focus,
+button.cancel:focus,
+[role="button"].cancel:focus {
+  background-color: #c44c0a !important;
+  color: #fff !important;
+  border: 2px solid #a33c0a !important;
+  outline: 2px solid #a33c0a !important;
+  box-shadow: 0 0 0 3px rgba(227, 107, 58, 0.25) !important;
+}

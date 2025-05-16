@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { Connection } from "@solana/web3.js";
 import {
@@ -7,7 +7,12 @@ import {
   useWallet,
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
+import {
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+  LedgerWalletAdapter,
+  // Only including the most reliable and widely supported wallets
+} from "@solana/wallet-adapter-wallets";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 // Contexts
@@ -17,16 +22,28 @@ const SOLANA_RPC_URL = import.meta.env.VITE_SOLANA_RPC_URL;
 
 export const WalletContextProvider = ({ children }) => {
   const [connection, setConnection] = useState(null);
-  const { publicKey, connected } = useWallet();
+  const { publicKey, connected, disconnect } = useWallet();
   const [isTokenHolder, setIsTokenHolder] = useState(null);
 
+  // Initialize connection when component mounts
   useEffect(() => {
-    setConnection(new Connection(SOLANA_RPC_URL));
+    const newConnection = new Connection(SOLANA_RPC_URL);
+    setConnection(newConnection);
+  }, []);
+
+  // Reset token holder status when disconnected
+  useEffect(() => {
     if (!connected) {
       setIsTokenHolder(null);
-      return;
     }
-  }, [connected, publicKey]);
+  }, [connected]);
+
+  const handleDisconnect = useCallback(() => {
+    disconnect();
+    setIsTokenHolder(null);
+    // Note: The user profile is cleared in the UserInfoDisplay component
+    // through the clearUserProfile function from UserProfileContext
+  }, [disconnect]);
 
   return (
     <WalletContext.Provider
@@ -36,6 +53,7 @@ export const WalletContextProvider = ({ children }) => {
         connected,
         isTokenHolder,
         setIsTokenHolder,
+        disconnect: handleDisconnect,
       }}
     >
       {children}
@@ -44,11 +62,34 @@ export const WalletContextProvider = ({ children }) => {
 };
 
 export const WalletProviderWrapper = ({ children }) => {
-  const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
+  // Log wallet detection for debugging
+  useEffect(() => {
+    console.log("Wallet detection:");
+    console.log("- window.phantom:", !!window.phantom);
+    console.log("- window.solflare:", !!window.solflare);
+    console.log("- window.backpack:", !!window.backpack);
+  }, []);
+
+  // Define wallets using the standard wallet adapters
+  const wallets = useMemo(
+    () => [
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter(),
+      new LedgerWalletAdapter(),
+    ].filter(Boolean), // Filter out any null/undefined wallets
+    [] // Empty dependency array since we don't have any dependencies
+  );
+
   return (
     <ConnectionProvider endpoint={SOLANA_RPC_URL}>
       <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
+        <WalletModalProvider
+          logo="/logo.png"
+          modalProps={{
+            className: 'wallet-modal',
+            rootClassName: 'wallet-modal-root',
+          }}
+        >
           <WalletContextProvider>{children}</WalletContextProvider>
         </WalletModalProvider>
       </WalletProvider>
@@ -59,6 +100,7 @@ export const WalletProviderWrapper = ({ children }) => {
 WalletContextProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
 WalletProviderWrapper.propTypes = {
   children: PropTypes.node.isRequired,
 };

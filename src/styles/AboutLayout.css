@@ -1,6 +1,145 @@
-/* AboutLayout.css */
+/* AboutLayout.css - Matching TokenHolderPage styling */
+
 .about-layout-content {
-  min-height: 80vh; /* Ensures content fills the space between header and footer */
-  padding-top: 60px; /* Adjust based on the height of your fixed header */
-  padding-bottom: 60px; /* Adjust based on the height of your fixed footer */
+  width: 85%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Mission Panel Styling */
+.about-mission {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.token-panel {
+  background-color: rgba(50, 50, 50, 0.8);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.mission-panel {
+  background-color: rgba(50, 50, 50, 0.8);
+}
+
+.italic-text {
+  font-style: italic;
+  font-weight: 500;
+  font-size: 16pt;
+  line-height: 1.6;
+  color: #d4af37;
+}
+
+/* Meme Vibe Section */
+.meme-vibe {
+  font-size: 14pt;
+  line-height: 1.6;
+  background-color: rgba(50, 50, 50, 0.8);
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #ffffff;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.meme-vibe p {
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+/* Community Claim */
+.community-claim {
+  margin-top: 20px;
+  padding: 15px;
+  border: 2px dashed rgba(212, 175, 55, 0.5);
+  border-radius: 8px;
+  background-color: rgba(80, 80, 80, 0.8);
+}
+
+.community-claim p {
+  margin-bottom: 10px;
+  font-size: 14pt;
+  color: #ffffff;
+}
+
+.community-claim strong {
+  color: #d4af37;
+  font-weight: bold;
+}
+
+/* Icon Container */
+.icon-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 20px 0;
+  padding: 20px;
+  background-color: rgba(50, 50, 50, 0.8);
+  border-radius: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  margin: 0 10px;
+}
+
+.icon-item p {
+  margin-top: 10px;
+  font-size: 14pt;
+  font-weight: bold;
+  color: #d4af37;
+}
+
+.about-icon {
+  color: #d4af37;
+  transition: transform 0.3s, color 0.3s;
+}
+
+.about-icon:hover {
+  transform: scale(1.15);
+  color: rgba(212, 175, 55, 0.9);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .about-layout-content {
+    width: 98%;
+    padding: 10px;
+  }
+
+  .icon-container {
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    padding: 15px;
+  }
+
+  .icon-item {
+    margin: 0;
+  }
+
+  .token-panel,
+  .meme-vibe {
+    padding: 15px;
+    width: 100%;
+  }
 }

@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Button } from "@windmill/react-ui";
 import ActionConfirmModal from "./ActionConfirmModal";
-import { useWalletContext } from "@/contexts/WalletContext";
 import PetVisual from "./PetVisual";
 import PetStatus from "./PetStatus";
 import GameIntro from "./GameIntro";
 import CharacterSettings from "./CharacterSettings";
 import { FaCog, FaUtensils, FaGamepad, FaMedkit, FaStar, FaMoon, FaSun } from "react-icons/fa";
 import { FiArrowLeft } from "react-icons/fi";
-import { useVermigotchi } from "../hooks/useVermigotchi";
+import useTokenPet from "../hooks/useTokenPet";
+import { useWalletContext } from "@/contexts/WalletContext";
 
 const actionOptions = [
   { value: 'feed', label: 'Feed', icon: <FaUtensils className="inline-block mr-2" /> },
@@ -31,9 +31,9 @@ function formatAge(ageDays) {
   return `${days}d ${hours}h`;
 }
 
-const VermigotchiContainer = () => {
+const TokenPetContainer = () => {
   const navigate = useNavigate();
-  const { publicKey } = useWalletContext();
+  const { connected } = useWalletContext();
   
   const handleBackToGames = () => {
     navigate('/games');
@@ -41,28 +41,26 @@ const VermigotchiContainer = () => {
   const [showIntro, setShowIntro] = useState(true);
   const {
     pet,
-
-    hasPet,
     createPet,
     feedPet,
     playWithPet,
     toggleSleep,
     giveMedicine,
     giveSpecialCare,
-    message,
     resetPet,
+    message,
     setPet
-  } = useVermigotchi();
+  } = useTokenPet();
   const [showSettings, setShowSettings] = useState(false);
   const [selectedAction, setSelectedAction] = useState('');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
 
   useEffect(() => {
-    if (hasPet) {
+    if (pet) {
       setShowIntro(false);
     }
-  }, [hasPet]);
+  }, [pet]);
 
   const handleCreatePet = (name) => {
     createPet(name);
@@ -71,7 +69,10 @@ const VermigotchiContainer = () => {
 
   if (showIntro) {
     return (
-      <GameIntro onCreatePet={handleCreatePet} walletConnected={!!publicKey} />
+      <GameIntro 
+        onCreatePet={handleCreatePet} 
+        walletConnected={connected} 
+      />
     );
   }
 
@@ -147,7 +148,7 @@ const VermigotchiContainer = () => {
   return (
     <div className="w-full max-w-4xl mx-auto py-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="vermin-spinner-game-title">Vermigotchi</h2>
+        <h2 className="vermin-spinner-game-title">Token Pet</h2>
         <Button 
           onClick={handleBackToGames}
           layout="outline"
@@ -284,15 +285,6 @@ const VermigotchiContainer = () => {
             }
             return actionOptions.find(a => a.value === pendingAction)?.label || '';
           })()}
-          actionPrice={(() => {
-            switch (pendingAction) {
-              case 'feed': return 5;
-              case 'play': return 3;
-              case 'medicine': return 10;
-              case 'special': return 20;
-              default: return '';
-            }
-          })()}
           onCancel={() => {
             setConfirmOpen(false);
             setSelectedAction(''); // Reset to default after cancel
@@ -325,4 +317,4 @@ const VermigotchiContainer = () => {
   );
 };
 
-export default VermigotchiContainer;
+export default TokenPetContainer;

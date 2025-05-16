@@ -107,7 +107,7 @@ const useSpinnerGame = (characterOrId, onSpinComplete) => {
     const hasFreeSpinToday = isEligibleForFreeSpin(lastSpinTime);
     if (hasFreeSpinToday && spins === 0) {
       setSpins(1);
-      // Persist the new spin count to localStorage if using Vermigotchi pet context
+      // Persist the new spin count to localStorage if using TokenPet pet context
       if (isCharacterObject) {
         const spinnerKey = `vermin_spinner_${characterOrId.id || characterOrId.name}`;
         const updatedData = {
@@ -127,7 +127,7 @@ const useSpinnerGame = (characterOrId, onSpinComplete) => {
     }
   }, [character, lastSpinTime, spins, isCharacterObject, characterOrId, spinHistory, saveSpinnerData]);
 
-  // Check for bonus spins from Vermigotchi happiness
+  // Check for bonus spins from TokenPet happiness
   useEffect(() => {
     if (!character) return;
     const happiness = character.attributes?.happiness || 0;
@@ -203,7 +203,7 @@ const useSpinnerGame = (characterOrId, onSpinComplete) => {
         });
       }
     }, 5000); // 5 seconds for the spinning animation
-  }, [isSpinning, spins, character, prizeIndex, spinHistory, saveSpinnerData, userProfile, updateUserProfile, lastSpinTime, onSpinComplete]);
+  }, [isSpinning, spins, character, spinHistory, saveSpinnerData, userProfile, updateUserProfile, lastSpinTime, onSpinComplete]);
 
   // Get total winnings
   const getTotalWinnings = useCallback(() => {

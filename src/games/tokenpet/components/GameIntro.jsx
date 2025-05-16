@@ -20,7 +20,7 @@ const GameIntro = ({ onCreatePet, walletConnected }) => {
       <div className="w-full max-w-4xl mx-auto py-8">
         <Card className="p-6 !bg-[rgba(50,50,50,0.8)] border border-gold rounded-lg shadow-lg backdrop-blur text-center">
           <h2 className="text-2xl text-gold font-bold mb-4">
-            Welcome to Vermigotchi
+            Welcome to TokenPet
           </h2>
           <div className="mb-6">
             <p className="text-white mb-4">
@@ -36,7 +36,7 @@ const GameIntro = ({ onCreatePet, walletConnected }) => {
     <div className="w-full max-w-4xl mx-auto py-8">
       <Card className="p-6 !bg-[rgba(50,50,50,0.8)] border border-gold rounded-lg shadow-lg backdrop-blur">
         <h2 className="text-2xl text-gold font-bold mb-4 text-center">
-          Welcome to Vermigotchi
+          Welcome to TokenPet
         </h2>
         <div className="mb-6">
           <p className="text-white mb-4">
@@ -52,11 +52,11 @@ const GameIntro = ({ onCreatePet, walletConnected }) => {
               </li>
               <li>
                 <strong className="text-gold">Feed</strong> your pet to reduce
-                hunger (costs 5 $VERMIN)
+                hunger
               </li>
               <li>
                 <strong className="text-gold">Play</strong> with your pet to
-                increase happiness (costs 3 $VERMIN)
+                increase happiness
               </li>
               <li>
                 <strong className="text-gold">Sleep</strong> lets your pet
@@ -64,11 +64,11 @@ const GameIntro = ({ onCreatePet, walletConnected }) => {
               </li>
               <li>
                 <strong className="text-gold">Medicine</strong> instantly
-                restores health (costs 10 $VERMIN)
+                restores health
               </li>
               <li>
                 <strong className="text-gold">Special</strong> care boosts all
-                stats (costs 20 $VERMIN)
+                stats
               </li>
             </ul>
           </div>
@@ -89,7 +89,7 @@ const GameIntro = ({ onCreatePet, walletConnected }) => {
                 className="!bg-gold !text-black font-bold focus:ring-2 focus:ring-gold/50 border-none"
                 style={{ backgroundColor: "#FFD700", color: "#111" }}
               >
-                Create Pet (50 $VERMIN)
+                Create Pet
               </Button>
             </div>
           </div>

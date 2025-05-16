@@ -1,13 +1,13 @@
-// src/components/games/GameDashboard.jsx
+// src/games/GameDashboard.jsx
 import { Card, Button } from "@windmill/react-ui";
 import { Link } from "react-router-dom";
 
 const games = [
   {
-    name: "Vermigotchi",
-    route: "/games/vermigotchi",
-    description: "Raise, evolve, and care for your digital Vermin pet.",
-    img: "https://picsum.photos/seed/vermigotchi/400/200"
+    name: "TokenPet",
+    route: "/games/tokenpet",
+    description: "Raise, evolve, and care for your digital TokenPet.",
+    img: "https://picsum.photos/seed/tokenpet/400/200"
   },
   {
     name: "Spinner Game",

@@ -7,30 +7,25 @@ const TIME_RANGE_MAPPING = {
   '30d': '30d',
 };
 
-/**
- * Fetches price history for the specified token
- * @param {string} tokenAddress - The token address to fetch price history for
- * @param {string} timeRange - The time range to fetch (e.g., '24h', '7d', '30d')
- * @returns {Promise<Object>} - Object containing price history data
- */
+// Get API configuration from environment variables
+const API_BASE_URL = import.meta.env.VITE_SOLANA_TRACKER_API_URL || 'https://api.solanatracker.io';
+const API_KEY = import.meta.env.VITE_SOLANA_TRACKER_API_KEY;
+
 /**
  * Fetches price history for the configured token
  * @param {string} [timeRange='24h'] - The time range to fetch (e.g., '24h', '7d', '30d')
  * @returns {Promise<Object>} - Object containing price history data
  */
-export async function fetchPriceHistory(timeRange = '24h') {
+async function fetchPriceHistory(timeRange = '24h') {
   const { TOKEN_ADDRESS, TOKEN_SYMBOL, DEBUG } = TOKEN_CONFIG;
-  const apiKey = import.meta.env.VITE_SOLANA_TRACKER_API_KEY;
-  
-  // Use the configured token address
-  const tokenAddress = TOKEN_ADDRESS;
   
   if (DEBUG) {
     console.log('Fetching price for token:', {
-      address: tokenAddress,
+      address: TOKEN_ADDRESS,
       symbol: TOKEN_SYMBOL,
-      timeRange: timeRange,
-      hasApiKey: !!apiKey
+      timeRange,
+      apiBaseUrl: API_BASE_URL,
+      hasApiKey: !!API_KEY
     });
   }
   
@@ -40,53 +35,34 @@ export async function fetchPriceHistory(timeRange = '24h') {
   }
 
   // Validate API key and token address
-  if (!apiKey) {
+  if (!API_KEY) {
     const errorMsg = 'Solana Tracker API key is not configured. Please set VITE_SOLANA_TRACKER_API_KEY in your .env file.';
     console.warn(errorMsg);
     throw new Error(errorMsg);
   }
 
+  if (!TOKEN_ADDRESS) {
+    const errorMsg = 'Token address is not configured. Please set VITE_TOKEN_MINT_ADDRESS in your .env file.';
+    console.warn(errorMsg);
+    throw new Error(errorMsg);
+  }
+
   try {
-    if (DEBUG) {
-      console.log(`Fetching price history for token: ${tokenAddress}, range: ${timeRange}`);
-      console.log('Using API Key:', '***REDACTED***');
-    }
-    
-    // Use the Data API endpoint for price history
-    const url = new URL('https://data.solanatracker.io/price/history');
-    
-    // Add required query parameter
-    url.searchParams.append('token', tokenAddress);
-    
-    // The API returns multiple timeframes by default
-    
+    // Construct the API URL
+    const url = new URL(`${API_BASE_URL}/price/history`);
+    url.searchParams.append('token', TOKEN_ADDRESS);
+
     // Set up headers with API key
     const headers = {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${API_KEY}`
     };
-    
-    // Add API key header if available
-    if (apiKey) {
-      headers['x-api-key'] = apiKey;
-    } else if (DEBUG) {
-      console.warn('No API key found. Requests may be rate limited.');
-    }
 
-    if (DEBUG) {
-      console.log('Request URL:', url.toString());
-      console.log('Request headers:', headers);
-    }
-
-    // Log request details in debug mode
     if (DEBUG) {
       console.log('Sending request to:', url.toString());
-      console.log('Using token address:', tokenAddress);
-      console.log('API Key present:', !!apiKey);
-      console.log('Request headers:', {
-        ...headers,
-        'x-api-key': headers['x-api-key'] ? '***REDACTED***' : 'MISSING'
-      });
+      console.log('Using token address:', TOKEN_ADDRESS);
+      console.log('API Key present:', !!API_KEY);
     }
 
     const response = await fetch(url.toString(), {
@@ -94,12 +70,12 @@ export async function fetchPriceHistory(timeRange = '24h') {
       headers: headers,
       mode: 'cors',
       credentials: 'omit',
-      cache: 'no-cache'
+      cache: 'no-cache',
+      referrerPolicy: 'no-referrer'
     });
     
     if (DEBUG) {
       console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries([...response.headers.entries()]));
     }
 
     let data;
@@ -116,12 +92,20 @@ export async function fetchPriceHistory(timeRange = '24h') {
     }
 
     if (!response.ok) {
-      const errorMessage = data?.message || data?.error || `API request failed with status ${response.status}`;
+      const errorMessage = data?.message || data?.error || 
+                         `API request failed with status ${response.status}`;
+      console.error('API Error:', errorMessage);
       throw new Error(errorMessage);
     }
     
-    // The API returns data in the format: { current: 0.0015, 7d: 0.0012, ... }
-    return data;
+    // Format the response to match the expected format
+    return {
+      current: data.current,
+      '24h': data['24h'],
+      '7d': data['7d'],
+      '30d': data['30d'],
+      timestamp: new Date().toISOString()
+    };
   } catch (error) {
     console.error('Error fetching price history:', error);
     throw error;
@@ -130,38 +114,66 @@ export async function fetchPriceHistory(timeRange = '24h') {
 
 /**
  * Formats price history data for charting
- * @param {Array<Object>} priceData - Raw price history data from the API
+ * @param {Object} priceData - Raw price history data from the API
+ * @param {string} timeRange - The time range to format data for (e.g., '24h', '7d', '30d')
  * @returns {Array<{time: number, price: number}>} Formatted price data
  */
-export const formatPriceData = (priceData) => {
-  if (!priceData || !Array.isArray(priceData)) {
+function formatPriceData(priceData, timeRange = '24h') {
+  if (!priceData) {
+    console.warn('No price data provided');
     return [];
   }
 
-  // Sort by timestamp in ascending order and format for charting
-  return priceData
-    .map(entry => {
-      // The API returns timestamps in seconds, convert to milliseconds
-      const timestamp = entry.timestamp ? entry.timestamp * 1000 : Date.now();
-      return {
-        time: new Date(timestamp).getTime(),
-        price: parseFloat(entry.price || 0)
-      };
-    })
-    .sort((a, b) => a.time - b.time);
-};
+  // Get the current price and historical price for the selected time range
+  const currentPrice = parseFloat(priceData.current || 0);
+  const historicalPrice = parseFloat(priceData[timeRange] || 0);
+  
+  if (isNaN(currentPrice) || isNaN(historicalPrice)) {
+    console.warn('Invalid price data format:', priceData);
+    return [];
+  }
+
+  // Create two data points: historical and current
+  const now = new Date();
+  const historicalDate = new Date();
+  
+  // Set the historical date based on the time range
+  const daysAgo = parseInt(timeRange) || 1;
+  historicalDate.setDate(now.getDate() - daysAgo);
+  
+  return [
+    {
+      time: Math.floor(historicalDate.getTime() / 1000),
+      price: historicalPrice
+    },
+    {
+      time: Math.floor(now.getTime() / 1000),
+      price: currentPrice
+    }
+  ];
+}
 
 /**
  * Calculates price change percentage
- * @param {Array<{price: number}>} priceData - Formatted price data
+ * @param {Object} priceData - Price data object with current and historical prices
+ * @param {string} timeRange - The time range to calculate change for (e.g., '24h', '7d', '30d')
  * @returns {number} Price change percentage
  */
-export const calculatePriceChange = (priceData) => {
-  if (!priceData || priceData.length < 2) {
+function calculatePriceChange(priceData, timeRange = '24h') {
+  if (!priceData) return 0;
+  
+  const currentPrice = parseFloat(priceData.current || 0);
+  const historicalPrice = parseFloat(priceData[timeRange] || 0);
+  
+  if (isNaN(currentPrice) || isNaN(historicalPrice) || historicalPrice === 0) {
     return 0;
   }
+  
+  return ((currentPrice - historicalPrice) / historicalPrice) * 100;
+}
 
-  const firstPrice = priceData[0].price;
-  const lastPrice = priceData[priceData.length - 1].price;
-  return ((lastPrice - firstPrice) / firstPrice) * 100;
+export {
+  fetchPriceHistory,
+  formatPriceData,
+  calculatePriceChange
 };

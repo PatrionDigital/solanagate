@@ -1,4 +1,4 @@
-// src/components/games/spinner/SpinInfo.jsx
+// src/games/spinner/SpinInfo.jsx
 import PropTypes from "prop-types";
 import { Card } from "@windmill/react-ui";
 import { formatPrizeValue, EVOLUTION_BONUSES } from "@/utils/spinnerUtils";
@@ -17,7 +17,7 @@ const SpinInfo = ({ spins, character, totalWinnings }) => {
           <span className="vermin-spinner-stat-value">{spins}</span>
         </div>
         <div className="vermin-spinner-stat">
-          <span className="vermin-spinner-stat-label">Vermigotchi Level:</span>
+          <span className="vermin-spinner-stat-label">TokenPet Level:</span>
           <span className="vermin-spinner-stat-value">{evolutionLevel}</span>
         </div>
         <div className="vermin-spinner-stat">

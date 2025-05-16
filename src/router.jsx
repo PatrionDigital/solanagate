@@ -13,10 +13,10 @@ import LandingPage from "@/components/LandingPage";
 import { HoneycombAdminPage } from "@/pages/honeycomb-admin/HoneycombModules";
 
 // Games
-import { VermigotchiProvider } from "@/games/tamagotchi/context/VermigotchiContext";
-import VermigotchiContainer from "@/games/tamagotchi/components/VermigotchiContainer";
-import GameDashboard from "@/components/games/GameDashboard";
-import SpinnerGame from "@/components/games/spinner/SpinnerGame";
+import TokenPetProvider from "@/games/tokenpet/context/TokenPetProvider";
+import TokenPetContainer from "@/games/tokenpet/components/TokenPetContainer";
+import GameDashboard from "@/games/GameDashboard";
+import SpinnerGame from "@/games/spinner/SpinnerGame";
 
 export const router = createBrowserRouter([
   // Public routes
@@ -57,19 +57,19 @@ export const router = createBrowserRouter([
             element: <GameDashboard />
           },
           {
-            path: "vermigotchi",
+            path: "tokenpet",
             element: (
-              <VermigotchiProvider>
-                <VermigotchiContainer />
-              </VermigotchiProvider>
+              <TokenPetProvider>
+                <TokenPetContainer />
+              </TokenPetProvider>
             ),
           },
           {
             path: "spinner",
             element: (
-              <VermigotchiProvider>
+              <TokenPetProvider>
                 <SpinnerGame />
-              </VermigotchiProvider>
+              </TokenPetProvider>
             )
           },
         ],

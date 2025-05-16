@@ -1,8 +1,8 @@
 /**
- * VermigotchiPet Class - Represents a virtual pet with various states and methods
- * Inspired by classic Vermigotchi gameplay
+ * TokenPet Class - Represents a virtual pet with various states and methods
+ * Inspired by classic virtual pet gameplay
  */
-class VermigotchiPet {
+class TokenPet {
   /**
    * Create a new pet
    * @param {string} name - The pet's name
@@ -22,7 +22,7 @@ class VermigotchiPet {
     this.isSleeping = options.isSleeping ?? false;
     this.isSick = options.isSick ?? false;
     this.isDead = options.isDead ?? false;
-    this.tokensSpent = options.tokensSpent ?? 0;
+
     this.feedCount = options.feedCount ?? 0;
     this.playCount = options.playCount ?? 0;
     this.medicineCount = options.medicineCount ?? 0;
@@ -45,8 +45,7 @@ class VermigotchiPet {
     this.hunger = Math.max(0, this.hunger - amount);
     this.happiness = Math.min(100, this.happiness + 5);
     this.health = Math.min(100, this.health + 2);
-    const tokenCost = 5;
-    this.tokensSpent += tokenCost;
+
     this.updateState();
     return { success: true, message: `${this.name} has been fed!` };
   }
@@ -60,8 +59,7 @@ class VermigotchiPet {
     this.happiness = Math.min(100, this.happiness + amount);
     this.energy = Math.max(0, this.energy - 10);
     this.hunger = Math.min(100, this.hunger + 5);
-    const tokenCost = 3;
-    this.tokensSpent += tokenCost;
+
     this.updateState();
     return { success: true, message: `${this.name} had fun playing!` };
   }
@@ -85,8 +83,7 @@ class VermigotchiPet {
     this.medicineCount++;
     this.health = 100;
     this.isSick = false;
-    const tokenCost = 10;
-    this.tokensSpent += tokenCost;
+
     this.updateState();
     return { success: true, message: `${this.name} is feeling much better!` };
   }
@@ -100,8 +97,7 @@ class VermigotchiPet {
     this.energy = 100;
     this.health = 100;
     this.isSick = false;
-    const tokenCost = 20;
-    this.tokensSpent += tokenCost;
+
     this.updateState();
     return { success: true, message: `${this.name} feels amazing after special care!` };
   }
@@ -201,10 +197,10 @@ class VermigotchiPet {
     });
   }
 
-  static fromJSON(json) {
-    const data = JSON.parse(json);
-    return new VermigotchiPet(data.name, data);
+  static fromJSON(jsonString) {
+    const data = JSON.parse(jsonString);
+    return new TokenPet(data.name, data);
   }
 }
 
-export default VermigotchiPet;
+export default TokenPet;

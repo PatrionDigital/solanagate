@@ -1,4 +1,4 @@
-// src/components/games/spinner/SpinHistory.jsx
+// src/games/spinner/SpinHistory.jsx
 import PropTypes from "prop-types";
 import { Card } from "@windmill/react-ui";
 import { formatPrizeValue } from "@/utils/spinnerUtils";

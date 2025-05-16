@@ -31,17 +31,41 @@ We welcome feature requests! Please:
 ### Pull Requests
 
 1. **Fork** the repository and create your branch from `main`
-2. **Install dependencies**: Run `npm install`
+
+2. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
 3. **Make your changes**
-4. **Test your changes**: Run `npm test`
-5. **Lint your code**: Run `npm run lint`
-6. **Format your code**: Run `npm run format`
+
+4. **Test your changes**:
+
+   ```bash
+   npm test
+   ```
+
+5. **Lint your code**:
+
+   ```bash
+   npm run lint
+   ```
+
+6. **Format your code**:
+
+   ```bash
+   npm run format
+   ```
+
 7. **Commit your changes** with a descriptive commit message
+
 8. **Push** to your fork and submit a pull request
 
 ### Development Workflow
 
 1. Create a new branch for your feature or bugfix:
+
    ```bash
    git checkout -b feature/your-feature-name
    # or
@@ -49,6 +73,7 @@ We welcome feature requests! Please:
    ```
 
 2. Make your changes and commit them:
+
    ```bash
    git add .
    git commit -m "feat: add new feature"
@@ -57,6 +82,7 @@ We welcome feature requests! Please:
    ```
 
 3. Push your changes to your fork:
+
    ```bash
    git push origin your-branch-name
    ```

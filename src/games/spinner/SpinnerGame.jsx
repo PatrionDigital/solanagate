@@ -1,8 +1,8 @@
-// src/components/games/spinner/SpinnerGame.jsx
+// src/games/spinner/SpinnerGame.jsx
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useVermigotchi } from "@/games/tamagotchi/hooks/useVermigotchi";
+import useTokenPet from "@/games/tokenpet/hooks/useTokenPet";
 import SpinInstructions from "./SpinInstructions";
 import useSpinnerGame from "@/hooks/useSpinnerGame";
 import Wheel from "./Wheel";
@@ -19,8 +19,8 @@ const SpinnerGame = () => {
   const handleBackToGames = () => {
     navigate('/games');
   };
-  // Get the current Vermigotchi pet from context
-  const { pet } = useVermigotchi();
+  // Get the current TokenPet from context
+  const { pet } = useTokenPet();
 
   // Always call the hook, even if pet is null
   const handleSpinComplete = useCallback((updatedHistory) => {

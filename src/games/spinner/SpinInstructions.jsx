@@ -1,4 +1,4 @@
-// src/components/games/spinner/SpinInstructions.jsx
+// src/games/spinner/SpinInstructions.jsx
 import { Card } from "@windmill/react-ui";
 
 const SpinInstructions = () => {
@@ -9,7 +9,7 @@ const SpinInstructions = () => {
         <p className="mb-2">Spin the wheel for a chance to win VERMIN tokens. Good luck!</p>
         <ul className="space-y-1">
           <li>🎯 You get 1 free spin every day</li>
-          <li>😊 Keep your Vermigotchi happy for bonus spins</li>
+          <li>😊 Keep your TokenPet happy for bonus spins</li>
           <li>🧬 Higher evolution = bigger prizes</li>
         </ul>
       </div>

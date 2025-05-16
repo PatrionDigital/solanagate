@@ -3,7 +3,7 @@ import { Button, Card } from "@windmill/react-ui";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 
-const ActionConfirmModal = ({ open, onConfirm, onCancel, actionLabel, actionPrice }) => {
+const ActionConfirmModal = ({ open, onConfirm, onCancel, actionLabel }) => {
   const [show, setShow] = useState(open);
   const [animate, setAnimate] = useState(false);
 
@@ -31,9 +31,7 @@ const ActionConfirmModal = ({ open, onConfirm, onCancel, actionLabel, actionPric
         <Card className="p-6 flex flex-col items-center !bg-[rgba(30,30,30,0.97)] border border-gold rounded-lg shadow-2xl">
           <h3 className="text-lg font-bold text-gold mb-4">Confirm Action</h3>
           <p className="mb-2 text-white">Do you want to {actionLabel}?</p>
-          {actionPrice && (
-            <p className="mb-6 text-red-200 font-semibold">This costs {actionPrice} $VERMIN</p>
-          )}
+
           <div className="flex gap-4 w-full justify-center">
             <Button
               type="button"
@@ -61,10 +59,6 @@ ActionConfirmModal.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   actionLabel: PropTypes.string.isRequired,
-  actionPrice: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
 };
 
 export default ActionConfirmModal;

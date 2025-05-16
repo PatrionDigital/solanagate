@@ -62,7 +62,7 @@ const PetStatus = ({ hunger, happiness, energy, health }) => {
           ></div>
         </div>
       </div>
-      {/* Vermigotchi status */}
+      {/* TokenPet status */}
       <div className="mb-3">
         <div className="flex justify-between mb-1">
           <span className="text-sm text-white">Health</span>

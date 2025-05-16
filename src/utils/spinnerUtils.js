@@ -27,7 +27,7 @@ export const EVOLUTION_BONUSES = {
 /**
  * Calculate the final prize based on the base prize value and evolution level
  * @param {number} prizeValue - Base prize value
- * @param {string} evolutionLevel - Current evolution level of the Vermigotchi
+ * @param {string} evolutionLevel - Current evolution level of the TokenPet
  * @returns {number} Final prize value with bonus applied
  */
 export const calculatePrizeWithBonus = (prizeValue, evolutionLevel = "EGG") => {
@@ -55,7 +55,7 @@ export const isEligibleForFreeSpin = (lastSpinTime) => {
 };
 
 /**
- * Determine if player gets bonus spins based on Vermigotchi happiness
+ * Determine if player gets bonus spins based on TokenPet happiness
  * @param {number} happiness - Happiness level (0-100)
  * @returns {number} Number of bonus spins (0 if not eligible)
  */

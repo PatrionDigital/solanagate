@@ -1,4 +1,4 @@
-// src/components/games/spinner/Wheel.jsx
+// src/games/spinner/Wheel.jsx
 import { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import "@/styles/SpinnerGame.css";

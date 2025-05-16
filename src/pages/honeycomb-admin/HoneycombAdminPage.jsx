@@ -60,9 +60,9 @@ export const HoneycombAdminPage = () => {
     <div className="honeycomb-admin-page">
       <div className="admin-header">
         <div className="header-title">
-          <h1>Vermin Game Admin Panel</h1>
+          <h1>Admin Panel</h1>
           <p className="description">
-            Manage on-chain game parameters and assets for the Vermin project.
+            Manage on-chain parameters and assets for your project.
           </p>
         </div>
         <div className="header-wallet">

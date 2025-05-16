@@ -11,6 +11,7 @@ import GameLayout from "@/components/layouts/GameLayout";
 // Pages
 import LandingPage from "@/components/LandingPage";
 import { HoneycombAdminPage } from "@/pages/honeycomb-admin/HoneycombModules";
+import AdminLayout from "@/components/layouts/AdminLayout";
 
 // Games
 import TokenPetProvider from "@/games/tokenpet/context/TokenPetProvider";
@@ -78,11 +79,19 @@ export const router = createBrowserRouter([
       // Admin section
       {
         path: "/admin",
-        element: <HoneycombAdminPage />,
+        element: (
+          <AdminLayout>
+            <HoneycombAdminPage />
+          </AdminLayout>
+        ),
       },
       {
         path: "/honeycomb-admin",
-        element: <HoneycombAdminPage />,
+        element: (
+          <AdminLayout>
+            <HoneycombAdminPage />
+          </AdminLayout>
+        ),
       },
       
       // Catch-all route - redirects to root

@@ -22,6 +22,7 @@ class TokenPet {
     this.isSleeping = options.isSleeping ?? false;
     this.isSick = options.isSick ?? false;
     this.isDead = options.isDead ?? false;
+    this.mood = options.mood ?? this.getMood(); // Add mood property
 
     this.feedCount = options.feedCount ?? 0;
     this.playCount = options.playCount ?? 0;
@@ -139,6 +140,8 @@ class TokenPet {
     } else {
       this.stage = 'egg';
     }
+    // Update mood when stage changes
+    this.mood = this.getMood();
   }
 
   getStatus() {
@@ -156,8 +159,11 @@ class TokenPet {
       isDead: this.isDead,
       lastInteraction: this.lastInteraction,
       createdAt: this.createdAt,
-      tokensSpent: this.tokensSpent,
-      mood: this.getMood(),
+      mood: this.mood,
+      feedCount: this.feedCount,
+      playCount: this.playCount,
+      medicineCount: this.medicineCount,
+      specialCareCount: this.specialCareCount
     };
   }
 

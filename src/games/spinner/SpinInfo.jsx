@@ -9,26 +9,26 @@ const SpinInfo = ({ spins, character, totalWinnings }) => {
   const bonusPercentage = (bonus - 1) * 100;
 
   return (
-    <Card className="vermin-spinner-info-card">
-      <h3 className="vermin-spinner-info-title">Spinner Game Info</h3>
-      <div className="vermin-spinner-info-content">
+    <Card className="token-spinner-info-card">
+      <h3 className="token-spinner-info-title">Spinner Game Info</h3>
+      <div className="token-spinner-info-content">
         <div className="vermin-spinner-stat">
-          <span className="vermin-spinner-stat-label">Remaining Spins:</span>
-          <span className="vermin-spinner-stat-value">{spins}</span>
+          <span className="token-spinner-stat-label">Remaining Spins:</span>
+          <span className="token-spinner-stat-value">{spins}</span>
         </div>
         <div className="vermin-spinner-stat">
-          <span className="vermin-spinner-stat-label">TokenPet Level:</span>
-          <span className="vermin-spinner-stat-value">{evolutionLevel}</span>
+          <span className="token-spinner-stat-label">TokenPet Level:</span>
+          <span className="token-spinner-stat-value">{evolutionLevel}</span>
         </div>
         <div className="vermin-spinner-stat">
-          <span className="vermin-spinner-stat-label">Prize Bonus:</span>
-          <span className="vermin-spinner-stat-value">
+          <span className="token-spinner-stat-label">Prize Bonus:</span>
+          <span className="token-spinner-stat-value">
             {bonusPercentage > 0 ? `+${bonusPercentage}%` : "No Bonus"}
           </span>
         </div>
         <div className="vermin-spinner-stat">
-          <span className="vermin-spinner-stat-label">Total Winnings:</span>
-          <span className="vermin-spinner-stat-value">{formatPrizeValue(totalWinnings)} VERMIN</span>
+          <span className="token-spinner-stat-label">Total Winnings:</span>
+          <span className="token-spinner-stat-value">{formatPrizeValue(totalWinnings)} {import.meta.env.VITE_TOKEN_SYMBOL || 'TOKEN'}</span>
         </div>
       </div>
     </Card>

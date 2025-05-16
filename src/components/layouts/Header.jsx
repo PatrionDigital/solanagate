@@ -4,7 +4,7 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { FaInfoCircle } from "react-icons/fa";
 import { IoPersonCircleOutline, IoHome, IoGameController } from "react-icons/io5";
 import { Button } from "@windmill/react-ui";
-import logo from "@/assets/logo.avif";
+
 import UserInfoDisplay from "@/components/UserInfoDisplay";
 import { useWalletContext } from "@/contexts/WalletContext";
 // Tailwind handles styling, so no need for custom CSS
@@ -86,7 +86,7 @@ const Header = () => {
     <header className="fixed top-0 left-0 w-full bg-headerBg/80 backdrop-blur shadow-md border-b border-gold z-50">
       <div className="flex items-center justify-between px-4 py-2 max-w-7xl mx-auto">
         <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="App Logo" className="h-10" />
+          <img src="https://picsum.photos/80" alt="App Logo" className="h-10 rounded" />
         </Link>
         <nav className="hidden md:block">
           <ul className="flex gap-2 text-footerText font-medium">

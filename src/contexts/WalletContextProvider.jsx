@@ -10,6 +10,8 @@ import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
+  LedgerWalletAdapter,
+  // Only including the most reliable and widely supported wallets
 } from "@solana/wallet-adapter-wallets";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
@@ -70,14 +72,24 @@ export const WalletProviderWrapper = ({ children }) => {
 
   // Define wallets using the standard wallet adapters
   const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
-    []
+    () => [
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter(),
+      new LedgerWalletAdapter(),
+    ].filter(Boolean), // Filter out any null/undefined wallets
+    [] // Empty dependency array since we don't have any dependencies
   );
 
   return (
     <ConnectionProvider endpoint={SOLANA_RPC_URL}>
       <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
+        <WalletModalProvider
+          logo="/logo.png"
+          modalProps={{
+            className: 'wallet-modal',
+            rootClassName: 'wallet-modal-root',
+          }}
+        >
           <WalletContextProvider>{children}</WalletContextProvider>
         </WalletModalProvider>
       </WalletProvider>

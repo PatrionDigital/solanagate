@@ -2,9 +2,6 @@ import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
 import { Link } from "react-router-dom";
 
-import { SiSolana } from "react-icons/si";
-import { SiTelegram } from "react-icons/si";
-import { FaXTwitter } from "react-icons/fa6";
 
 // Style
 import "@/styles/AboutLayout.css";
@@ -17,41 +14,32 @@ const AboutLayout = () => {
         <div className="about-mission">
           <div className="token-panel mission-panel">
             <p className="italic-text">
-              Our team is made of builders; people who want to create innovative
-              solutions and share them with the community. We believe in building
-              quality products and continuously improving based on user feedback.
-              We focus on delivering real value through thoughtful development and
-              community engagement.
+              <strong>About This Project</strong>
+              <br />
+              This is a placeholder About page. You can use this space to describe your application, its mission, or any information you want to share with users.
             </p>
           </div>
 
           <div className="meme-vibe">
             <p>
-              We&apos;re a dedicated team of blockchain developers and designers
-              committed to creating meaningful experiences in the Solana ecosystem.
-              Our focus is on building practical solutions rather than making
-              unrealistic promises.
+              Welcome to our generic web application! This About page is intended as a template for your own content. Replace this text with information about your team, your goals, or anything else relevant to your project.
             </p>
             <p>
-              No empty promises, no short-term plays - just solid development.
+              No details provided yet. Stay tuned for updates!
             </p>
 
             <p>
-              Our commitment remains strong regardless of market conditions.
-              This is more than just a token; it&apos;s a platform designed to provide
-              real utility and value to our community. We&apos;re focused on sustainable
-              development and long-term growth.
+              This project is under active development. All information here is for demonstration purposes only.
             </p>
 
             <div className="community-claim">
               <p>
-                <strong>Community Claim</strong>
+                <strong>Community Notice</strong>
               </p>
-              <p>A community claimed ownership for this token on Dec 06 2024</p>
+              <p>This application is open for community feedback and collaboration.</p>
 
               <p className="italic-text">
-                Those that CTO&apos;d the CTO bailed. A new CTO has CTO&apos;d
-                the CTO of the CTO.
+                Placeholder text: Replace with your own community story or announcement.
               </p>
             </div>
           </div>
@@ -59,24 +47,24 @@ const AboutLayout = () => {
 
         <div className="icon-container">
           <div className="icon-item">
-            <Link to="https://solscan.io/token/4fMRncxv5XvsdpAmDxttpjw7pTqPLqKQpyD36jtNpump">
-              <SiSolana size={65} className="about-icon" />
+            <Link to="#">
+              <span className="about-icon" style={{fontSize: 60, display: 'inline-block'}}>🌐</span>
             </Link>
-            <p>Contract Address</p>
+            <p>Website</p>
           </div>
 
           <div className="icon-item">
-            <Link to="https://t.me/verminverse">
-              <SiTelegram size={65} className="about-icon" />
+            <Link to="#">
+              <span className="about-icon" style={{fontSize: 60, display: 'inline-block'}}>💬</span>
             </Link>
-            <p>Telegram Group</p>
+            <p>Community</p>
           </div>
 
           <div className="icon-item">
-            <Link to="https://x.com/verminsol">
-              <FaXTwitter size={65} className="about-icon" />
+            <Link to="#">
+              <span className="about-icon" style={{fontSize: 60, display: 'inline-block'}}>📢</span>
             </Link>
-            <p>X (Twitter)</p>
+            <p>Announcements</p>
           </div>
         </div>
       </div>

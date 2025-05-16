@@ -95,10 +95,10 @@ const Wheel = ({ isSpinning, prizeIndex, onSpinComplete }) => {
   }, [isSpinning, prizeIndex, onSpinComplete]);
 
   return (
-    <div className="vermin-spinner-wheel-container" style={{ position: 'relative', width: 300, height: 300 }}>
+    <div className="token-spinner-wheel-container" style={{ position: 'relative', width: 300, height: 300 }}>
       {/* Single red triangle marker at the top */}
       <div
-        className="vermin-spinner-wheel-marker"
+        className="token-spinner-wheel-marker"
         style={{
           position: 'absolute',
           top: 0,
@@ -114,8 +114,8 @@ const Wheel = ({ isSpinning, prizeIndex, onSpinComplete }) => {
           pointerEvents: 'none',
         }}
       />
-      <div ref={wheelRef} className="vermin-spinner-wheel">
-        <canvas ref={canvasRef} width={300} height={300} className="vermin-spinner-wheel-canvas" />
+      <div ref={wheelRef} className="token-spinner-wheel">
+        <canvas ref={canvasRef} width={300} height={300} className="token-spinner-wheel-canvas" />
       </div>
     </div>
   );

@@ -5,14 +5,14 @@
 
 // Define the prize segments
 export const PRIZE_SEGMENTS = [
-  { value: 0, label: "0 VERMIN", color: "#FF6384" },
-  { value: 0.1, label: "0.1 VERMIN", color: "#36A2EB" },
-  { value: 0.5, label: "0.5 VERMIN", color: "#FFCE56" },
-  { value: 1, label: "1 VERMIN", color: "#4BC0C0" },
-  { value: 3, label: "3 VERMIN", color: "#9966FF" },
-  { value: 5, label: "5 VERMIN", color: "#FF9F40" },
-  { value: 10, label: "10 VERMIN", color: "#8AC926" },
-  { value: 15, label: "15 VERMIN", color: "#FF6384" },
+  { value: 0, label: "Prize 1", color: "#FF6384" },
+  { value: 0.1, label: "Prize 2", color: "#36A2EB" },
+  { value: 0.5, label: "Prize 3", color: "#FFCE56" },
+  { value: 1, label: "Prize 4", color: "#4BC0C0" },
+  { value: 3, label: "Prize 5", color: "#9966FF" },
+  { value: 5, label: "Prize 6", color: "#FF9F40" },
+  { value: 10, label: "Prize 7", color: "#8AC926" },
+  { value: 15, label: "Prize 8", color: "#FF6384" },
 ];
 
 // Evolution levels and their corresponding bonuses

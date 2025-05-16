@@ -81,7 +81,7 @@ const SpinnerGame = () => {
   return (
     <div className="w-full max-w-4xl mx-auto py-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="vermin-spinner-game-title">Vermin Spinner Game</h2>
+        <h2 className="token-spinner-game-title">Token Spinner Game</h2>
         <Button 
           onClick={handleBackToGames}
           layout="outline"
@@ -92,8 +92,8 @@ const SpinnerGame = () => {
         </Button>
       </div>
       <Card className="p-6 !bg-[rgba(50,50,50,0.8)] border border-gold rounded-lg shadow-lg backdrop-blur">
-        <div className="vermin-spinner-game-main">
-          <div className="vermin-spinner-game-left">
+        <div className="token-spinner-game-main">
+          <div className="token-spinner-game-left">
             {console.log('[SpinnerGame] Rendering <Wheel />', { isSpinning, prizeIndex })}
             <Wheel
               isSpinning={isSpinning}
@@ -101,8 +101,8 @@ const SpinnerGame = () => {
               onSpinComplete={handleSpinComplete}
             />
             <Button
-              className={`vermin-spinner-btn ${
-                !canSpin || isSpinning ? "vermin-spinner-btn--disabled" : ""
+              className={`token-spinner-btn ${
+                !canSpin || isSpinning ? "token-spinner-btn--disabled" : ""
               }`}
               onClick={handleSpin}
               disabled={!canSpin || isSpinning}
@@ -111,13 +111,13 @@ const SpinnerGame = () => {
               {isSpinning ? "Spinning..." : `Spin (${spins} left)`}
             </Button>
           </div>
-          <div className="vermin-spinner-game-right">
+          <div className="token-spinner-game-right">
             {/* Mobile Selector - Only visible on small screens */}
-            <div className="vermin-mobile-selector">
+            <div className="token-spinner-mobile-selector">
               <select
                 value={activeTab}
                 onChange={(e) => setActiveTab(e.target.value)}
-                className="vermin-mobile-select"
+                className="token-spinner-mobile-select"
               >
                 <option value="info">Game Info</option>
                 <option value="history">Spin History</option>
@@ -126,27 +126,27 @@ const SpinnerGame = () => {
             </div>
             
             {/* Desktop Tabs - Hidden on mobile */}
-            <div className="vermin-tabs">
+            <div className="token-spinner-tabs">
               <button
-                className={`vermin-tab ${activeTab === 'info' ? 'active' : ''}`}
+                className={`token-spinner-tab ${activeTab === 'info' ? 'active' : ''}`}
                 onClick={() => setActiveTab('info')}
               >
                 Game Info
               </button>
               <button
-                className={`vermin-tab ${activeTab === 'history' ? 'active' : ''}`}
+                className={`token-spinner-tab ${activeTab === 'history' ? 'active' : ''}`}
                 onClick={() => setActiveTab('history')}
               >
                 Spin History
               </button>
               <button
-                className={`vermin-tab ${activeTab === 'howtoplay' ? 'active' : ''}`}
+                className={`token-spinner-tab ${activeTab === 'howtoplay' ? 'active' : ''}`}
                 onClick={() => setActiveTab('howtoplay')}
               >
                 How to Play
               </button>
             </div>
-            <div className="vermin-tab-content">
+            <div className="token-tab-content">
               {activeTab === 'info' && (
                 <SpinInfo
                   spins={spins}
@@ -175,16 +175,16 @@ const SpinnerGame = () => {
               height={window.innerHeight}
             />
           )}
-          <div className="vermin-prize-notification-container">
-            <Card className={`vermin-prize-notification-card ${isAnimating ? 'scale-in' : 'scale-out'}`}>
+          <div className="token-prize-notification-container">
+            <Card className={`token-prize-notification-card ${isAnimating ? 'scale-in' : 'scale-out'}`}>
               {currentPrize.finalValue > 0 ? (
                 <>
-                  <h3 className="vermin-prize-title">🎉 You Won! 🎉</h3>
-                  <div className="vermin-spinner-prize-amount">
-                    {currentPrize.finalValue} <span className="vermin-prize-token">VERMIN</span>
+                  <h3 className="token-prize-title">🎉 You Won! 🎉</h3>
+                  <div className="token-spinner-prize-amount">
+                    {currentPrize.finalValue} <span className="token-prize-token">{import.meta.env.VITE_TOKEN_SYMBOL || 'TOKEN'}</span>
                   </div>
                   {currentPrize.baseValue !== currentPrize.finalValue && (
-                    <div className="vermin-prize-bonus">
+                    <div className="token-prize-bonus">
                       (Base: {currentPrize.baseValue} + Bonus:{' '}
                       {currentPrize.finalValue - currentPrize.baseValue})
                     </div>
@@ -192,19 +192,19 @@ const SpinnerGame = () => {
                 </>
               ) : (
                 <>
-                  <h3 className="vermin-prize-title">😭 Better Luck Next Time!</h3>
-                  <div className="vermin-prize-message">
+                  <h3 className="token-prize-title">😭 Better Luck Next Time!</h3>
+                  <div className="token-prize-message">
                     Sorry! You didn&apos;t win anything this time.
                   </div>
                 </>
               )}
-              <div className="vermin-prize-actions">
+              <div className="token-prize-actions">
                 <Button
                   onClick={() => {
                     setIsAnimating(false);
                     setTimeout(() => setShowPrize(false), 300);
                   }}
-                  className="vermin-spinner-prize-close-btn"
+                  className="token-spinner-prize-close-btn"
                 >
                   OK
                 </Button>

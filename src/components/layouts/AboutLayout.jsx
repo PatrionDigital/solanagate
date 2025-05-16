@@ -1,75 +1,64 @@
-import Header from "@/components/layouts/Header";
-import Footer from "@/components/layouts/Footer";
+import MainLayout from "@/components/layouts/MainLayout";
 import { Link } from "react-router-dom";
-
+import { Button } from "@windmill/react-ui";
 
 // Style
 import "@/styles/AboutLayout.css";
 
 const AboutLayout = () => {
   return (
-    <>
-      <Header />
-      <div className="about-layout-content">
-        <div className="about-mission">
-          <div className="token-panel mission-panel">
-            <p className="italic-text">
-              <strong>About This Project</strong>
-              <br />
-              This is a placeholder About page. You can use this space to describe your application, its mission, or any information you want to share with users.
-            </p>
-          </div>
-
-          <div className="meme-vibe">
-            <p>
-              Welcome to our generic web application! This About page is intended as a template for your own content. Replace this text with information about your team, your goals, or anything else relevant to your project.
-            </p>
-            <p>
-              No details provided yet. Stay tuned for updates!
-            </p>
-
-            <p>
-              This project is under active development. All information here is for demonstration purposes only.
-            </p>
-
-            <div className="community-claim">
-              <p>
-                <strong>Community Notice</strong>
-              </p>
-              <p>This application is open for community feedback and collaboration.</p>
-
-              <p className="italic-text">
-                Placeholder text: Replace with your own community story or announcement.
-              </p>
-            </div>
-          </div>
+    <MainLayout>
+      <main className="flex flex-col items-center px-4 py-8 max-w-3xl mx-auto">
+        <h2 className="text-xl font-bold mb-3">About This Project</h2>
+        <div className="mb-6 w-full bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <p className="italic mb-2">
+            This is a placeholder About page. You can use this space to describe your application, its mission, or any information you want to share with users.
+          </p>
         </div>
 
-        <div className="icon-container">
-          <div className="icon-item">
-            <Link to="#">
-              <span className="about-icon" style={{fontSize: 60, display: 'inline-block'}}>🌐</span>
-            </Link>
-            <p>Website</p>
-          </div>
+        <h3 className="text-lg font-semibold mb-2">Welcome</h3>
+        <div className="mb-6 w-full bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <p className="mb-2">
+            Welcome to our generic web application! This About page is intended as a template for your own content. Replace this text with information about your team, your goals, or anything else relevant to your project.
+          </p>
+          <p className="mb-2">
+            No details provided yet. Stay tuned for updates!
+          </p>
+          <p className="mb-2">
+            This project is under active development. All information here is for demonstration purposes only.
+          </p>
+        </div>
 
-          <div className="icon-item">
-            <Link to="#">
-              <span className="about-icon" style={{fontSize: 60, display: 'inline-block'}}>💬</span>
-            </Link>
-            <p>Community</p>
-          </div>
+        <h3 className="text-lg font-semibold mb-2">Community Notice</h3>
+        <div className="mb-6 w-full bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <p className="mb-1">This application is open for community feedback and collaboration.</p>
+          <p className="italic">
+            Placeholder text: Replace with your own community story or announcement.
+          </p>
+        </div>
 
-          <div className="icon-item">
-            <Link to="#">
-              <span className="about-icon" style={{fontSize: 60, display: 'inline-block'}}>📢</span>
-            </Link>
-            <p>Announcements</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full mt-4">
+          <div className="flex flex-col items-center">
+            <Button tag={Link} to="#" layout="outline" className="mb-2 text-3xl p-4">
+              🌐
+            </Button>
+            <span className="text-sm">Website</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Button tag={Link} to="#" layout="outline" className="mb-2 text-3xl p-4">
+              💬
+            </Button>
+            <span className="text-sm">Community</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Button tag={Link} to="#" layout="outline" className="mb-2 text-3xl p-4">
+              📢
+            </Button>
+            <span className="text-sm">Announcements</span>
           </div>
         </div>
-      </div>
-      <Footer />
-    </>
+      </main>
+    </MainLayout>
   );
 };
 

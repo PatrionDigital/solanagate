@@ -41,8 +41,8 @@
   padding: 15px;
   border: none;
   border-radius: 15px;
-  background-color: rgba(190, 162, 44, 0.6);
-  color: #ffffff;
+  background-color: #19161c; /* solanaBlack */
+  color: #00ffba; /* solanaGreen */
   cursor: pointer;
   font-weight: bold;
   font-size: 20px;
@@ -50,17 +50,20 @@
   text-align: center;
   width: 100%;
   box-sizing: border-box;
+  border: 2px solid #9945ff;
 }
 
 .token-holder-nav button.active {
-  background-color: rgba(212, 175, 55, 0.9);
+  background-color: #9945ff; /* solanaPurple */
+  color: #fff;
   font-weight: bold;
-  border: 3px solid #ff8c00;
+  border: 3px solid #00ffba;
   padding: 12px;
 }
 
 .token-holder-nav button:hover {
-  background-color: rgba(212, 175, 55, 0.8);
+  background-color: #00ffba; /* solanaGreen */
+  color: #19161c;
 }
 
 .token-content-section {

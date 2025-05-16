@@ -8,18 +8,22 @@ export default {
   theme: {
     extend: {
       colors: {
-        accent: "#646cff",
-        gold: "#d4af37",
-        goldLight: "rgba(212, 175, 55, 0.8)",
-        goldBorder: "rgba(212, 175, 55, 0.3)",
-        headerBg: "rgba(40, 44, 52, 0.8)",
-        footerBg: "rgba(40, 44, 52, 0.8)",
-        menuBg: "rgba(119, 121, 125, 0.8)",
-        linkAccent: "#fff826",
-        linkHover: "#f59794",
+        // Solana Brand Colors
+        solanaGreen: "#00ffba",
+        solanaPurple: "#9945ff",
+        solanaTeal: "#19fb9b",
+        solanaBlue: "#43b4ca",
+        solanaBlack: "#19161c",
+        accent: "#9945ff", // Solana purple as accent
+        accentSecondary: "#00ffba", // Solana green as secondary accent
+        headerBg: "rgba(25, 22, 28, 0.95)", // solanaBlack with opacity
+        footerBg: "rgba(25, 22, 28, 0.95)",
+        menuBg: "rgba(67, 180, 202, 0.85)", // solanaBlue with opacity
+        linkAccent: "#19fb9b", // Solana teal
+        linkHover: "#00ffba", // Solana green
         footerText: "#ffffff",
         headerText: "#ffffff",
-        backgroundMain: "transparent",
+        backgroundMain: "#19161c", // solanaBlack
       },
       fontFamily: {
         sans: [
@@ -44,8 +48,8 @@ export default {
         logo: "0 2px 3px rgba(0, 0, 0, 0.3)",
       },
       borderColor: {
-        headerBottom: "rgba(212, 175, 55, 0.3)",
-        footerTop: "rgba(212, 175, 55, 0.3)",
+        headerBottom: "#9945ff", // solanaPurple
+        footerTop: "#00ffba", // solanaGreen
       },
       height: {
         footer: "40px",

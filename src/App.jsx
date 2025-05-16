@@ -4,7 +4,7 @@ import BackgroundEffect from "@/components/BackgroundEffect";
 
 // Styles
 import "@/styles/App.css";
-import "./theme-buttons.css";
+import "@/styles/theme-buttons.css";
 import "@/pages/honeycomb-admin/honeycombAdmin.css";
 import "@/pages/honeycomb-admin/adminAuth.css";
 

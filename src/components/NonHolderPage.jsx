@@ -5,10 +5,10 @@ const NonHolderPage = () => {
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>Access Denied</h1>
-      <p>You don&apos;t have any Vermin tokens.</p>
+      <p>You don&apos;t have the required tokens to access this content.</p>
 
       <div>
-        <p>Buy Vermin on Solana:</p>
+        <p>Buy tokens on Solana:</p>
         <div>
           <Link to="https://raydium.io/swap/?inputMint=sol&outputMint=4fMRncxv5XvsdpAmDxttpjw7pTqPLqKQpyD36jtNpump">
             <img

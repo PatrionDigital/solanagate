@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const VerminPriceChart = () => {
+const TokenPriceChart = () => {
   const [showSwaps, setShowSwaps] = useState(false);
 
   const toggleSwaps = () => {
@@ -65,4 +65,4 @@ const VerminPriceChart = () => {
   );
 };
 
-export default VerminPriceChart;
+export default TokenPriceChart;

@@ -12,11 +12,11 @@ const Footer = () => {
         {/* Desktop Layout */}
         <div className="hidden md:flex items-center justify-between">
           <div className="text-footerText text-sm">
-            © {currentYear} <span className="font-bold text-gold">Vermin on Sol</span>. All rights reserved.
+            © {currentYear} <span className="font-bold text-gold">Your Token dApp</span>. All rights reserved.
           </div>
           <div className="flex items-center gap-4">
             <a
-              href="https://github.com/PatrionDigital/solanagate"
+              href="#"
               target="_blank"
               rel="noopener noreferrer"
               title="View on GitHub"
@@ -28,25 +28,25 @@ const Footer = () => {
               href={`https://dexscreener.com/solana/${import.meta.env.VITE_TOKEN_MINT_ADDRESS}`}
               target="_blank"
               rel="noopener noreferrer"
-              title="Vermin on Solana Contract Address"
+              title="View on DexScreener"
               className="text-footerText hover:text-gold transition-colors"
             >
               <SiSolana size={20} />
             </a>
             <a
-              href="https://t.me/verminverse"
+              href="#"
               target="_blank"
               rel="noopener noreferrer"
-              title="Join our Telegram Group"
+              title="Join our Community"
               className="text-footerText hover:text-gold transition-colors"
             >
               <FaTelegram size={20} />
             </a>
             <a
-              href="https://x.com/verminsol"
+              href="#"
               target="_blank"
               rel="noopener noreferrer"
-              title="Follow us on X/Twitter"
+              title="Follow us on X"
               className="text-footerText hover:text-gold transition-colors"
             >
               <FaXTwitter size={20} />
@@ -58,7 +58,7 @@ const Footer = () => {
         <div className="md:hidden flex flex-col items-center gap-3">
           <div className="flex items-center gap-6">
             <a
-              href="https://github.com/PatrionDigital/solanagate"
+              href="#"
               target="_blank"
               rel="noopener noreferrer"
               title="View on GitHub"
@@ -70,32 +70,32 @@ const Footer = () => {
               href={`https://dexscreener.com/solana/${import.meta.env.VITE_TOKEN_MINT_ADDRESS}`}
               target="_blank"
               rel="noopener noreferrer"
-              title="Vermin on Solana Contract Address"
+              title="View on DexScreener"
               className="text-footerText hover:text-gold transition-colors"
             >
               <SiSolana size={20} />
             </a>
             <a
-              href="https://t.me/verminverse"
+              href="#"
               target="_blank"
               rel="noopener noreferrer"
-              title="Join our Telegram Group"
+              title="Join our Community"
               className="text-footerText hover:text-gold transition-colors"
             >
               <FaTelegram size={20} />
             </a>
             <a
-              href="https://x.com/verminsol"
+              href="#"
               target="_blank"
               rel="noopener noreferrer"
-              title="Follow us on X/Twitter"
+              title="Follow us on X"
               className="text-footerText hover:text-gold transition-colors"
             >
               <FaXTwitter size={20} />
             </a>
           </div>
           <div className="text-footerText text-xs text-center">
-            © {currentYear} <span className="text-gold">Vermin on Sol</span>. All rights reserved.
+            © {currentYear} <span className="text-gold">Your Token dApp</span>. All rights reserved.
           </div>
         </div>
       </div>

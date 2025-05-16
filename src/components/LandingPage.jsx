@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useWalletContext } from "@/contexts/WalletContext";
 import CustomWalletButton from "@/components/CustomWalletButton";
@@ -19,7 +19,7 @@ const LandingPage = () => {
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Welcome to Vermin on Solana dApp</h1>
+      <h1>Welcome to Your Token dApp</h1>
       <CustomWalletButton />
       <p>Please connect your wallet to proceed.</p>
     </div>

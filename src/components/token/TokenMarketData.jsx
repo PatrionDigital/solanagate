@@ -3,17 +3,18 @@ import PropTypes from 'prop-types';
 import { useUserProfile } from "@/contexts/UserProfileContext";
 import { Table, TableBody, TableCell, TableContainer, TableRow } from "@windmill/react-ui";
 
-const VERMIN_TOKEN_ADDRESS = "4fMRncxv5XvsdpAmDxttpjw7pTqPLqKQpyD36jtNpump";
+import TOKEN_CONFIG from "@/config/token";
+import { fetchPriceHistory, formatPriceData, calculatePriceChange } from "@/utils/priceHistory";
 
-const fetchVerminData = async () => {
+const fetchTokenData = async () => {
   try {
     const response = await fetch(
-      `https://api.dexscreener.com/tokens/v1/solana/${VERMIN_TOKEN_ADDRESS}`
+      `${TOKEN_CONFIG.DEXSCREENER_API}/${TOKEN_CONFIG.TOKEN_ADDRESS}`
     );
     const data = await response.json();
-    return data[0];
+    return Array.isArray(data) ? data[0] : data;
   } catch (error) {
-    console.error("Error fetching Vermin data:", error);
+    console.error(`Error fetching ${TOKEN_CONFIG.TOKEN_SYMBOL} data:`, error);
     throw error;
   }
 };
@@ -24,19 +25,54 @@ const formatNumber = (value, decimals = 8) => {
 };
 
 
-const VerminMarketData = () => {
+const TokenMarketData = () => {
   const [marketData, setMarketData] = useState(null);
+  const [priceHistory, setPriceHistory] = useState(null);
+  const [priceChange, setPriceChange] = useState(0);
+  const [selectedTimeRange, setSelectedTimeRange] = useState('24h');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { userProfile } = useUserProfile();
   const { hodlTime, tokenBalance, walletAddress, isAdmin } = userProfile || {};
   const isMounted = useRef(true);
 
+  // Fetch price history data
+  const fetchPriceData = useCallback(async (timeRange) => {
+    try {
+      const data = await fetchPriceHistory(timeRange);
+      if (data && isMounted.current) {
+        const formattedData = formatPriceData(data);
+        setPriceHistory(formattedData);
+        
+        // Only calculate price change if we have enough data points
+        if (formattedData.length >= 2) {
+          setPriceChange(calculatePriceChange(formattedData));
+        } else if (formattedData.length === 1) {
+          // If we only have one data point, use it as both start and end
+          setPriceChange(0);
+        } else {
+          setPriceChange(0);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching price history:', error);
+      // Don't fail the whole component if price history fails
+      if (isMounted.current) {
+        setPriceHistory([]);
+        setPriceChange(0);
+      }
+    }
+  }, []);
+
   const fetchAllData = useCallback(async () => {
     try {
       setIsLoading(true);
-          // Fetch market data
-      const marketDataResponse = await fetchVerminData();
+      
+      // Fetch all data in parallel
+      const [marketDataResponse] = await Promise.all([
+        fetchTokenData(),
+        fetchPriceData(selectedTimeRange)
+      ]);
 
       if (isMounted.current) {
         setMarketData(marketDataResponse);
@@ -49,7 +85,21 @@ const VerminMarketData = () => {
         setIsLoading(false);
       }
     }
-  }, []);
+  }, [fetchPriceData, selectedTimeRange]);
+
+  // Handle time range change
+  const handleTimeRangeChange = (range) => {
+    setSelectedTimeRange(range);
+    fetchPriceData(range);
+  };
+
+  // Format price change with sign and color
+  const formatPriceChange = (change) => {
+    if (change === 0) return '0.00%';
+    const sign = change > 0 ? '+' : '';
+    const color = change >= 0 ? 'text-green-500' : 'text-red-500';
+    return <span className={color}>{sign}{change.toFixed(2)}%</span>;
+  };
 
   useEffect(() => {
     // Set up isMounted ref to track component mount status
@@ -111,57 +161,125 @@ const VerminMarketData = () => {
     return <div className="text-center text-gray-400 py-4">No market data available</div>;
   }
 
+  // Time range options for price history
+  const timeRanges = [
+    { value: '24h', label: '24H' },
+    { value: '7d', label: '7D' },
+    { value: '30d', label: '30D' },
+  ];
+
   return (
     <div className="p-2 sm:p-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* User Holdings Card */}
-          <MarketCard title="Your Holdings">
-            <div className="overflow-x-auto">
-              <TableContainer className="border border-gray-700 rounded-lg min-w-full">
-                <Table className="min-w-full">
-                  <TableBody>
-                    <TableRow className="border-t border-gray-700">
-                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Token Balance</TableCell>
-                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">
-                        <div className="flex items-center justify-center">
-                          {formatNumber(tokenBalanceAdjusted, 2)}
-                          {isAdmin && (
-                            <span className="ml-1 sm:ml-2 bg-gold text-black text-[9px] sm:text-xs font-bold px-1 sm:px-1.5 py-0.5 rounded">
-                              ADMIN
-                            </span>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="border-t border-gray-700">
-                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Holdings (USD)</TableCell>
-                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">${formatNumber(holdingsUsd, 2)}</TableCell>
-                    </TableRow>
-                    <TableRow className="border-t border-gray-700">
-                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">HODL Time</TableCell>
-                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">{hodlTime || "N/A"}</TableCell>
-                    </TableRow>
-                    <TableRow className="border-t border-gray-700">
-                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Wallet</TableCell>
-                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">
-                        <span className="font-mono">{truncateAddress(walletAddress)}</span>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="border-t border-gray-700">
-                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">HODL Time</TableCell>
-                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">{hodlTime || "N/A"}</TableCell>
-                    </TableRow>
-                    <TableRow className="border-t border-gray-700">
-                      <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Wallet</TableCell>
-                      <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">
-                        <span className="font-mono">{truncateAddress(walletAddress)}</span>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
+        {/* Price History Card */}
+        <MarketCard title="Price History" className="md:col-span-2">
+          <div className="mb-4 flex justify-end space-x-2">
+            {timeRanges.map((range) => (
+              <button
+                key={range.value}
+                onClick={() => handleTimeRangeChange(range.value)}
+                className={`px-3 py-1 text-xs sm:text-sm rounded-md ${
+                  selectedTimeRange === range.value
+                    ? 'bg-gold text-black font-bold'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                {range.label}
+              </button>
+            ))}
+          </div>
+          
+          <div className="h-64 flex flex-col bg-gray-900 rounded-lg p-4">
+            <div className="flex justify-between items-center mb-2">
+              <div>
+                <div className="text-2xl font-bold">
+                  ${formatNumber(parseFloat(marketData?.priceUsd || 0), 6)}
+                </div>
+                <div className="text-sm text-gray-400">
+                  {TOKEN_CONFIG.TOKEN_SYMBOL} / USD
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-lg">
+                  {formatPriceChange(priceChange)}
+                </div>
+                <div className="text-xs text-gray-400">
+                  {selectedTimeRange.toUpperCase()} Change
+                </div>
+              </div>
             </div>
-          </MarketCard>
+            
+            <div className="flex-1 mt-4">
+              {priceHistory && priceHistory.length > 0 ? (
+                <div className="h-full">
+                  {/* Chart will be rendered here */}
+                  <div className="h-40 bg-gray-800 rounded flex flex-col items-center justify-center text-gray-500">
+                    <div className="text-sm mb-2">Price Chart ({selectedTimeRange})</div>
+                    <div className="text-xs text-gray-600">
+                      {priceHistory.length} data points loaded
+                    </div>
+                    <div className="text-xs text-gray-600 mt-1">
+                      {new Date(priceHistory[0]?.time).toLocaleString()} - {new Date(priceHistory[priceHistory.length - 1]?.time).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              ) : isLoading ? (
+                <div className="h-full flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold"></div>
+                </div>
+              ) : (
+                <div className="h-full flex items-center justify-center text-gray-400">
+                  No price data available
+                </div>
+              )}
+            </div>
+            
+            {priceHistory && priceHistory.length > 0 && (
+              <div className="mt-2 text-xs text-gray-500 text-center">
+                Data provided by Solana Tracker
+              </div>
+            )}
+          </div>
+        </MarketCard>
+
+        {/* User Holdings Card */}
+        <MarketCard title="Your Holdings">
+          <div className="overflow-x-auto">
+            <TableContainer className="border border-gray-700 rounded-lg min-w-full">
+              <Table className="min-w-full">
+                <TableBody>
+                  <TableRow className="border-t border-gray-700">
+                    <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Token Balance</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">
+                      <div className="flex items-center justify-center">
+                        {formatNumber(tokenBalanceAdjusted, 2)}
+                        {isAdmin && (
+                          <span className="ml-1 sm:ml-2 bg-gold text-black text-[9px] sm:text-xs font-bold px-1 sm:px-1.5 py-0.5 rounded">
+                            ADMIN
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className="border-t border-gray-700">
+                    <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Holdings (USD)</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">${formatNumber(holdingsUsd, 2)}</TableCell>
+                  </TableRow>
+                  <TableRow className="border-t border-gray-700">
+                    <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">HODL Time</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">{hodlTime || "N/A"}</TableCell>
+                  </TableRow>
+                  <TableRow className="border-t border-gray-700">
+                    <TableCell className="text-xs sm:text-sm text-center font-medium text-gray-300 px-1.5 py-1.5 sm:px-2 sm:py-2">Wallet</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-center px-1.5 py-1.5 sm:px-2 sm:py-2">
+                      <span className="font-mono">{truncateAddress(walletAddress)}</span>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+        </MarketCard>
 
           {/* Value Card */}
           <MarketCard title="Value">
@@ -350,4 +468,4 @@ const VerminMarketData = () => {
   );
 };
 
-export default VerminMarketData;
+export default TokenMarketData;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card } from "@windmill/react-ui";
-import VerminMarketData from "./VerminMarketData";
-import VerminPriceChart from "./VerminPriceChart";
+import TokenMarketData from "./token/TokenMarketData";
+import TokenPriceChart from "./token/TokenPriceChart";
 // Game Assets and Game Profiles are temporarily disabled
 // import GameAssets from "./game/GameAssets";
 // import GameProfiles from "./game/GameProfiles";
@@ -57,8 +57,8 @@ const TokenHolderPage = () => {
       {/* Content Area - Full width container */}
       <div className="w-full">
         <Card className="p-4 sm:p-6 !bg-[rgba(50,50,50,0.8)] !ring-0 border border-gold rounded-lg shadow-lg backdrop-blur w-full overflow-x-auto">
-          {activeSection === "Market Data" && <VerminMarketData />}
-          {activeSection === "Chart and Swaps" && <VerminPriceChart />}
+          {activeSection === "Market Data" && <TokenMarketData />}
+          {activeSection === "Chart and Swaps" && <TokenPriceChart />}
           {/* Temporarily disabled
           {activeSection === "Game Assets" && <GameAssets />}
           {activeSection === "Game Profiles" && <GameProfiles />}

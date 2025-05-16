@@ -17,29 +17,30 @@ const AboutLayout = () => {
         <div className="about-mission">
           <div className="token-panel mission-panel">
             <p className="italic-text">
-              Vermin team is made of builders; people who want to build cool
-              shit and share it with others so they can enjoy it and give
-              feedback to make it better. It&apos;s what we&apos;re all about.
-              We don&apos;t make big promises, we don&apos;t dump, we just
-              build.
+              Our team is made of builders; people who want to create innovative
+              solutions and share them with the community. We believe in building
+              quality products and continuously improving based on user feedback.
+              We focus on delivering real value through thoughtful development and
+              community engagement.
             </p>
           </div>
 
           <div className="meme-vibe">
             <p>
-              We&apos;re not your average token project. We&apos;re a dedicated
-              team of builders creating real experiences while others are busy
-              making elaborate roadmaps.
+              We&apos;re a dedicated team of blockchain developers and designers
+              committed to creating meaningful experiences in the Solana ecosystem.
+              Our focus is on building practical solutions rather than making
+              unrealistic promises.
             </p>
             <p>
               No empty promises, no short-term plays - just solid development.
             </p>
 
             <p>
-              While others might lose focus during market fluctuations, we stay
-              committed to our code. This isn&apos;t just another token,
-              it&apos;s a community-driven project. We&apos;re building utility
-              that adds genuine value to the ecosystem.
+              Our commitment remains strong regardless of market conditions.
+              This is more than just a token; it&apos;s a platform designed to provide
+              real utility and value to our community. We&apos;re focused on sustainable
+              development and long-term growth.
             </p>
 
             <div className="community-claim">
